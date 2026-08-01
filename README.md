@@ -34,10 +34,11 @@ massing variation.
 
 The debug panel independently toggles the metre grid, world axes, clipped roads,
 railways, water, working-area bounds, district fills, block outlines, buildable
-outlines, stable block IDs, primitive building masses, building footprints, and
-height and occupied-chunk markers. The performance panel reports frames per
-second, average frame time, draw calls, triangles, scene objects, and rendered
-chunk, batch, and primitive-part counts.
+outlines, stable block IDs, rejected block candidates grouped by reason,
+primitive building masses, building footprints, and height and occupied-chunk
+markers. The performance panel reports frames per second, average frame time,
+draw calls, triangles, scene objects, and rendered chunk, batch, and
+primitive-part counts.
 
 ## Coordinate convention
 
@@ -80,7 +81,8 @@ calls to `Math.random()` do not belong in generation code.
 Milestone 4 includes the earlier foundation and structural viewer plus 41 valid
 blocks, 50 deterministic primitive buildings, stable 200 m chunks, one
 color-instanced batch per occupied chunk, frustum culling, occupied-chunk
-inspection, and explicit render-work counters.
+inspection, a deterministic 236-candidate coverage audit, and explicit
+render-work counters.
 
 Detailed parcels, LOD, distance culling, facades, textures, traffic, and
 atmosphere remain deferred to later milestones in `docs/PROJECT_PLAN.md`.

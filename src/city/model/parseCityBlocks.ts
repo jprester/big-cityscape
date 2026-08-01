@@ -6,9 +6,25 @@ export function parseCityBlocks(value: unknown): ProcessedCityBlocks {
     value.schemaVersion !== 1 ||
     !isRecord(value.metadata) ||
     !Array.isArray(value.districts) ||
+    !Array.isArray(value.candidateAudit) ||
     !Array.isArray(value.blocks)
   ) {
     throw new Error('Processed city blocks have an unsupported schema.');
+  }
+
+  for (const candidate of value.candidateAudit) {
+    if (
+      !isRecord(candidate) ||
+      typeof candidate.id !== 'string' ||
+      !isCandidateOutcome(candidate.outcome) ||
+      (candidate.polygon !== null && !isValidPolygon(candidate.polygon)) ||
+      (candidate.centroid !== null && !isPoint(candidate.centroid)) ||
+      (candidate.areaSquareMetres !== null &&
+        (typeof candidate.areaSquareMetres !== 'number' ||
+          !Number.isFinite(candidate.areaSquareMetres)))
+    ) {
+      throw new Error('Processed block candidate audit entries are malformed.');
+    }
   }
 
   for (const district of value.districts) {
@@ -39,6 +55,20 @@ export function parseCityBlocks(value: unknown): ProcessedCityBlocks {
   }
 
   return value as ProcessedCityBlocks;
+}
+
+function isCandidateOutcome(value: unknown): boolean {
+  return (
+    value === 'retained' ||
+    value === 'area' ||
+    value === 'unsupportedTopology' ||
+    value === 'concaveDerivationFailure' ||
+    value === 'railExclusion' ||
+    value === 'waterExclusion' ||
+    value === 'roadExclusion' ||
+    value === 'insetFailure' ||
+    value === 'insufficientBuildableArea'
+  );
 }
 
 function isValidPolygon(value: unknown): boolean {

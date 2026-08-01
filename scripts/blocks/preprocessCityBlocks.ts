@@ -2,6 +2,8 @@ import { createHash } from 'node:crypto';
 import polygonize from '@turf/polygonize';
 import type { Feature, FeatureCollection, LineString } from 'geojson';
 import type {
+  BlockCandidateAudit,
+  BlockCandidateDiscardReason,
   BlockProfile,
   CityBlock,
   ProcessedCityBlocks,
@@ -17,16 +19,7 @@ import {
   polygonCentroid,
 } from './polygon';
 
-type DiscardedCandidateCounts = {
-  area: number;
-  unsupportedTopology: number;
-  concaveDerivationFailure: number;
-  railExclusion: number;
-  waterExclusion: number;
-  roadExclusion: number;
-  insetFailure: number;
-  insufficientBuildableArea: number;
-};
+type DiscardedCandidateCounts = Record<BlockCandidateDiscardReason, number>;
 
 export function preprocessCityBlocks(
   structure: ProcessedCityStructure,
@@ -70,29 +63,63 @@ export function preprocessCityBlocks(
     insetFailure: 0,
     insufficientBuildableArea: 0,
   };
+  const candidateAudit: BlockCandidateAudit[] = [];
   const blocks: CityBlock[] = [];
 
   for (const candidate of polygonCandidates) {
-    if (candidate.geometry.coordinates.length !== 1) {
-      discardedByReason.unsupportedTopology += 1;
-      continue;
-    }
-
     const sourceRing = candidate.geometry.coordinates[0];
 
     if (sourceRing === undefined) {
       discardedByReason.unsupportedTopology += 1;
+      candidateAudit.push({
+        id: createStableCandidateId(candidate.geometry.coordinates),
+        outcome: 'unsupportedTopology',
+        polygon: null,
+        centroid: null,
+        areaSquareMetres: null,
+      });
       continue;
     }
 
-    const polygon = canonicalizeRing(sourceRing, config.coordinatePrecisionDecimals);
+    let polygon: readonly Point2[];
+
+    try {
+      polygon = canonicalizeRing(sourceRing, config.coordinatePrecisionDecimals);
+    } catch {
+      discardedByReason.unsupportedTopology += 1;
+      candidateAudit.push({
+        id: createStableCandidateId(candidate.geometry.coordinates),
+        outcome: 'unsupportedTopology',
+        polygon: null,
+        centroid: null,
+        areaSquareMetres: null,
+      });
+      continue;
+    }
+
     const areaSquareMetres = polygonArea(polygon);
+    const auditBase = createCandidateAuditBase(
+      polygon,
+      areaSquareMetres,
+      config.coordinatePrecisionDecimals,
+    );
+
+    if (candidate.geometry.coordinates.length !== 1) {
+      discardedByReason.unsupportedTopology += 1;
+      candidateAudit.push({
+        ...auditBase,
+        id: createStableCandidateId(candidate.geometry.coordinates),
+        outcome: 'unsupportedTopology',
+      });
+      continue;
+    }
 
     if (
       areaSquareMetres < config.minimumBlockAreaSquareMetres ||
       areaSquareMetres > config.maximumBlockAreaSquareMetres
     ) {
       discardedByReason.area += 1;
+      candidateAudit.push({ ...auditBase, outcome: 'area' });
       continue;
     }
 
@@ -100,6 +127,7 @@ export function preprocessCityBlocks(
 
     if (railDistance < config.railBufferMetres) {
       discardedByReason.railExclusion += 1;
+      candidateAudit.push({ ...auditBase, outcome: 'railExclusion' });
       continue;
     }
 
@@ -111,6 +139,7 @@ export function preprocessCityBlocks(
 
     if (waterDistance < config.waterBufferMetres) {
       discardedByReason.waterExclusion += 1;
+      candidateAudit.push({ ...auditBase, outcome: 'waterExclusion' });
       continue;
     }
 
@@ -127,8 +156,10 @@ export function preprocessCityBlocks(
     } catch {
       if (isConvexPolygon(polygon)) {
         discardedByReason.insetFailure += 1;
+        candidateAudit.push({ ...auditBase, outcome: 'insetFailure' });
       } else {
         discardedByReason.concaveDerivationFailure += 1;
+        candidateAudit.push({ ...auditBase, outcome: 'concaveDerivationFailure' });
       }
       continue;
     }
@@ -137,6 +168,7 @@ export function preprocessCityBlocks(
 
     if (buildableAreaSquareMetres < config.minimumBuildableAreaSquareMetres) {
       discardedByReason.insufficientBuildableArea += 1;
+      candidateAudit.push({ ...auditBase, outcome: 'insufficientBuildableArea' });
       continue;
     }
 
@@ -144,13 +176,16 @@ export function preprocessCityBlocks(
 
     if (roadDistance < config.surfaceRoadBufferMetres) {
       discardedByReason.roadExclusion += 1;
+      candidateAudit.push({ ...auditBase, outcome: 'roadExclusion' });
       continue;
     }
 
-    const centroid = roundPoint(
-      polygonCentroid(polygon),
-      config.coordinatePrecisionDecimals,
-    );
+    const centroid = auditBase.centroid;
+
+    if (centroid === null) {
+      throw new Error('A valid block candidate must have a centroid.');
+    }
+
     const districtId = assignDistrict(centroid);
 
     if (!districtIds.has(districtId)) {
@@ -169,6 +204,7 @@ export function preprocessCityBlocks(
       areaSquareMetres: roundNumber(areaSquareMetres, 2),
       buildableAreaSquareMetres: roundNumber(buildableAreaSquareMetres, 2),
     });
+    candidateAudit.push({ ...auditBase, outcome: 'retained' });
   }
 
   blocks.sort(
@@ -177,11 +213,17 @@ export function preprocessCityBlocks(
       first.centroid[1] - second.centroid[1] ||
       first.centroid[0] - second.centroid[0],
   );
+  candidateAudit.sort((first, second) => first.id.localeCompare(second.id));
 
   const blockIds = new Set(blocks.map((block) => block.id));
+  const candidateIds = new Set(candidateAudit.map((candidate) => candidate.id));
 
   if (blockIds.size !== blocks.length) {
     throw new Error('Derived stable block IDs contain a collision.');
+  }
+
+  if (candidateIds.size !== candidateAudit.length) {
+    throw new Error('Derived stable block candidate IDs contain a collision.');
   }
 
   const discardedCandidates = Object.values(discardedByReason).reduce(
@@ -191,6 +233,10 @@ export function preprocessCityBlocks(
 
   if (blocks.length + discardedCandidates !== polygonCandidates.length) {
     throw new Error('Block candidate accounting does not match the polygonizer output.');
+  }
+
+  if (candidateAudit.length !== polygonCandidates.length) {
+    throw new Error('Block candidate audit does not match the polygonizer output.');
   }
 
   const totalBlockAreaSquareMetres = roundNumber(
@@ -240,7 +286,21 @@ export function preprocessCityBlocks(
       totalBuildableAreaSquareMetres,
     },
     districts: config.districts,
+    candidateAudit,
     blocks,
+  };
+}
+
+function createCandidateAuditBase(
+  polygon: readonly Point2[],
+  areaSquareMetres: number,
+  precisionDecimals: number,
+): Omit<BlockCandidateAudit, 'outcome'> {
+  return {
+    id: createStableCandidateId(polygon),
+    polygon,
+    centroid: roundPoint(polygonCentroid(polygon), precisionDecimals),
+    areaSquareMetres: roundNumber(areaSquareMetres, 2),
   };
 }
 
@@ -317,6 +377,11 @@ function canonicalizeRing(
 function createStableBlockId(polygon: readonly Point2[]): string {
   const digest = createHash('sha256').update(JSON.stringify(polygon)).digest('hex');
   return `block-${digest.slice(0, 10)}`;
+}
+
+function createStableCandidateId(geometry: unknown): string {
+  const digest = createHash('sha256').update(JSON.stringify(geometry)).digest('hex');
+  return `candidate-${digest.slice(0, 10)}`;
 }
 
 function roundPolygon(

@@ -14,6 +14,26 @@ export type BlockProfile =
 
 export type BuildableDerivation = 'convex-inset' | 'triangulated-inset';
 
+export type BlockCandidateDiscardReason =
+  | 'area'
+  | 'unsupportedTopology'
+  | 'concaveDerivationFailure'
+  | 'railExclusion'
+  | 'waterExclusion'
+  | 'roadExclusion'
+  | 'insetFailure'
+  | 'insufficientBuildableArea';
+
+export type BlockCandidateOutcome = 'retained' | BlockCandidateDiscardReason;
+
+export type BlockCandidateAudit = Readonly<{
+  id: string;
+  outcome: BlockCandidateOutcome;
+  polygon: readonly Point2[] | null;
+  centroid: Point2 | null;
+  areaSquareMetres: number | null;
+}>;
+
 export type DistrictDefinition = Readonly<{
   id: string;
   label: string;
@@ -57,16 +77,7 @@ export type ProcessedCityBlocks = Readonly<{
       blocks: number;
       manualOverrides: number;
       discardedCandidates: number;
-      discardedByReason: Readonly<{
-        area: number;
-        unsupportedTopology: number;
-        concaveDerivationFailure: number;
-        railExclusion: number;
-        waterExclusion: number;
-        roadExclusion: number;
-        insetFailure: number;
-        insufficientBuildableArea: number;
-      }>;
+      discardedByReason: Readonly<Record<BlockCandidateDiscardReason, number>>;
       blocksByBuildableDerivation: Readonly<{
         convexInset: number;
         triangulatedInset: number;
@@ -76,5 +87,6 @@ export type ProcessedCityBlocks = Readonly<{
     totalBuildableAreaSquareMetres: number;
   }>;
   districts: readonly DistrictDefinition[];
+  candidateAudit: readonly BlockCandidateAudit[];
   blocks: readonly CityBlock[];
 }>;

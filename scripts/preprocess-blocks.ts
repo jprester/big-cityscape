@@ -30,6 +30,7 @@ console.log(`Output: ${BLOCK_PREPROCESS_CONFIG.outputFile}`);
 console.log(`Districts: ${processed.metadata.counts.districts}`);
 console.log(`Surface road paths: ${processed.metadata.counts.sourceSurfaceRoadPaths}`);
 console.log(`Polygon candidates: ${processed.metadata.counts.polygonCandidates}`);
+console.log(`Candidate audit entries: ${processed.candidateAudit.length}`);
 console.log(`Blocks: ${processed.metadata.counts.blocks}`);
 console.log(
   `Blocks by buildable derivation: ${JSON.stringify(processed.metadata.counts.blocksByBuildableDerivation)}`,
@@ -37,6 +38,9 @@ console.log(
 console.log(`Discarded candidates: ${processed.metadata.counts.discardedCandidates}`);
 console.log(
   `Discard reasons: ${JSON.stringify(processed.metadata.counts.discardedByReason)}`,
+);
+console.log(
+  `Candidate source area by outcome: ${JSON.stringify(summarizeCandidateAreaByOutcome())}`,
 );
 console.log(`Manual overrides: ${processed.metadata.counts.manualOverrides}`);
 console.log(
@@ -53,3 +57,24 @@ console.log(
 );
 console.log(`Output size: ${Buffer.byteLength(outputText).toLocaleString('en-US')} bytes`);
 console.log(`Elapsed: ${elapsedMilliseconds.toFixed(1)} ms`);
+
+function summarizeCandidateAreaByOutcome(): Readonly<Record<string, number>> {
+  const areaByOutcome: Record<string, number> = {};
+
+  for (const candidate of processed.candidateAudit) {
+    areaByOutcome[candidate.outcome] =
+      (areaByOutcome[candidate.outcome] ?? 0) +
+      (candidate.areaSquareMetres ?? 0);
+  }
+
+  return Object.fromEntries(
+    Object.entries(areaByOutcome)
+      .sort(([firstOutcome], [secondOutcome]) =>
+        firstOutcome.localeCompare(secondOutcome),
+      )
+      .map(([outcome, areaSquareMetres]) => [
+        outcome,
+        Math.round(areaSquareMetres * 100) / 100,
+      ]),
+  );
+}

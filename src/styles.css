@@ -90,7 +90,9 @@ input {
   top: 16px;
   left: 16px;
   width: min(240px, calc(100% - 32px));
+  max-height: calc(100% - 32px);
   padding: 14px;
+  overflow-y: auto;
   user-select: none;
 }
 

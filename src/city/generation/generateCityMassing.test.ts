@@ -60,6 +60,7 @@ const CITY_BLOCKS: ProcessedCityBlocks = {
     },
     { id: 'west-mixed', label: 'West Mixed', profile: 'dense-mixed' },
   ],
+  candidateAudit: [],
   blocks: [
     createBlock('east-block', 'east-core', [640, -260], 100, 70, 8_000, 7_000),
     createBlock(

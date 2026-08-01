@@ -59,6 +59,12 @@ calls with 110 scene objects. Consolidating material categories into per-instanc
 colors brings the same 50 buildings to 31 calls and 87 objects. The street preset
 rejects eight chunks and thirty-one box parts.
 
+The candidate-coverage audit adds six hidden line objects for the six rejection
+reasons currently present, bringing the default scene to 93 objects without
+changing the 31-call aerial baseline. Enabling an audit reason adds one debug
+line draw call; audit overlays are diagnostic and are excluded from the default
+render budget comparison.
+
 This is intentionally reported as a tradeoff, not an unconditional performance
 improvement. The finer culling boundary becomes valuable when more chunks exist;
 at the current scale, frame time remains effectively unchanged.

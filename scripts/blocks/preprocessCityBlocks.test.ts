@@ -118,6 +118,13 @@ describe('preprocessCityBlocks', () => {
     });
     expect(result.blocks[0]?.id).toMatch(/^block-[a-f0-9]{10}$/);
     expect(result.blocks[0]?.buildablePolygon).toHaveLength(4);
+    expect(result.candidateAudit).toHaveLength(1);
+    expect(result.candidateAudit[0]).toMatchObject({
+      id: expect.stringMatching(/^candidate-[a-f0-9]{10}$/),
+      outcome: 'retained',
+      centroid: [50, 50],
+      areaSquareMetres: 10_000,
+    });
     expect(preprocessCityBlocks(STRUCTURE, CONFIG, 'abc123')).toEqual(result);
   });
 
@@ -150,5 +157,12 @@ describe('preprocessCityBlocks', () => {
       discardedCandidates: 1,
       discardedByReason: { railExclusion: 1 },
     });
+    expect(result.candidateAudit).toMatchObject([
+      {
+        outcome: 'railExclusion',
+        centroid: [50, 50],
+        areaSquareMetres: 10_000,
+      },
+    ]);
   });
 });

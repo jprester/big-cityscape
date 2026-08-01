@@ -55,6 +55,21 @@ triangulated concave insets. The other 195 candidates are fully accounted for:
 | inset failure | 3 |
 | buildable area below 600 m² | 16 |
 
+Every polygonizer result is also stored as a deterministic candidate-audit
+entry with a stable ID, source outline, centroid, area, and outcome. Rejected
+outcomes have separate disabled-by-default debug layers, so area, rail, water,
+road, inset, and buildable-area decisions can be compared directly against the
+structural linework. This diagnostic data remains declarative; Three.js objects
+are created only by the debug view.
+
+The audit makes the next coverage bottleneck explicit. Rail-clearance rejection
+accounts for 73 candidates and 516,612 m² of source-face area; road-clearance
+rejection accounts for 66 candidates and 407,717 m². The rail candidates are
+spatially concentrated around the imported infrastructure corridors. The road
+candidates are distributed through otherwise urban fabric, making road
+intersection noding the first geometry behavior to investigate before relaxing
+any clearance threshold.
+
 The retained blocks cover 229,762.31 m²; their buildable polygons cover
 76,747.50 m². Individual block areas range from 1,686.79 m² to 33,172.41 m²;
 buildable areas range from 605.45 m² to 10,301.63 m².
@@ -91,6 +106,8 @@ land use.
 - Manual overrides are supported as a future policy but the current dataset uses
   none; awkward candidates are rejected with a reason instead.
 
-The next geometry improvement, when justified, would be a robust full concave
-offset or a small reviewed override list. Neither is required for the current 41
-blocks and 50-building massing set.
+The next coverage increment should node road paths at true intersections before
+polygonization and measure how many of the 66 road-clearance candidates become
+valid faces. Concave multi-region buildable derivation and parcel subdivision
+remain subsequent improvements; neither should be approximated by simply
+reducing infrastructure clearances.

@@ -3,6 +3,7 @@ import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
 import { loadCityBlocks } from '../city/data/loadCityBlocks';
 import { loadProcessedCity } from '../city/data/loadProcessedCity';
 import { addBlockDebugLayers } from '../city/debug/addBlockDebugLayers';
+import { addBlockCoverageAuditLayers } from '../city/debug/addBlockCoverageAuditLayers';
 import { addBuildingDebugLayers } from '../city/debug/addBuildingDebugLayers';
 import { addChunkDebugLayer } from '../city/debug/addChunkDebugLayer';
 import { addStructureDebugLayers } from '../city/debug/addStructureDebugLayers';
@@ -77,6 +78,7 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
   const debugLayers = createFoundationDebugLayers(scene, worldSizeMetres);
   addStructureDebugLayers(debugLayers, city);
   addBlockDebugLayers(debugLayers, cityBlocks);
+  addBlockCoverageAuditLayers(debugLayers, cityBlocks);
   const massingRenderLayer = addCityMassingLayer(debugLayers, chunkedMassing);
   addBuildingDebugLayers(debugLayers, massing);
   addChunkDebugLayer(debugLayers, chunkedMassing);
