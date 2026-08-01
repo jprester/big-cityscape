@@ -1,0 +1,179 @@
+:root {
+  color-scheme: dark;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  background: #06090d;
+  color: #d9e2eb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  min-width: 320px;
+  background: #06090d;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.city-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  touch-action: none;
+}
+
+.debug-panel,
+.performance-panel {
+  position: absolute;
+  z-index: 1;
+  border: 1px solid rgb(164 197 220 / 18%);
+  border-radius: 8px;
+  background: rgb(7 13 19 / 84%);
+  box-shadow: 0 8px 32px rgb(0 0 0 / 20%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.debug-panel {
+  top: 16px;
+  left: 16px;
+  width: min(240px, calc(100% - 32px));
+  padding: 14px;
+  user-select: none;
+}
+
+.debug-panel__eyebrow {
+  margin: 0 0 3px;
+  color: #76a9c9;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.debug-panel__title {
+  margin: 0;
+  color: #f2f7fa;
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+
+.debug-panel__controls {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0;
+  padding: 12px 0;
+  border-top: 1px solid rgb(164 197 220 / 12%);
+  border-bottom: 1px solid rgb(164 197 220 / 12%);
+}
+
+.debug-panel__toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #c8d3dc;
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+
+.debug-panel__toggle input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: #78b9df;
+}
+
+.debug-panel__button {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid rgb(164 197 220 / 24%);
+  border-radius: 5px;
+  background: rgb(111 166 199 / 12%);
+  color: #dbe7ee;
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+
+.debug-panel__button:hover {
+  border-color: rgb(164 197 220 / 40%);
+  background: rgb(111 166 199 / 20%);
+}
+
+.debug-panel__button:focus-visible {
+  outline: 2px solid #78b9df;
+  outline-offset: 2px;
+}
+
+.debug-panel__help {
+  margin: 10px 0 0;
+  color: #7f909d;
+  font-size: 0.66rem;
+  line-height: 1.55;
+}
+
+.performance-panel {
+  top: 16px;
+  right: 16px;
+  min-width: 140px;
+  padding: 10px 12px;
+  pointer-events: none;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.performance-panel__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  line-height: 1.65;
+}
+
+.performance-panel__label {
+  color: #738592;
+}
+
+.performance-panel__value {
+  color: #cfe1ec;
+}
+
+@media (max-width: 560px) {
+  .debug-panel {
+    top: 10px;
+    left: 10px;
+  }
+
+  .performance-panel {
+    top: auto;
+    right: 10px;
+    bottom: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .debug-panel__button {
+    transition: none;
+  }
+}

@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+*.local
+.env
+.env.*
+!.env.example
+.DS_Store
+
+# Raw and generated geographic data remain local unless deliberately reviewed.
+references/raw/*.geojson
+references/processed/*
+references/visual/*
+!references/processed/.gitkeep
