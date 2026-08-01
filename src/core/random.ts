@@ -5,6 +5,23 @@ export type SeededRandom = Readonly<{
   integer: (minInclusive: number, maxExclusive: number) => number;
 }>;
 
+/** Derives a stable child seed from a parent seed and semantic identifiers. */
+export function deriveSeed(parentSeed: number, ...semanticParts: readonly string[]): number {
+  if (!Number.isSafeInteger(parentSeed)) {
+    throw new RangeError('A parent seed must be a safe integer.');
+  }
+
+  let hash = 2_166_136_261;
+  const input = `${parentSeed >>> 0}\u0000${semanticParts.join('\u0000')}`;
+
+  for (let index = 0; index < input.length; index += 1) {
+    hash ^= input.charCodeAt(index);
+    hash = Math.imul(hash, 16_777_619);
+  }
+
+  return hash >>> 0;
+}
+
 /**
  * Creates a small deterministic 32-bit PRNG based on Mulberry32.
  *

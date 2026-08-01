@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createSeededRandom } from './random';
+import { createSeededRandom, deriveSeed } from './random';
 
 describe('createSeededRandom', () => {
   it('repeats the same sequence for the same seed', () => {
@@ -49,5 +49,19 @@ describe('createSeededRandom', () => {
     expect(() => createSeededRandom(Number.NaN)).toThrow(RangeError);
     expect(() => createSeededRandom(1).float(4, 4)).toThrow(RangeError);
     expect(() => createSeededRandom(1).integer(0.5, 2)).toThrow(RangeError);
+  });
+});
+
+describe('deriveSeed', () => {
+  it('derives stable, semantic child seeds', () => {
+    expect(deriveSeed(42, 'district-east', 'block-7')).toBe(
+      deriveSeed(42, 'district-east', 'block-7'),
+    );
+    expect(deriveSeed(42, 'district-east', 'block-7')).not.toBe(
+      deriveSeed(42, 'district-east', 'block-8'),
+    );
+    expect(deriveSeed(42, 'district-east', 'block-7')).not.toBe(
+      deriveSeed(43, 'district-east', 'block-7'),
+    );
   });
 });

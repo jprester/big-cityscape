@@ -3,7 +3,15 @@ import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
 import { loadCityBlocks } from '../city/data/loadCityBlocks';
 import { loadProcessedCity } from '../city/data/loadProcessedCity';
 import { addBlockDebugLayers } from '../city/debug/addBlockDebugLayers';
+import { addBuildingDebugLayers } from '../city/debug/addBuildingDebugLayers';
 import { addStructureDebugLayers } from '../city/debug/addStructureDebugLayers';
+import { generateCityMassing } from '../city/generation/generateCityMassing';
+import {
+  CITY_MASSING_CONFIG,
+  DEFAULT_CITY_MASSING_SEED,
+} from '../city/generation/massingConfig';
+import type { BuildingDefinition } from '../city/model/cityMassing';
+import { addCityMassingLayer } from '../city/rendering/addCityMassingLayer';
 import { createDebugPanel } from '../debug/createDebugPanel';
 import { DebugLayerManager } from '../debug/DebugLayerManager';
 import { createInspectionCamera } from './createInspectionCamera';
@@ -22,6 +30,19 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
 
   if (cityBlocks.metadata.workingAreaId !== city.metadata.clip.id) {
     throw new Error('Processed city blocks do not match the loaded structural working area.');
+  }
+
+  const requestedSeed = readMassingSeed(window.location.search);
+  const massing = generateCityMassing(cityBlocks, {
+    ...CITY_MASSING_CONFIG,
+    seed: requestedSeed,
+  });
+  const landmark = massing.buildings.find(
+    (building) => building.id === massing.metadata.landmarkBuildingId,
+  );
+
+  if (landmark === undefined) {
+    throw new Error('Generated city massing is missing its landmark definition.');
   }
 
   const worldSizeMetres = Math.ceil(
@@ -44,13 +65,43 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
   labelRenderer.domElement.className = 'label-layer';
   labelRenderer.domElement.setAttribute('aria-hidden', 'true');
 
-  const inspectionCamera = createInspectionCamera(renderer.domElement, worldSizeMetres);
+  const landmarkCenter = getFootprintCenter(landmark);
+  const inspectionCamera = createInspectionCamera(renderer.domElement, worldSizeMetres, {
+    xMetres: landmarkCenter[0],
+    zMetres: landmarkCenter[1],
+    heightMetres: landmark.heightMetres,
+  });
   const debugLayers = createFoundationDebugLayers(scene, worldSizeMetres);
   addStructureDebugLayers(debugLayers, city);
   addBlockDebugLayers(debugLayers, cityBlocks);
+  addCityMassingLayer(debugLayers, massing);
+  addBuildingDebugLayers(debugLayers, massing);
+  debugLayers.setVisible('districts', false);
+  debugLayers.setVisible('blocks', false);
+  debugLayers.setVisible('buildable-polygons', false);
   const ground = createGround(scene, worldSizeMetres);
   const performancePanel = createPerformancePanel(renderer, scene);
-  const debugPanel = createDebugPanel(debugLayers, inspectionCamera.reset, 'Milestone 2');
+  const debugPanel = createDebugPanel(
+    debugLayers,
+    [
+      {
+        id: 'aerial',
+        label: 'Aerial',
+        activate: () => inspectionCamera.setPreset('aerial'),
+      },
+      {
+        id: 'rooftop',
+        label: 'Rooftop',
+        activate: () => inspectionCamera.setPreset('rooftop'),
+      },
+      {
+        id: 'street',
+        label: 'Street',
+        activate: () => inspectionCamera.setPreset('street'),
+      },
+    ],
+    `Milestone 3 · seed ${massing.seed}`,
+  );
 
   host.replaceChildren(
     renderer.domElement,
@@ -135,6 +186,31 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
       isDisposed = true;
     },
   };
+}
+
+function readMassingSeed(search: string): number {
+  const value = new URLSearchParams(search).get('seed');
+
+  if (value === null) {
+    return DEFAULT_CITY_MASSING_SEED;
+  }
+
+  const seed = Number(value);
+
+  if (!Number.isSafeInteger(seed)) {
+    throw new Error('The URL seed must be a safe integer.');
+  }
+
+  return seed;
+}
+
+function getFootprintCenter(building: BuildingDefinition): readonly [number, number] {
+  const [totalX, totalZ] = building.footprint.reduce(
+    (total, point) => [total[0] + point[0], total[1] + point[1]] as const,
+    [0, 0] as const,
+  );
+
+  return [totalX / building.footprint.length, totalZ / building.footprint.length];
 }
 
 function createFoundationDebugLayers(

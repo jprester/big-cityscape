@@ -150,6 +150,12 @@ input {
     border-color 120ms ease;
 }
 
+.debug-panel__camera-controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
 .debug-panel__button:hover {
   border-color: rgb(164 197 220 / 40%);
   background: rgb(111 166 199 / 20%);

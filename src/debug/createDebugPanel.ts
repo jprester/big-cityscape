@@ -5,9 +5,15 @@ export type DebugPanel = Readonly<{
   dispose: () => void;
 }>;
 
+export type CameraPresetAction = Readonly<{
+  id: string;
+  label: string;
+  activate: () => void;
+}>;
+
 export function createDebugPanel(
   layers: DebugLayerManager,
-  resetCamera: () => void,
+  cameraPresets: readonly CameraPresetAction[],
   milestoneLabel = 'Milestone 0',
 ): DebugPanel {
   const element = document.createElement('aside');
@@ -45,18 +51,25 @@ export function createDebugPanel(
     controls.append(label);
   }
 
-  const resetButton = document.createElement('button');
-  resetButton.className = 'debug-panel__button';
-  resetButton.type = 'button';
-  resetButton.textContent = 'Reset aerial camera';
-  resetButton.addEventListener('click', resetCamera);
-  disposers.push(() => resetButton.removeEventListener('click', resetCamera));
+  const cameraControls = document.createElement('div');
+  cameraControls.className = 'debug-panel__camera-controls';
+
+  for (const preset of cameraPresets) {
+    const button = document.createElement('button');
+    button.className = 'debug-panel__button';
+    button.type = 'button';
+    button.dataset.cameraPreset = preset.id;
+    button.textContent = preset.label;
+    button.addEventListener('click', preset.activate);
+    disposers.push(() => button.removeEventListener('click', preset.activate));
+    cameraControls.append(button);
+  }
 
   const help = document.createElement('p');
   help.className = 'debug-panel__help';
   help.textContent = 'Left drag: pan · Right drag: orbit · Wheel: zoom';
 
-  element.append(eyebrow, title, controls, resetButton, help);
+  element.append(eyebrow, title, controls, cameraControls, help);
 
   return {
     element,

@@ -2,7 +2,7 @@ import type * as THREE from 'three';
 
 const UPDATE_INTERVAL_SECONDS = 0.5;
 
-type MetricName = 'fps' | 'frame' | 'calls' | 'triangles' | 'objects';
+type MetricName = 'fps' | 'frame' | 'calls' | 'triangles' | 'objects' | 'visible';
 
 export type PerformancePanel = Readonly<{
   element: HTMLElement;
@@ -25,6 +25,7 @@ export function createPerformancePanel(
   addMetric(element, outputs, 'calls', 'Draw calls', '0');
   addMetric(element, outputs, 'triangles', 'Triangles', '0');
   addMetric(element, outputs, 'objects', 'Objects', '0');
+  addMetric(element, outputs, 'visible', 'Visible objects', '0');
 
   let elapsedSeconds = 0;
   let frameCount = 0;
@@ -40,9 +41,13 @@ export function createPerformancePanel(
     const framesPerSecond = frameCount / elapsedSeconds;
     const millisecondsPerFrame = (elapsedSeconds * 1_000) / frameCount;
     let objectCount = -1;
+    let visibleObjectCount = -1;
 
     scene.traverse(() => {
       objectCount += 1;
+    });
+    scene.traverseVisible(() => {
+      visibleObjectCount += 1;
     });
 
     setMetric(outputs, 'fps', framesPerSecond.toFixed(0));
@@ -50,6 +55,7 @@ export function createPerformancePanel(
     setMetric(outputs, 'calls', formatCount(renderer.info.render.calls));
     setMetric(outputs, 'triangles', formatCount(renderer.info.render.triangles));
     setMetric(outputs, 'objects', formatCount(Math.max(0, objectCount)));
+    setMetric(outputs, 'visible', formatCount(Math.max(0, visibleObjectCount)));
 
     elapsedSeconds = 0;
     frameCount = 0;
