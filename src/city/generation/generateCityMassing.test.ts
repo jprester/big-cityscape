@@ -21,6 +21,11 @@ const CITY_BLOCKS: ProcessedCityBlocks = {
       waterBufferMetres: 10,
       surfaceRoadBufferMetres: 4,
     },
+    buildable: {
+      insetMetres: 6,
+      minimumAreaSquareMetres: 600,
+      concaveStrategy: 'largest-inset-triangle',
+    },
     counts: {
       districts: 3,
       sourceSurfaceRoadPaths: 12,
@@ -31,11 +36,16 @@ const CITY_BLOCKS: ProcessedCityBlocks = {
       discardedByReason: {
         area: 0,
         unsupportedTopology: 0,
-        nonConvex: 0,
+        concaveDerivationFailure: 0,
         railExclusion: 0,
         waterExclusion: 0,
         roadExclusion: 0,
         insetFailure: 0,
+        insufficientBuildableArea: 0,
+      },
+      blocksByBuildableDerivation: {
+        convexInset: 3,
+        triangulatedInset: 0,
       },
     },
     totalBlockAreaSquareMetres: 22_800,
@@ -77,6 +87,23 @@ describe('block-aligned massing placement', () => {
 
     expect(placement.widthMetres).toBeGreaterThan(30);
     expect(placement.depthMetres).toBeGreaterThan(20);
+    expect(
+      orientedRectangleCorners(placement).every((point) =>
+        pointInPolygon(point, polygon),
+      ),
+    ).toBe(true);
+  });
+
+  it('fits independent width and depth scales inside an acute triangle', () => {
+    const polygon = [
+      [0, 0],
+      [50.46, 3.13],
+      [49.39, 27.81],
+    ] as const;
+    const placement = fitStreetAlignedRectangle(polygon);
+
+    expect(placement.widthMetres).toBeGreaterThanOrEqual(8);
+    expect(placement.depthMetres).toBeGreaterThanOrEqual(8);
     expect(
       orientedRectangleCorners(placement).every((point) =>
         pointInPolygon(point, polygon),
@@ -173,6 +200,7 @@ function createBlock(
     districtId,
     profile: 'regular-urban',
     derivation: 'road-polygonized',
+    buildableDerivation: 'convex-inset',
     polygon,
     buildablePolygon,
     centroid: center,

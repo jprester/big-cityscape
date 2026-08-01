@@ -12,6 +12,8 @@ export type BlockProfile =
   | 'large-parcel'
   | 'riverfront';
 
+export type BuildableDerivation = 'convex-inset' | 'triangulated-inset';
+
 export type DistrictDefinition = Readonly<{
   id: string;
   label: string;
@@ -23,6 +25,7 @@ export type CityBlock = Readonly<{
   districtId: string;
   profile: BlockProfile;
   derivation: 'road-polygonized';
+  buildableDerivation: BuildableDerivation;
   polygon: readonly Point2[];
   buildablePolygon: readonly Point2[];
   centroid: Point2;
@@ -42,6 +45,11 @@ export type ProcessedCityBlocks = Readonly<{
       waterBufferMetres: number;
       surfaceRoadBufferMetres: number;
     }>;
+    buildable: Readonly<{
+      insetMetres: number;
+      minimumAreaSquareMetres: number;
+      concaveStrategy: 'largest-inset-triangle';
+    }>;
     counts: Readonly<{
       districts: number;
       sourceSurfaceRoadPaths: number;
@@ -52,11 +60,16 @@ export type ProcessedCityBlocks = Readonly<{
       discardedByReason: Readonly<{
         area: number;
         unsupportedTopology: number;
-        nonConvex: number;
+        concaveDerivationFailure: number;
         railExclusion: number;
         waterExclusion: number;
         roadExclusion: number;
         insetFailure: number;
+        insufficientBuildableArea: number;
+      }>;
+      blocksByBuildableDerivation: Readonly<{
+        convexInset: number;
+        triangulatedInset: number;
       }>;
     }>;
     totalBlockAreaSquareMetres: number;

@@ -1,8 +1,18 @@
 import type * as THREE from 'three';
+import type { CityMassingFrameStats } from '../city/rendering/addCityMassingLayer';
 
 const UPDATE_INTERVAL_SECONDS = 0.5;
 
-type MetricName = 'fps' | 'frame' | 'calls' | 'triangles' | 'objects' | 'visible';
+type MetricName =
+  | 'fps'
+  | 'frame'
+  | 'calls'
+  | 'triangles'
+  | 'objects'
+  | 'visible'
+  | 'chunks'
+  | 'batches'
+  | 'parts';
 
 export type PerformancePanel = Readonly<{
   element: HTMLElement;
@@ -13,6 +23,7 @@ export type PerformancePanel = Readonly<{
 export function createPerformancePanel(
   renderer: THREE.WebGLRenderer,
   scene: THREE.Scene,
+  getMassingStats?: () => CityMassingFrameStats,
 ): PerformancePanel {
   const element = document.createElement('aside');
   element.className = 'performance-panel';
@@ -26,6 +37,12 @@ export function createPerformancePanel(
   addMetric(element, outputs, 'triangles', 'Triangles', '0');
   addMetric(element, outputs, 'objects', 'Objects', '0');
   addMetric(element, outputs, 'visible', 'Visible objects', '0');
+
+  if (getMassingStats !== undefined) {
+    addMetric(element, outputs, 'chunks', 'Rendered chunks', '0 / 0');
+    addMetric(element, outputs, 'batches', 'Massing batches', '0 / 0');
+    addMetric(element, outputs, 'parts', 'Massing parts', '0 / 0');
+  }
 
   let elapsedSeconds = 0;
   let frameCount = 0;
@@ -56,6 +73,25 @@ export function createPerformancePanel(
     setMetric(outputs, 'triangles', formatCount(renderer.info.render.triangles));
     setMetric(outputs, 'objects', formatCount(Math.max(0, objectCount)));
     setMetric(outputs, 'visible', formatCount(Math.max(0, visibleObjectCount)));
+
+    if (getMassingStats !== undefined) {
+      const massingStats = getMassingStats();
+      setMetric(
+        outputs,
+        'chunks',
+        `${massingStats.renderedChunks} / ${massingStats.totalChunks}`,
+      );
+      setMetric(
+        outputs,
+        'batches',
+        `${massingStats.renderedBatches} / ${massingStats.totalBatches}`,
+      );
+      setMetric(
+        outputs,
+        'parts',
+        `${massingStats.renderedParts} / ${massingStats.totalParts}`,
+      );
+    }
 
     elapsedSeconds = 0;
     frameCount = 0;

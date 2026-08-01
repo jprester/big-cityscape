@@ -220,7 +220,10 @@ function signedPolygonArea(polygon: readonly Point2[]): number {
   return twiceArea / 2;
 }
 
-function pointInPolygon(point: Point2 | undefined, polygon: readonly Point2[]): boolean {
+export function pointInPolygon(
+  point: Point2 | undefined,
+  polygon: readonly Point2[],
+): boolean {
   if (point === undefined || polygon.length < 3) {
     return false;
   }

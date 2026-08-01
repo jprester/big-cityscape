@@ -28,6 +28,8 @@ export function parseCityBlocks(value: unknown): ProcessedCityBlocks {
       typeof block.id !== 'string' ||
       typeof block.districtId !== 'string' ||
       typeof block.profile !== 'string' ||
+      (block.buildableDerivation !== 'convex-inset' &&
+        block.buildableDerivation !== 'triangulated-inset') ||
       !isValidPolygon(block.polygon) ||
       !isValidPolygon(block.buildablePolygon) ||
       !isPoint(block.centroid)

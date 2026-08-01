@@ -4,7 +4,9 @@ import { loadCityBlocks } from '../city/data/loadCityBlocks';
 import { loadProcessedCity } from '../city/data/loadProcessedCity';
 import { addBlockDebugLayers } from '../city/debug/addBlockDebugLayers';
 import { addBuildingDebugLayers } from '../city/debug/addBuildingDebugLayers';
+import { addChunkDebugLayer } from '../city/debug/addChunkDebugLayer';
 import { addStructureDebugLayers } from '../city/debug/addStructureDebugLayers';
+import { chunkCityMassing } from '../city/generation/chunkCityMassing';
 import { generateCityMassing } from '../city/generation/generateCityMassing';
 import {
   CITY_MASSING_CONFIG,
@@ -37,6 +39,7 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
     ...CITY_MASSING_CONFIG,
     seed: requestedSeed,
   });
+  const chunkedMassing = chunkCityMassing(massing);
   const landmark = massing.buildings.find(
     (building) => building.id === massing.metadata.landmarkBuildingId,
   );
@@ -74,13 +77,18 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
   const debugLayers = createFoundationDebugLayers(scene, worldSizeMetres);
   addStructureDebugLayers(debugLayers, city);
   addBlockDebugLayers(debugLayers, cityBlocks);
-  addCityMassingLayer(debugLayers, massing);
+  const massingRenderLayer = addCityMassingLayer(debugLayers, chunkedMassing);
   addBuildingDebugLayers(debugLayers, massing);
+  addChunkDebugLayer(debugLayers, chunkedMassing);
   debugLayers.setVisible('districts', false);
   debugLayers.setVisible('blocks', false);
   debugLayers.setVisible('buildable-polygons', false);
   const ground = createGround(scene, worldSizeMetres);
-  const performancePanel = createPerformancePanel(renderer, scene);
+  const performancePanel = createPerformancePanel(
+    renderer,
+    scene,
+    massingRenderLayer.getFrameStats,
+  );
   const debugPanel = createDebugPanel(
     debugLayers,
     [
@@ -100,7 +108,7 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
         activate: () => inspectionCamera.setPreset('street'),
       },
     ],
-    `Milestone 3 · seed ${massing.seed}`,
+    `Milestone 4 · seed ${massing.seed}`,
   );
 
   host.replaceChildren(
@@ -136,6 +144,7 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
 
     previousTimeMilliseconds = timeMilliseconds;
     inspectionCamera.update(Math.min(deltaSeconds, 0.1));
+    massingRenderLayer.beginFrame();
     renderer.render(scene, inspectionCamera.camera);
     labelRenderer.render(scene, inspectionCamera.camera);
     performancePanel.update(deltaSeconds);

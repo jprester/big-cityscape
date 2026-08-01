@@ -31,6 +31,9 @@ console.log(`Districts: ${processed.metadata.counts.districts}`);
 console.log(`Surface road paths: ${processed.metadata.counts.sourceSurfaceRoadPaths}`);
 console.log(`Polygon candidates: ${processed.metadata.counts.polygonCandidates}`);
 console.log(`Blocks: ${processed.metadata.counts.blocks}`);
+console.log(
+  `Blocks by buildable derivation: ${JSON.stringify(processed.metadata.counts.blocksByBuildableDerivation)}`,
+);
 console.log(`Discarded candidates: ${processed.metadata.counts.discardedCandidates}`);
 console.log(
   `Discard reasons: ${JSON.stringify(processed.metadata.counts.discardedByReason)}`,
@@ -38,6 +41,9 @@ console.log(
 console.log(`Manual overrides: ${processed.metadata.counts.manualOverrides}`);
 console.log(
   `Exclusions: rail ${processed.metadata.exclusions.railBufferMetres} m, water ${processed.metadata.exclusions.waterBufferMetres} m, surface roads ${processed.metadata.exclusions.surfaceRoadBufferMetres} m`,
+);
+console.log(
+  `Buildable policy: ${processed.metadata.buildable.insetMetres} m inset, ${processed.metadata.buildable.minimumAreaSquareMetres} m² minimum, ${processed.metadata.buildable.concaveStrategy}`,
 );
 console.log(
   `Total block area: ${processed.metadata.totalBlockAreaSquareMetres.toLocaleString('en-US')} m²`,

@@ -3,9 +3,9 @@
 City Field is a scale-first Three.js experiment for generating a large, fictional,
 high-density futuristic city from simplified real-world urban structure.
 
-Milestone 3 adds deterministic primitive building massing over the first
-road-bounded blocks. The browser still does not load raw geographic data or use
-real-world building footprints.
+Milestone 4 spatially partitions the deterministic primitive massing into
+independently culled render chunks. The browser still does not load raw
+geographic data or use real-world building footprints.
 
 ## Requirements
 
@@ -35,8 +35,9 @@ massing variation.
 The debug panel independently toggles the metre grid, world axes, clipped roads,
 railways, water, working-area bounds, district fills, block outlines, buildable
 outlines, stable block IDs, primitive building masses, building footprints, and
-height markers. The performance panel reports frames per second, average frame
-time, draw calls, rendered triangles, total scene objects, and visible objects.
+height and occupied-chunk markers. The performance panel reports frames per
+second, average frame time, draw calls, triangles, scene objects, and rendered
+chunk, batch, and primitive-part counts.
 
 ## Coordinate convention
 
@@ -50,6 +51,8 @@ Geographic coordinates are projected into local metric coordinates by
 bundle. See `docs/PREPROCESSING.md` for the selected clip and projection, and
 `docs/BLOCKS.md` for the block derivation rules and current limitations.
 Primitive placement and rendering are documented in `docs/MASSING.md`.
+Chunking budgets and measured culling behavior are documented in
+`docs/PERFORMANCE.md`.
 
 ## Architecture
 
@@ -74,12 +77,13 @@ calls to `Math.random()` do not belong in generation code.
 
 ## Current scope boundary
 
-Milestone 3 includes the earlier foundation, structural viewer, and 20-block
-dataset plus four primitive archetypes, coherent district height profiles, one
-landmark, material-batched rendering, and deterministic seed variation.
+Milestone 4 includes the earlier foundation and structural viewer plus 41 valid
+blocks, 50 deterministic primitive buildings, stable 200 m chunks, one
+color-instanced batch per occupied chunk, frustum culling, occupied-chunk
+inspection, and explicit render-work counters.
 
-Detailed parcels, chunking, LOD, facades, textures, traffic, and atmosphere
-remain deferred to later milestones in `docs/PROJECT_PLAN.md`.
+Detailed parcels, LOD, distance culling, facades, textures, traffic, and
+atmosphere remain deferred to later milestones in `docs/PROJECT_PLAN.md`.
 
 ## Source-data attribution
 

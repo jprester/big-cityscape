@@ -33,15 +33,18 @@ generation does not depend on JSON order or Three.js traversal order.
 For each convex buildable polygon, the generator:
 
 1. finds its longest edge as the local street-alignment axis;
-2. fits a conservative oriented rectangle around the polygon centroid;
-3. shrinks the rectangle until all four corners are inside the buildable polygon;
+2. searches independent width and depth scales for a conservative oriented
+   rectangle around the polygon centroid;
+3. requires all four rectangle corners to remain inside the convex buildable
+   polygon;
 4. subdivides larger zones along their longest dimension with 7 m gaps; and
 5. generates every building footprint and primitive part within its assigned lot.
 
 The number of lots follows the district profile and buildable area rather than a
 city-wide random scatter. Changing the seed alters archetype selection, plate
 sizes, materials, and bounded height variation, but not the block hierarchy or
-lot count.
+lot count. Very narrow residual lots also cap height from their minor dimension,
+so they become lower infill rather than implausibly slender towers.
 
 ## District hierarchy
 
@@ -68,37 +71,39 @@ The generated domain model contains four archetypes:
 - `podium-tower`: a broad low podium plus an inset tower plate;
 - `stepped-tower`: three progressively smaller stacked plates.
 
-The default dataset currently produces 26 building definitions—four box towers,
-seven slabs, eleven podium towers, and four stepped towers—from 45 box parts,
-with an observed height range of 54–286 m. Each definition retains its building
+The expanded default dataset produces 50 building definitions—eight box towers,
+fifteen slabs, eighteen podium towers, and nine stepped towers—from 86 box parts,
+with an observed height range of 49–286 m. Each definition retains its building
 ID, block ID, district ID, root-derived seed, role, archetype, material category,
 footprint, height, and primitive parts.
 
 ## Rendering and inspection
 
-All parts share one unit box geometry and are rendered through at most three
-`InstancedMesh` batches: commercial, mixed-use, and landmark. Simple Lambert
-materials and two non-shadow-casting lights make the forms readable without
-introducing facade shaders or atmosphere.
+All parts share one unit box geometry and one Lambert material. Milestone 4
+renders one `InstancedMesh` per occupied chunk and applies commercial, mixed-use,
+or landmark color per instance. Two non-shadow-casting lights make the forms
+readable without introducing facade shaders or atmosphere.
 
 The debug panel exposes:
 
 - final primitive masses;
 - building footprints;
 - height-distribution markers;
+- occupied 200 m chunk boundaries;
 - all earlier road, water, district, block, and buildable layers;
 - saved aerial, rooftop, and street camera presets.
 
 ## Current limitations
 
-- Massing exists only on the 20 Milestone 2 blocks, so the full aerial extent is
-  intentionally sparse outside those first clusters.
+- Massing exists on 41 road-derived blocks; residual areas without a valid
+  buildable polygon remain intentionally open.
 - Placement uses one conservative rectangular zone per convex block rather than
   general parcel subdivision.
 - Archetypes use boxes only; there are no facades, roofs, bridges, textures,
   shadows, or bespoke assets.
-- No chunking, LOD, or distance-based simplification is implemented yet.
+- Chunk frustum culling is implemented, but LOD and distance-based simplification
+  are not.
 - The large building GeoJSON remains unused and ignored.
 
-The smallest next step is Milestone 4 spatial chunking and culling around the
-existing declarative definitions, without expanding visual detail first.
+See `docs/PERFORMANCE.md` for chunk semantics, current budgets, and measured
+culling behavior.

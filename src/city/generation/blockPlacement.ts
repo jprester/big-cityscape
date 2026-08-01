@@ -1,9 +1,10 @@
 import type { Point2 } from '../model/processedCity';
 
 const EPSILON = 1e-7;
-const FIT_SCALE = 0.9;
-const FIT_SHRINK_FACTOR = 0.92;
-const MAXIMUM_FIT_ATTEMPTS = 40;
+const MAXIMUM_FIT_SCALE = 0.9;
+const MINIMUM_FIT_SCALE = 0.1;
+const FIT_SCALE_STEP = 0.05;
+const MINIMUM_PLACEMENT_DIMENSION_METRES = 8;
 
 export type OrientedRectangle = Readonly<{
   center: Point2;
@@ -25,22 +26,49 @@ export function fitStreetAlignedRectangle(
   const axisDepth: Point2 = [-axisWidth[1], axisWidth[0]];
   const widthRange = projectionRange(polygon, center, axisWidth);
   const depthRange = projectionRange(polygon, center, axisDepth);
-  let widthMetres = (widthRange.maximum - widthRange.minimum) * FIT_SCALE;
-  let depthMetres = (depthRange.maximum - depthRange.minimum) * FIT_SCALE;
+  const widthSpanMetres = widthRange.maximum - widthRange.minimum;
+  const depthSpanMetres = depthRange.maximum - depthRange.minimum;
+  let bestRectangle: OrientedRectangle | undefined;
 
-  for (let attempt = 0; attempt < MAXIMUM_FIT_ATTEMPTS; attempt += 1) {
-    const rectangle = { center, widthMetres, depthMetres, rotationRadians };
+  for (
+    let widthScale = MAXIMUM_FIT_SCALE;
+    widthScale >= MINIMUM_FIT_SCALE - EPSILON;
+    widthScale -= FIT_SCALE_STEP
+  ) {
+    const widthMetres = widthSpanMetres * widthScale;
 
-    if (orientedRectangleCorners(rectangle).every((point) => pointInPolygon(point, polygon))) {
-      if (widthMetres < 8 || depthMetres < 8) {
-        break;
-      }
-
-      return rectangle;
+    if (widthMetres < MINIMUM_PLACEMENT_DIMENSION_METRES) {
+      continue;
     }
 
-    widthMetres *= FIT_SHRINK_FACTOR;
-    depthMetres *= FIT_SHRINK_FACTOR;
+    for (
+      let depthScale = MAXIMUM_FIT_SCALE;
+      depthScale >= MINIMUM_FIT_SCALE - EPSILON;
+      depthScale -= FIT_SCALE_STEP
+    ) {
+      const depthMetres = depthSpanMetres * depthScale;
+
+      if (depthMetres < MINIMUM_PLACEMENT_DIMENSION_METRES) {
+        continue;
+      }
+
+      const rectangle = { center, widthMetres, depthMetres, rotationRadians };
+
+      if (
+        orientedRectangleCorners(rectangle).every((point) =>
+          pointInPolygon(point, polygon),
+        ) &&
+        (bestRectangle === undefined ||
+          widthMetres * depthMetres >
+            bestRectangle.widthMetres * bestRectangle.depthMetres)
+      ) {
+        bestRectangle = rectangle;
+      }
+    }
+  }
+
+  if (bestRectangle !== undefined) {
+    return bestRectangle;
   }
 
   throw new Error('A usable street-aligned placement rectangle could not be fitted.');

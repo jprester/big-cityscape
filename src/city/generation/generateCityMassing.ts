@@ -65,7 +65,15 @@ export function generateCityMassing(
     }
 
     const profile = config.profiles[districtProfile];
-    const placementZone = fitStreetAlignedRectangle(block.buildablePolygon);
+    let placementZone: ReturnType<typeof fitStreetAlignedRectangle>;
+
+    try {
+      placementZone = fitStreetAlignedRectangle(block.buildablePolygon);
+    } catch (error) {
+      throw new Error(`Block "${block.id}" has no usable massing placement zone.`, {
+        cause: error,
+      });
+    }
     const buildingCount = Math.max(
       1,
       Math.min(
@@ -100,6 +108,7 @@ export function generateCityMassing(
           : selectWeightedArchetype(random, profile);
       const heightMetres = selectBuildingHeight(
         block.centroid,
+        Math.min(lot.widthMetres, lot.depthMetres),
         role,
         profile,
         config.landmark.heightMetres,
@@ -219,6 +228,7 @@ function selectWeightedArchetype(
 
 function selectBuildingHeight(
   centroid: Point2,
+  lotMinorDimensionMetres: number,
   role: BuildingRole,
   profile: DistrictMassingProfile,
   landmarkHeightMetres: number,
@@ -243,8 +253,19 @@ function selectBuildingHeight(
     (maximumHeight - minimumHeight) * (0.2 + clusterInfluence * 0.8);
   const roleScale = role === 'anchor' ? 1.08 : 0.92;
   const variedHeight = coherentHeight * roleScale * random.float(0.88, 1.12);
+  const constrainedParcelMinimum = minimumHeight * 0.65;
+  const parcelCapacityHeight = Math.max(
+    constrainedParcelMinimum,
+    lotMinorDimensionMetres * 8,
+  );
 
-  return roundToTenth(clamp(variedHeight, minimumHeight, maximumHeight));
+  return roundToTenth(
+    clamp(
+      Math.min(variedHeight, parcelCapacityHeight),
+      constrainedParcelMinimum,
+      maximumHeight,
+    ),
+  );
 }
 
 function selectMaterial(

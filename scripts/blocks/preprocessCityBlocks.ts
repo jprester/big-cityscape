@@ -8,8 +8,8 @@ import type {
 } from '../../src/city/model/cityBlocks';
 import type { Point2, ProcessedCityStructure } from '../../src/city/model/processedCity';
 import type { BlockPreprocessConfig } from './config';
+import { deriveBuildablePolygon } from './deriveBuildablePolygon';
 import {
-  insetConvexPolygon,
   isConvexPolygon,
   minimumPolygonDistance,
   minimumPolygonPathDistance,
@@ -20,11 +20,12 @@ import {
 type DiscardedCandidateCounts = {
   area: number;
   unsupportedTopology: number;
-  nonConvex: number;
+  concaveDerivationFailure: number;
   railExclusion: number;
   waterExclusion: number;
   roadExclusion: number;
   insetFailure: number;
+  insufficientBuildableArea: number;
 };
 
 export function preprocessCityBlocks(
@@ -62,11 +63,12 @@ export function preprocessCityBlocks(
   const discardedByReason: DiscardedCandidateCounts = {
     area: 0,
     unsupportedTopology: 0,
-    nonConvex: 0,
+    concaveDerivationFailure: 0,
     railExclusion: 0,
     waterExclusion: 0,
     roadExclusion: 0,
     insetFailure: 0,
+    insufficientBuildableArea: 0,
   };
   const blocks: CityBlock[] = [];
 
@@ -94,11 +96,6 @@ export function preprocessCityBlocks(
       continue;
     }
 
-    if (!isConvexPolygon(polygon)) {
-      discardedByReason.nonConvex += 1;
-      continue;
-    }
-
     const railDistance = minimumPolygonPathDistance(polygon, railPaths);
 
     if (railDistance < config.railBufferMetres) {
@@ -118,14 +115,28 @@ export function preprocessCityBlocks(
     }
 
     let buildablePolygon: readonly Point2[];
+    let buildableDerivation: 'convex-inset' | 'triangulated-inset';
 
     try {
+      const derived = deriveBuildablePolygon(polygon, config.buildableInsetMetres);
       buildablePolygon = roundPolygon(
-        insetConvexPolygon(polygon, config.buildableInsetMetres),
+        derived.polygon,
         config.coordinatePrecisionDecimals,
       );
+      buildableDerivation = derived.derivation;
     } catch {
-      discardedByReason.insetFailure += 1;
+      if (isConvexPolygon(polygon)) {
+        discardedByReason.insetFailure += 1;
+      } else {
+        discardedByReason.concaveDerivationFailure += 1;
+      }
+      continue;
+    }
+
+    const buildableAreaSquareMetres = polygonArea(buildablePolygon);
+
+    if (buildableAreaSquareMetres < config.minimumBuildableAreaSquareMetres) {
+      discardedByReason.insufficientBuildableArea += 1;
       continue;
     }
 
@@ -151,11 +162,12 @@ export function preprocessCityBlocks(
       districtId,
       profile: assignBlockProfile(districtId, areaSquareMetres),
       derivation: 'road-polygonized',
+      buildableDerivation,
       polygon,
       buildablePolygon,
       centroid,
       areaSquareMetres: roundNumber(areaSquareMetres, 2),
-      buildableAreaSquareMetres: roundNumber(polygonArea(buildablePolygon), 2),
+      buildableAreaSquareMetres: roundNumber(buildableAreaSquareMetres, 2),
     });
   }
 
@@ -202,6 +214,11 @@ export function preprocessCityBlocks(
         waterBufferMetres: config.waterBufferMetres,
         surfaceRoadBufferMetres: config.surfaceRoadBufferMetres,
       },
+      buildable: {
+        insetMetres: config.buildableInsetMetres,
+        minimumAreaSquareMetres: config.minimumBuildableAreaSquareMetres,
+        concaveStrategy: 'largest-inset-triangle',
+      },
       counts: {
         districts: config.districts.length,
         sourceSurfaceRoadPaths: surfaceRoadPaths.length,
@@ -210,6 +227,14 @@ export function preprocessCityBlocks(
         manualOverrides: 0,
         discardedCandidates,
         discardedByReason,
+        blocksByBuildableDerivation: {
+          convexInset: blocks.filter(
+            (block) => block.buildableDerivation === 'convex-inset',
+          ).length,
+          triangulatedInset: blocks.filter(
+            (block) => block.buildableDerivation === 'triangulated-inset',
+          ).length,
+        },
       },
       totalBlockAreaSquareMetres,
       totalBuildableAreaSquareMetres,
