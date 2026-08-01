@@ -27,6 +27,19 @@ body {
   background: #06090d;
 }
 
+.startup-error {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  max-width: 32rem;
+  margin: 0;
+  padding: 16px 20px;
+  border: 1px solid rgb(255 125 102 / 35%);
+  border-radius: 8px;
+  color: #ffd8d0;
+  background: rgb(35 12 12 / 85%);
+  transform: translate(-50%, -50%);
+}
+
 button,
 input {
   font: inherit;

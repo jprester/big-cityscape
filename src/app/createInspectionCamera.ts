@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { MapControls } from 'three/addons/controls/MapControls.js';
 
-const INITIAL_POSITION_METRES = new THREE.Vector3(850, 650, 850);
 const INITIAL_TARGET_METRES = new THREE.Vector3(0, 0, 0);
 
 export type InspectionCamera = Readonly<{
@@ -13,7 +12,10 @@ export type InspectionCamera = Readonly<{
   dispose: () => void;
 }>;
 
-export function createInspectionCamera(canvas: HTMLCanvasElement): InspectionCamera {
+export function createInspectionCamera(
+  canvas: HTMLCanvasElement,
+  viewExtentMetres: number,
+): InspectionCamera {
   const camera = new THREE.PerspectiveCamera(50, 1, 1, 20_000);
   camera.name = 'inspection-camera';
   camera.up.set(0, 1, 0);
@@ -24,11 +26,15 @@ export function createInspectionCamera(canvas: HTMLCanvasElement): InspectionCam
   controls.screenSpacePanning = false;
   controls.zoomToCursor = true;
   controls.minDistance = 5;
-  controls.maxDistance = 6_000;
+  controls.maxDistance = Math.max(6_000, viewExtentMetres * 4);
   controls.maxPolarAngle = Math.PI * 0.495;
 
   const reset = (): void => {
-    camera.position.copy(INITIAL_POSITION_METRES);
+    camera.position.set(
+      viewExtentMetres * 0.62,
+      viewExtentMetres * 0.54,
+      viewExtentMetres * 0.62,
+    );
     controls.target.copy(INITIAL_TARGET_METRES);
     controls.update();
   };

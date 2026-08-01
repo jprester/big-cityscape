@@ -1,10 +1,11 @@
 import * as THREE from 'three';
+import { loadProcessedCity } from '../city/data/loadProcessedCity';
+import { addStructureDebugLayers } from '../city/debug/addStructureDebugLayers';
 import { createDebugPanel } from '../debug/createDebugPanel';
 import { DebugLayerManager } from '../debug/DebugLayerManager';
 import { createInspectionCamera } from './createInspectionCamera';
 import { createPerformancePanel } from './createPerformancePanel';
 
-const WORLD_SIZE_METRES = 2_000;
 const MAX_PIXEL_RATIO = 2;
 
 export type CityFieldApp = Readonly<{
@@ -13,7 +14,11 @@ export type CityFieldApp = Readonly<{
   dispose: () => void;
 }>;
 
-export function createApp(host: HTMLElement): CityFieldApp {
+export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
+  const city = await loadProcessedCity();
+  const worldSizeMetres = Math.ceil(
+    Math.max(city.metadata.clip.widthMetres, city.metadata.clip.depthMetres) / 500,
+  ) * 500;
   const scene = new THREE.Scene();
   scene.name = 'city-field';
   scene.background = new THREE.Color(0x071019);
@@ -27,11 +32,12 @@ export function createApp(host: HTMLElement): CityFieldApp {
   renderer.domElement.tabIndex = 0;
   renderer.domElement.setAttribute('aria-label', 'Interactive City Field 3D viewport');
 
-  const inspectionCamera = createInspectionCamera(renderer.domElement);
-  const debugLayers = createFoundationDebugLayers(scene);
-  const ground = createGround(scene);
+  const inspectionCamera = createInspectionCamera(renderer.domElement, worldSizeMetres);
+  const debugLayers = createFoundationDebugLayers(scene, worldSizeMetres);
+  addStructureDebugLayers(debugLayers, city);
+  const ground = createGround(scene, worldSizeMetres);
   const performancePanel = createPerformancePanel(renderer, scene);
-  const debugPanel = createDebugPanel(debugLayers, inspectionCamera.reset);
+  const debugPanel = createDebugPanel(debugLayers, inspectionCamera.reset, 'Milestone 1');
 
   host.replaceChildren(renderer.domElement, debugPanel.element, performancePanel.element);
 
@@ -110,11 +116,19 @@ export function createApp(host: HTMLElement): CityFieldApp {
   };
 }
 
-function createFoundationDebugLayers(scene: THREE.Scene): DebugLayerManager {
+function createFoundationDebugLayers(
+  scene: THREE.Scene,
+  worldSizeMetres: number,
+): DebugLayerManager {
   const layers = new DebugLayerManager();
   scene.add(layers.root);
 
-  const grid = new THREE.GridHelper(WORLD_SIZE_METRES, 40, 0x67a9ce, 0x29404f);
+  const grid = new THREE.GridHelper(
+    worldSizeMetres,
+    worldSizeMetres / 50,
+    0x67a9ce,
+    0x29404f,
+  );
   grid.position.y = 0.1;
   setMaterialOpacity(grid.material, 0.65);
   layers.add({
@@ -142,8 +156,11 @@ function createFoundationDebugLayers(scene: THREE.Scene): DebugLayerManager {
   return layers;
 }
 
-function createGround(scene: THREE.Scene): THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> {
-  const geometry = new THREE.PlaneGeometry(WORLD_SIZE_METRES, WORLD_SIZE_METRES);
+function createGround(
+  scene: THREE.Scene,
+  worldSizeMetres: number,
+): THREE.Mesh<THREE.PlaneGeometry, THREE.MeshBasicMaterial> {
+  const geometry = new THREE.PlaneGeometry(worldSizeMetres, worldSizeMetres);
   const material = new THREE.MeshBasicMaterial({
     color: 0x0b151d,
     depthWrite: true,

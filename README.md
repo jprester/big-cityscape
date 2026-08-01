@@ -3,8 +3,8 @@
 City Field is a scale-first Three.js experiment for generating a large, fictional,
 high-density futuristic city from simplified real-world urban structure.
 
-Milestone 0 contains only the rendering and inspection foundation. It deliberately
-does not load geographic data or generate city geometry.
+Milestone 1 adds an offline structural-data pipeline and browser debug viewer. It
+still does not load raw geographic data or generate city buildings.
 
 ## Requirements
 
@@ -15,6 +15,7 @@ does not load geographic data or generate city geometry.
 
 ```sh
 npm install
+npm run preprocess
 npm run dev
 npm test
 npm run build
@@ -27,9 +28,10 @@ npm run build
 - Mouse wheel or pinch: zoom
 - **Reset aerial camera**: restore the reproducible initial camera pose
 
-The debug panel independently toggles the metre grid and world axes. The
-performance panel reports frames per second, average frame time, draw calls,
-rendered triangles, and scene-object count.
+The debug panel independently toggles the metre grid, world axes, clipped roads,
+railways, water, and working-area bounds. The performance panel reports frames
+per second, average frame time, draw calls, rendered triangles, and scene-object
+count.
 
 ## Coordinate convention
 
@@ -38,17 +40,21 @@ rendered triangles, and scene-object count.
 - `X` and `Z` form the horizontal city plane.
 - Runtime city data should remain centred close to `[0, 0, 0]`.
 
-Geographic coordinates will be projected into local metric coordinates by a
-future offline preprocessing stage. Raw GeoJSON must never be imported into the
-browser bundle.
+Geographic coordinates are projected into local metric coordinates by
+`scripts/preprocess-osm.ts`. Raw GeoJSON is never imported into the browser
+bundle. See `docs/PREPROCESSING.md` for the selected clip, projection, source
+accounting, and current geometry limitations.
 
 ## Architecture
 
 ```text
 src/
   app/      renderer lifecycle, camera, resizing, and performance display
+  city/     processed city model, data loading, and structural debug views
   core/     framework-independent deterministic utilities
   debug/    render-only inspection layers and their UI
+scripts/
+  preprocess/  pure projection, clipping, classification, and tests
 ```
 
 The debug layer manager owns named Three.js visualization groups and their
@@ -61,13 +67,12 @@ calls to `Math.random()` do not belong in generation code.
 
 ## Current scope boundary
 
-Milestone 0 includes Vite, strict TypeScript, Three.js, a metre-scale foundation
-scene, an inspection camera, live performance metrics, deterministic randomness,
-debug layers, and focused tests.
+Milestone 1 includes the Milestone 0 foundation plus deterministic offline
+projection and clipping of the smaller structural GeoJSON, compact normalized
+runtime data, and batched debug rendering of roads, rail, water, and bounds.
 
-Road and water preprocessing, geographic projection, blocks, districts,
-buildings, chunking, instancing, merging, LOD, textures, and atmosphere are
-deferred to later milestones in `docs/PROJECT_PLAN.md`.
+Buildable-block derivation, districts, buildings, chunking, LOD, textures, and
+atmosphere are deferred to later milestones in `docs/PROJECT_PLAN.md`.
 
 ## Source-data attribution
 

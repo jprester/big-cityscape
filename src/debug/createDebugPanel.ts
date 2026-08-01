@@ -8,6 +8,7 @@ export type DebugPanel = Readonly<{
 export function createDebugPanel(
   layers: DebugLayerManager,
   resetCamera: () => void,
+  milestoneLabel = 'Milestone 0',
 ): DebugPanel {
   const element = document.createElement('aside');
   element.className = 'debug-panel';
@@ -15,7 +16,7 @@ export function createDebugPanel(
 
   const eyebrow = document.createElement('p');
   eyebrow.className = 'debug-panel__eyebrow';
-  eyebrow.textContent = 'Milestone 0';
+  eyebrow.textContent = milestoneLabel;
 
   const title = document.createElement('h1');
   title.className = 'debug-panel__title';

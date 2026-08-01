@@ -12,3 +12,4 @@ references/raw/*.geojson
 references/processed/*
 references/visual/*
 !references/processed/.gitkeep
+!references/processed/city-structure.json
