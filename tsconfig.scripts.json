@@ -4,5 +4,5 @@
     "lib": ["ES2023"],
     "types": ["node"]
   },
-  "include": ["scripts", "src/city/model/processedCity.ts"]
+  "include": ["scripts", "src/city/model"]
 }

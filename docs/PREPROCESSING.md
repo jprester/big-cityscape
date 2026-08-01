@@ -10,12 +10,16 @@ city; it is not treated as a simulation target.
 npm run preprocess
 ```
 
-The command reads `references/raw/osaka-structure.geojson` and writes
-`references/processed/city-structure.json`. The raw building reference is never
-opened by this pipeline.
+The command first reads `references/raw/osaka-structure.geojson` and writes
+`references/processed/city-structure.json`, then derives
+`references/processed/city-blocks.json` from that compact structure. The raw
+building reference is never opened by either stage. Run either stage separately
+with `npm run preprocess:structure` or `npm run preprocess:blocks`.
 
-All preprocessing parameters are declared in `scripts/preprocess/config.ts`.
-The output is deterministic and deliberately contains no generation timestamp.
+Structural parameters are declared in `scripts/preprocess/config.ts`; block
+parameters are declared in `scripts/blocks/config.ts`. Both outputs are
+deterministic and deliberately contain no generation timestamp. Block-specific
+derivation and validation are documented in `docs/BLOCKS.md`.
 
 ## Source inventory
 

@@ -1,5 +1,8 @@
 import * as THREE from 'three';
+import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
+import { loadCityBlocks } from '../city/data/loadCityBlocks';
 import { loadProcessedCity } from '../city/data/loadProcessedCity';
+import { addBlockDebugLayers } from '../city/debug/addBlockDebugLayers';
 import { addStructureDebugLayers } from '../city/debug/addStructureDebugLayers';
 import { createDebugPanel } from '../debug/createDebugPanel';
 import { DebugLayerManager } from '../debug/DebugLayerManager';
@@ -15,7 +18,12 @@ export type CityFieldApp = Readonly<{
 }>;
 
 export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
-  const city = await loadProcessedCity();
+  const [city, cityBlocks] = await Promise.all([loadProcessedCity(), loadCityBlocks()]);
+
+  if (cityBlocks.metadata.workingAreaId !== city.metadata.clip.id) {
+    throw new Error('Processed city blocks do not match the loaded structural working area.');
+  }
+
   const worldSizeMetres = Math.ceil(
     Math.max(city.metadata.clip.widthMetres, city.metadata.clip.depthMetres) / 500,
   ) * 500;
@@ -32,14 +40,24 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
   renderer.domElement.tabIndex = 0;
   renderer.domElement.setAttribute('aria-label', 'Interactive City Field 3D viewport');
 
+  const labelRenderer = new CSS2DRenderer();
+  labelRenderer.domElement.className = 'label-layer';
+  labelRenderer.domElement.setAttribute('aria-hidden', 'true');
+
   const inspectionCamera = createInspectionCamera(renderer.domElement, worldSizeMetres);
   const debugLayers = createFoundationDebugLayers(scene, worldSizeMetres);
   addStructureDebugLayers(debugLayers, city);
+  addBlockDebugLayers(debugLayers, cityBlocks);
   const ground = createGround(scene, worldSizeMetres);
   const performancePanel = createPerformancePanel(renderer, scene);
-  const debugPanel = createDebugPanel(debugLayers, inspectionCamera.reset, 'Milestone 1');
+  const debugPanel = createDebugPanel(debugLayers, inspectionCamera.reset, 'Milestone 2');
 
-  host.replaceChildren(renderer.domElement, debugPanel.element, performancePanel.element);
+  host.replaceChildren(
+    renderer.domElement,
+    labelRenderer.domElement,
+    debugPanel.element,
+    performancePanel.element,
+  );
 
   const resize = (): void => {
     const width = Math.max(1, Math.floor(host.clientWidth));
@@ -47,6 +65,7 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
 
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO));
     renderer.setSize(width, height, false);
+    labelRenderer.setSize(width, height);
     inspectionCamera.resize(width, height);
   };
 
@@ -67,6 +86,7 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
     previousTimeMilliseconds = timeMilliseconds;
     inspectionCamera.update(Math.min(deltaSeconds, 0.1));
     renderer.render(scene, inspectionCamera.camera);
+    labelRenderer.render(scene, inspectionCamera.camera);
     performancePanel.update(deltaSeconds);
   };
 
@@ -110,6 +130,7 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
       ground.material.dispose();
       renderer.dispose();
       renderer.domElement.remove();
+      labelRenderer.domElement.remove();
       scene.clear();
       isDisposed = true;
     },

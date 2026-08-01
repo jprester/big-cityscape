@@ -3,8 +3,9 @@
 City Field is a scale-first Three.js experiment for generating a large, fictional,
 high-density futuristic city from simplified real-world urban structure.
 
-Milestone 1 adds an offline structural-data pipeline and browser debug viewer. It
-still does not load raw geographic data or generate city buildings.
+Milestone 2 adds a first road-bounded block dataset, buildable insets, district
+profiles, and browser inspection layers. The browser still does not load raw
+geographic data or generate city buildings.
 
 ## Requirements
 
@@ -29,9 +30,9 @@ npm run build
 - **Reset aerial camera**: restore the reproducible initial camera pose
 
 The debug panel independently toggles the metre grid, world axes, clipped roads,
-railways, water, and working-area bounds. The performance panel reports frames
-per second, average frame time, draw calls, rendered triangles, and scene-object
-count.
+railways, water, working-area bounds, district fills, block outlines, buildable
+outlines, and stable block IDs. The performance panel reports frames per second,
+average frame time, draw calls, rendered triangles, and scene-object count.
 
 ## Coordinate convention
 
@@ -42,8 +43,8 @@ count.
 
 Geographic coordinates are projected into local metric coordinates by
 `scripts/preprocess-osm.ts`. Raw GeoJSON is never imported into the browser
-bundle. See `docs/PREPROCESSING.md` for the selected clip, projection, source
-accounting, and current geometry limitations.
+bundle. See `docs/PREPROCESSING.md` for the selected clip and projection, and
+`docs/BLOCKS.md` for the block derivation rules and current limitations.
 
 ## Architecture
 
@@ -55,6 +56,7 @@ src/
   debug/    render-only inspection layers and their UI
 scripts/
   preprocess/  pure projection, clipping, classification, and tests
+  blocks/      offline road polygonization, exclusions, insets, and tests
 ```
 
 The debug layer manager owns named Three.js visualization groups and their
@@ -67,12 +69,13 @@ calls to `Math.random()` do not belong in generation code.
 
 ## Current scope boundary
 
-Milestone 1 includes the Milestone 0 foundation plus deterministic offline
-projection and clipping of the smaller structural GeoJSON, compact normalized
-runtime data, and batched debug rendering of roads, rail, water, and bounds.
+Milestone 2 includes the earlier foundation and structural viewer plus a compact,
+deterministically derived dataset of 20 useful blocks across three district
+profiles. It includes convex buildable insets and explicit rail, water, and
+surface-road clearances.
 
-Buildable-block derivation, districts, buildings, chunking, LOD, textures, and
-atmosphere are deferred to later milestones in `docs/PROJECT_PLAN.md`.
+Buildings, parcel subdivision, chunking, LOD, textures, and atmosphere remain
+deferred to later milestones in `docs/PROJECT_PLAN.md`.
 
 ## Source-data attribution
 

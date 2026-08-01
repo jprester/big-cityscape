@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "npm run typecheck && vite build",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.scripts.json --noEmit",
-    "preprocess": "tsx scripts/preprocess-osm.ts",
+    "preprocess": "npm run preprocess:structure && npm run preprocess:blocks",
+    "preprocess:structure": "tsx scripts/preprocess-osm.ts",
+    "preprocess:blocks": "tsx scripts/preprocess-blocks.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview"
@@ -16,6 +18,8 @@
     "three": "^0.185.1"
   },
   "devDependencies": {
+    "@turf/polygonize": "^7.3.5",
+    "@types/geojson": "^7946.0.16",
     "@types/node": "^26.1.2",
     "@types/three": "^0.185.3",
     "tsx": "^4.23.1",

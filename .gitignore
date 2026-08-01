@@ -13,3 +13,4 @@ references/processed/*
 references/visual/*
 !references/processed/.gitkeep
 !references/processed/city-structure.json
+!references/processed/city-blocks.json
