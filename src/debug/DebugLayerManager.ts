@@ -5,6 +5,7 @@ export type DebugLayerDefinition = Readonly<{
   label: string;
   object: THREE.Object3D;
   visible?: boolean;
+  onVisibilityChange?: (visible: boolean) => void;
   dispose?: () => void;
 }>;
 
@@ -17,6 +18,7 @@ export type DebugLayerState = Readonly<{
 type DebugLayerRecord = Readonly<{
   label: string;
   object: THREE.Object3D;
+  onVisibilityChange?: (visible: boolean) => void;
   dispose?: () => void;
 }>;
 
@@ -50,6 +52,9 @@ export class DebugLayerManager {
     this.#layers.set(id, {
       label: definition.label,
       object: definition.object,
+      ...(definition.onVisibilityChange === undefined
+        ? {}
+        : { onVisibilityChange: definition.onVisibilityChange }),
       ...(definition.dispose === undefined ? {} : { dispose: definition.dispose }),
     });
   }
@@ -63,7 +68,14 @@ export class DebugLayerManager {
   }
 
   setVisible(id: string, visible: boolean): void {
-    this.#getLayer(id).object.visible = visible;
+    const layer = this.#getLayer(id);
+
+    if (layer.object.visible === visible) {
+      return;
+    }
+
+    layer.object.visible = visible;
+    layer.onVisibilityChange?.(visible);
   }
 
   isVisible(id: string): boolean {
@@ -72,8 +84,9 @@ export class DebugLayerManager {
 
   toggle(id: string): boolean {
     const layer = this.#getLayer(id);
-    layer.object.visible = !layer.object.visible;
-    return layer.object.visible;
+    const visible = !layer.object.visible;
+    this.setVisible(id, visible);
+    return visible;
   }
 
   dispose(): void {

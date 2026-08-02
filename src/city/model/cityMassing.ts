@@ -13,8 +13,11 @@ export const MASSING_MATERIAL_CATEGORIES = [
   'landmark',
 ] as const;
 
+export const BUILDING_SOURCES = ['road-block', 'residual-fabric'] as const;
+
 export type BuildingArchetype = (typeof BUILDING_ARCHETYPES)[number];
 export type MassingMaterialCategory = (typeof MASSING_MATERIAL_CATEGORIES)[number];
+export type BuildingSource = (typeof BUILDING_SOURCES)[number];
 export type BuildingRole = 'background' | 'anchor' | 'landmark';
 
 export type BuildingMassPart = Readonly<{
@@ -28,7 +31,9 @@ export type BuildingMassPart = Readonly<{
 
 export type BuildingDefinition = Readonly<{
   id: string;
+  source: BuildingSource;
   blockId: string;
+  regionId: string;
   districtId: string;
   seed: number;
   role: BuildingRole;
@@ -44,6 +49,10 @@ export type CityMassingDefinition = Readonly<{
   buildings: readonly BuildingDefinition[];
   metadata: Readonly<{
     sourceBlocks: number;
+    sourceRegions: number;
+    sourceFabricLots: number;
+    populatedRegions: number;
+    skippedRegions: number;
     buildings: number;
     primitiveParts: number;
     landmarkBuildingId: string;
@@ -51,5 +60,6 @@ export type CityMassingDefinition = Readonly<{
     maximumHeightMetres: number;
     countsByArchetype: Readonly<Record<BuildingArchetype, number>>;
     countsByMaterial: Readonly<Record<MassingMaterialCategory, number>>;
+    countsBySource: Readonly<Record<BuildingSource, number>>;
   }>;
 }>;

@@ -5,12 +5,14 @@ import type {
   BlockCandidateAudit,
   BlockCandidateDiscardReason,
   BlockProfile,
+  BuildableRegion,
+  BuildableRegionDiscardReason,
   CityBlock,
   ProcessedCityBlocks,
 } from '../../src/city/model/cityBlocks';
 import type { Point2, ProcessedCityStructure } from '../../src/city/model/processedCity';
 import type { BlockPreprocessConfig } from './config';
-import { deriveBuildablePolygon } from './deriveBuildablePolygon';
+import { deriveBuildableRegions } from './deriveBuildableRegions';
 import {
   isConvexPolygon,
   minimumPolygonDistance,
@@ -20,6 +22,7 @@ import {
 } from './polygon';
 
 type DiscardedCandidateCounts = Record<BlockCandidateDiscardReason, number>;
+type DiscardedRegionCounts = Record<BuildableRegionDiscardReason, number>;
 
 export function preprocessCityBlocks(
   structure: ProcessedCityStructure,
@@ -62,6 +65,12 @@ export function preprocessCityBlocks(
     roadExclusion: 0,
     insetFailure: 0,
     insufficientBuildableArea: 0,
+  };
+  const discardedRegionsByReason: DiscardedRegionCounts = {
+    area: 0,
+    railClearance: 0,
+    waterClearance: 0,
+    roadClearance: 0,
   };
   const candidateAudit: BlockCandidateAudit[] = [];
   const blocks: CityBlock[] = [];
@@ -123,36 +132,13 @@ export function preprocessCityBlocks(
       continue;
     }
 
-    const railDistance = minimumPolygonPathDistance(polygon, railPaths);
-
-    if (railDistance < config.railBufferMetres) {
-      discardedByReason.railExclusion += 1;
-      candidateAudit.push({ ...auditBase, outcome: 'railExclusion' });
-      continue;
-    }
-
-    const waterDistance = waterRings.reduce(
-      (minimum, waterRing) =>
-        Math.min(minimum, minimumPolygonDistance(polygon, waterRing)),
-      Number.POSITIVE_INFINITY,
-    );
-
-    if (waterDistance < config.waterBufferMetres) {
-      discardedByReason.waterExclusion += 1;
-      candidateAudit.push({ ...auditBase, outcome: 'waterExclusion' });
-      continue;
-    }
-
-    let buildablePolygon: readonly Point2[];
-    let buildableDerivation: 'convex-inset' | 'triangulated-inset';
+    let derivedRegions: ReturnType<typeof deriveBuildableRegions>;
 
     try {
-      const derived = deriveBuildablePolygon(polygon, config.buildableInsetMetres);
-      buildablePolygon = roundPolygon(
-        derived.polygon,
-        config.coordinatePrecisionDecimals,
+      derivedRegions = deriveBuildableRegions(
+        polygon,
+        config.buildableInsetMetres,
       );
-      buildableDerivation = derived.derivation;
     } catch {
       if (isConvexPolygon(polygon)) {
         discardedByReason.insetFailure += 1;
@@ -164,19 +150,90 @@ export function preprocessCityBlocks(
       continue;
     }
 
-    const buildableAreaSquareMetres = polygonArea(buildablePolygon);
+    const roundedRegions = derivedRegions
+      .map((region) => {
+        const regionPolygon = roundPolygon(
+          region.polygon,
+          config.coordinatePrecisionDecimals,
+        );
 
-    if (buildableAreaSquareMetres < config.minimumBuildableAreaSquareMetres) {
+        return {
+          derivation: region.derivation,
+          polygon: regionPolygon,
+          areaSquareMetres: polygonArea(regionPolygon),
+        };
+      });
+    const sizedRegions = filterRegions(
+      roundedRegions,
+      (region) =>
+        region.areaSquareMetres >=
+        config.minimumBuildableRegionAreaSquareMetres,
+      'area',
+      discardedRegionsByReason,
+    );
+
+    if (sizedRegions.length === 0) {
       discardedByReason.insufficientBuildableArea += 1;
       candidateAudit.push({ ...auditBase, outcome: 'insufficientBuildableArea' });
       continue;
     }
 
-    const roadDistance = minimumPolygonPathDistance(buildablePolygon, surfaceRoadPaths);
+    const railSafeRegions = filterRegions(
+      sizedRegions,
+      (region) =>
+        minimumPolygonPathDistance(region.polygon, railPaths) >=
+        config.railBufferMetres,
+      'railClearance',
+      discardedRegionsByReason,
+    );
 
-    if (roadDistance < config.surfaceRoadBufferMetres) {
+    if (railSafeRegions.length === 0) {
+      discardedByReason.railExclusion += 1;
+      candidateAudit.push({ ...auditBase, outcome: 'railExclusion' });
+      continue;
+    }
+
+    const waterSafeRegions = filterRegions(
+      railSafeRegions,
+      (region) =>
+        waterRings.reduce(
+          (minimum, waterRing) =>
+            Math.min(minimum, minimumPolygonDistance(region.polygon, waterRing)),
+          Number.POSITIVE_INFINITY,
+        ) >= config.waterBufferMetres,
+      'waterClearance',
+      discardedRegionsByReason,
+    );
+
+    if (waterSafeRegions.length === 0) {
+      discardedByReason.waterExclusion += 1;
+      candidateAudit.push({ ...auditBase, outcome: 'waterExclusion' });
+      continue;
+    }
+
+    const roadSafeRegions = filterRegions(
+      waterSafeRegions,
+      (region) =>
+        minimumPolygonPathDistance(region.polygon, surfaceRoadPaths) >=
+        config.surfaceRoadBufferMetres,
+      'roadClearance',
+      discardedRegionsByReason,
+    );
+
+    if (roadSafeRegions.length === 0) {
       discardedByReason.roadExclusion += 1;
       candidateAudit.push({ ...auditBase, outcome: 'roadExclusion' });
+      continue;
+    }
+
+    const buildableAreaSquareMetres = roadSafeRegions.reduce(
+      (total, region) => total + region.areaSquareMetres,
+      0,
+    );
+
+    if (buildableAreaSquareMetres < config.minimumBuildableAreaSquareMetres) {
+      discardedByReason.insufficientBuildableArea += 1;
+      candidateAudit.push({ ...auditBase, outcome: 'insufficientBuildableArea' });
       continue;
     }
 
@@ -192,14 +249,26 @@ export function preprocessCityBlocks(
       throw new Error(`Derived block references unknown district "${districtId}".`);
     }
 
+    const blockId = createStableBlockId(polygon);
+    const buildableRegions: BuildableRegion[] = roadSafeRegions.map((region) => ({
+      id: createStableRegionId(blockId, region.polygon),
+      derivation: region.derivation,
+      polygon: region.polygon,
+      centroid: roundPoint(
+        polygonCentroid(region.polygon),
+        config.coordinatePrecisionDecimals,
+      ),
+      areaSquareMetres: roundNumber(region.areaSquareMetres, 2),
+    }));
+    buildableRegions.sort((first, second) => first.id.localeCompare(second.id));
+
     blocks.push({
-      id: createStableBlockId(polygon),
+      id: blockId,
       districtId,
       profile: assignBlockProfile(districtId, areaSquareMetres),
       derivation: 'road-polygonized',
-      buildableDerivation,
       polygon,
-      buildablePolygon,
+      buildableRegions,
       centroid,
       areaSquareMetres: roundNumber(areaSquareMetres, 2),
       buildableAreaSquareMetres: roundNumber(buildableAreaSquareMetres, 2),
@@ -216,10 +285,16 @@ export function preprocessCityBlocks(
   candidateAudit.sort((first, second) => first.id.localeCompare(second.id));
 
   const blockIds = new Set(blocks.map((block) => block.id));
+  const buildableRegions = blocks.flatMap((block) => block.buildableRegions);
+  const regionIds = new Set(buildableRegions.map((region) => region.id));
   const candidateIds = new Set(candidateAudit.map((candidate) => candidate.id));
 
   if (blockIds.size !== blocks.length) {
     throw new Error('Derived stable block IDs contain a collision.');
+  }
+
+  if (regionIds.size !== buildableRegions.length) {
+    throw new Error('Derived stable buildable region IDs contain a collision.');
   }
 
   if (candidateIds.size !== candidateAudit.length) {
@@ -230,6 +305,9 @@ export function preprocessCityBlocks(
     (total, count) => total + count,
     0,
   );
+  const discardedBuildableRegions = Object.values(
+    discardedRegionsByReason,
+  ).reduce((total, count) => total + count, 0);
 
   if (blocks.length + discardedCandidates !== polygonCandidates.length) {
     throw new Error('Block candidate accounting does not match the polygonizer output.');
@@ -249,7 +327,7 @@ export function preprocessCityBlocks(
   );
 
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     metadata: {
       sourceStructureFile: getBaseName(config.sourceStructureFile),
       sourceStructureSha256,
@@ -263,7 +341,9 @@ export function preprocessCityBlocks(
       buildable: {
         insetMetres: config.buildableInsetMetres,
         minimumAreaSquareMetres: config.minimumBuildableAreaSquareMetres,
-        concaveStrategy: 'largest-inset-triangle',
+        minimumRegionAreaSquareMetres:
+          config.minimumBuildableRegionAreaSquareMetres,
+        concaveStrategy: 'all-viable-inset-triangles',
       },
       counts: {
         districts: config.districts.length,
@@ -273,12 +353,15 @@ export function preprocessCityBlocks(
         manualOverrides: 0,
         discardedCandidates,
         discardedByReason,
-        blocksByBuildableDerivation: {
-          convexInset: blocks.filter(
-            (block) => block.buildableDerivation === 'convex-inset',
+        discardedBuildableRegions,
+        discardedRegionsByReason,
+        buildableRegions: buildableRegions.length,
+        regionsByDerivation: {
+          convexInset: buildableRegions.filter(
+            (region) => region.derivation === 'convex-inset',
           ).length,
-          triangulatedInset: blocks.filter(
-            (block) => block.buildableDerivation === 'triangulated-inset',
+          triangulatedInset: buildableRegions.filter(
+            (region) => region.derivation === 'triangulated-inset',
           ).length,
         },
       },
@@ -289,6 +372,23 @@ export function preprocessCityBlocks(
     candidateAudit,
     blocks,
   };
+}
+
+function filterRegions<T>(
+  regions: readonly T[],
+  predicate: (region: T) => boolean,
+  discardReason: BuildableRegionDiscardReason,
+  discardedRegionsByReason: DiscardedRegionCounts,
+): readonly T[] {
+  return regions.filter((region) => {
+    const retained = predicate(region);
+
+    if (!retained) {
+      discardedRegionsByReason[discardReason] += 1;
+    }
+
+    return retained;
+  });
 }
 
 function createCandidateAuditBase(
@@ -377,6 +477,14 @@ function canonicalizeRing(
 function createStableBlockId(polygon: readonly Point2[]): string {
   const digest = createHash('sha256').update(JSON.stringify(polygon)).digest('hex');
   return `block-${digest.slice(0, 10)}`;
+}
+
+function createStableRegionId(
+  blockId: string,
+  polygon: readonly Point2[],
+): string {
+  const digest = createHash('sha256').update(JSON.stringify(polygon)).digest('hex');
+  return `${blockId}/region-${digest.slice(0, 10)}`;
 }
 
 function createStableCandidateId(geometry: unknown): string {

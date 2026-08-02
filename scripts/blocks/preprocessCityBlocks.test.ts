@@ -75,6 +75,7 @@ const CONFIG: BlockPreprocessConfig = {
   maximumBlockAreaSquareMetres: 20_000,
   buildableInsetMetres: 10,
   minimumBuildableAreaSquareMetres: 500,
+  minimumBuildableRegionAreaSquareMetres: 100,
   railBufferMetres: 10,
   waterBufferMetres: 10,
   surfaceRoadBufferMetres: 5,
@@ -103,6 +104,8 @@ describe('preprocessCityBlocks', () => {
         blocks: 1,
         manualOverrides: 0,
         discardedCandidates: 0,
+        discardedBuildableRegions: 0,
+        buildableRegions: 1,
       },
       totalBlockAreaSquareMetres: 10_000,
       totalBuildableAreaSquareMetres: 6_400,
@@ -111,13 +114,19 @@ describe('preprocessCityBlocks', () => {
       districtId: 'riverfront-transition',
       profile: 'riverfront',
       derivation: 'road-polygonized',
-      buildableDerivation: 'convex-inset',
       centroid: [50, 50],
       areaSquareMetres: 10_000,
       buildableAreaSquareMetres: 6_400,
     });
     expect(result.blocks[0]?.id).toMatch(/^block-[a-f0-9]{10}$/);
-    expect(result.blocks[0]?.buildablePolygon).toHaveLength(4);
+    expect(result.blocks[0]?.buildableRegions).toHaveLength(1);
+    expect(result.blocks[0]?.buildableRegions[0]).toMatchObject({
+      id: expect.stringMatching(/^block-[a-f0-9]{10}\/region-[a-f0-9]{10}$/),
+      derivation: 'convex-inset',
+      polygon: expect.any(Array),
+      centroid: [50, 50],
+      areaSquareMetres: 6_400,
+    });
     expect(result.candidateAudit).toHaveLength(1);
     expect(result.candidateAudit[0]).toMatchObject({
       id: expect.stringMatching(/^candidate-[a-f0-9]{10}$/),
@@ -156,6 +165,8 @@ describe('preprocessCityBlocks', () => {
       blocks: 0,
       discardedCandidates: 1,
       discardedByReason: { railExclusion: 1 },
+      discardedBuildableRegions: 1,
+      discardedRegionsByReason: { railClearance: 1 },
     });
     expect(result.candidateAudit).toMatchObject([
       {
@@ -164,5 +175,57 @@ describe('preprocessCityBlocks', () => {
         areaSquareMetres: 10_000,
       },
     ]);
+  });
+
+  it('retains safe regions when rail only crosses part of a concave block', () => {
+    const concaveStructure: ProcessedCityStructure = {
+      ...STRUCTURE,
+      roads: [
+        {
+          ...STRUCTURE.roads[0]!,
+          paths: [
+            [
+              [0, 0],
+              [200, 0],
+              [200, 80],
+              [80, 80],
+              [80, 200],
+              [0, 200],
+              [0, 0],
+            ],
+          ],
+        },
+      ],
+      railways: [
+        {
+          id: 'rail/partial',
+          sourceKind: 'rail',
+          layer: 0,
+          bridge: false,
+          tunnel: false,
+          paths: [
+            [
+              [170, -20],
+              [170, 100],
+            ],
+          ],
+        },
+      ],
+    };
+    const config = { ...CONFIG, maximumBlockAreaSquareMetres: 30_000 };
+    const withoutRail = preprocessCityBlocks(
+      { ...concaveStructure, railways: [] },
+      config,
+      'abc123',
+    );
+    const withRail = preprocessCityBlocks(concaveStructure, config, 'abc123');
+
+    expect(withRail.blocks).toHaveLength(1);
+    expect(withRail.candidateAudit[0]?.outcome).toBe('retained');
+    expect(withRail.metadata.counts.discardedRegionsByReason.railClearance).toBeGreaterThan(0);
+    expect(withRail.blocks[0]?.buildableRegions.length).toBeGreaterThan(0);
+    expect(withRail.blocks[0]?.buildableRegions.length).toBeLessThan(
+      withoutRail.blocks[0]?.buildableRegions.length ?? 0,
+    );
   });
 });

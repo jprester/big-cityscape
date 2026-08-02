@@ -7,6 +7,7 @@ export type BlockPreprocessConfig = Readonly<{
   maximumBlockAreaSquareMetres: number;
   buildableInsetMetres: number;
   minimumBuildableAreaSquareMetres: number;
+  minimumBuildableRegionAreaSquareMetres: number;
   railBufferMetres: number;
   waterBufferMetres: number;
   surfaceRoadBufferMetres: number;
@@ -21,6 +22,7 @@ export const BLOCK_PREPROCESS_CONFIG: BlockPreprocessConfig = {
   maximumBlockAreaSquareMetres: 40_000,
   buildableInsetMetres: 6,
   minimumBuildableAreaSquareMetres: 600,
+  minimumBuildableRegionAreaSquareMetres: 100,
   railBufferMetres: 14,
   waterBufferMetres: 10,
   surfaceRoadBufferMetres: 4,

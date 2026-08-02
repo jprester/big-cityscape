@@ -35,8 +35,10 @@ export function addBlockDebugLayers(
   addPolygonOutlineLayer(
     layers,
     'buildable-polygons',
-    'Buildable polygons',
-    cityBlocks.blocks.map((block) => block.buildablePolygon),
+    `${cityBlocks.metadata.counts.buildableRegions} buildable regions`,
+    cityBlocks.blocks.flatMap((block) =>
+      block.buildableRegions.map((region) => region.polygon),
+    ),
     BUILDABLE_HEIGHT_METRES,
     0x8ce6a0,
   );
@@ -135,28 +137,43 @@ function addBlockLabelLayer(
   const group = new THREE.Group();
   group.name = 'debug:block-ids';
 
-  for (const block of cityBlocks.blocks) {
-    const element = document.createElement('span');
-    element.className = 'block-label';
-    element.textContent = block.id;
-    const label = new CSS2DObject(element);
-    label.name = `block-label:${block.id}`;
-    label.position.set(block.centroid[0], LABEL_HEIGHT_METRES, block.centroid[1]);
-    group.add(label);
-  }
+  const createLabels = (): void => {
+    if (group.children.length > 0) {
+      return;
+    }
+
+    for (const block of cityBlocks.blocks) {
+      const element = document.createElement('span');
+      element.className = 'block-label';
+      element.textContent = block.id;
+      const label = new CSS2DObject(element);
+      label.name = `block-label:${block.id}`;
+      label.position.set(block.centroid[0], LABEL_HEIGHT_METRES, block.centroid[1]);
+      group.add(label);
+    }
+  };
+  const removeLabels = (): void => {
+    group.traverse((object) => {
+      if (object instanceof CSS2DObject) {
+        object.element.remove();
+      }
+    });
+    group.clear();
+  };
 
   layers.add({
     id: 'block-ids',
     label: 'Stable block IDs',
     object: group,
     visible: false,
-    dispose: () => {
-      group.traverse((object) => {
-        if (object instanceof CSS2DObject) {
-          object.element.remove();
-        }
-      });
+    onVisibilityChange: (visible) => {
+      if (visible) {
+        createLabels();
+      } else {
+        removeLabels();
+      }
     },
+    dispose: removeLabels,
   });
 }
 

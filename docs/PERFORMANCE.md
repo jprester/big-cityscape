@@ -1,29 +1,29 @@
 # Spatial chunking and performance budgets
 
-Milestone 4 partitions the existing declarative building definitions before
-rendering. It does not change block geometry, building placement, archetypes, or
-the city seed.
+The renderer partitions declarative building definitions before creating any
+Three.js massing objects. Chunking does not change block geometry, placement,
+archetypes, or the city seed.
 
 ## Chunk semantics
 
-The default chunk size is 200 m, within the project plan's suggested 100–250 m
-range. A building is assigned from the centre of its footprint using signed grid
-indices:
+The default chunk size is 250 m, at the upper end of the project plan's
+suggested 100–250 m range. A building is assigned from its footprint centre
+using signed grid indices:
 
 ```text
 gridX = floor(centreX / chunkSize)
 gridZ = floor(centreZ / chunkSize)
 ```
 
-IDs encode the chunk size and signed indices, for example
-`chunk-200m-xn2-zp1`. Buildings and chunks are sorted by semantic ID/grid index,
-so output does not depend on source-array or scene traversal order. Each building
-is retained exactly once; the chunk stage reports total assignments and maximum
-per-chunk workload.
+IDs encode chunk size and signed indices, for example `chunk-250m-xn2-zp1`.
+Buildings and chunks are sorted by semantic ID/grid index, so output does not
+depend on source-array or scene traversal order. Each building is retained
+exactly once; the stage reports total assignments and maximum per-chunk work.
 
-The current 50 buildings occupy 17 chunks across all three first-pass districts.
-This already exercises separated clusters across most of the 1.98 km² working
-area without inventing additional non-block-aware buildings.
+The default seed's 4,791 buildings occupy 46 chunks across all three first-pass
+districts. The residual fabric uses every visible road corridor—including
+bridges and nonzero layers—plus exact rail, water, bounds, and existing-footprint
+checks rather than unconstrained visual scattering.
 
 ## Rendering and culling
 
@@ -34,14 +34,13 @@ preserved as per-instance colors. All chunks share:
 - one Lambert material;
 - one pair of non-shadow-casting lights.
 
-Each batch computes its own bounding box and sphere. Three.js therefore performs
-frustum culling at chunk/material granularity instead of treating every building
-in the city as one global material batch. The frame overlay reports rendered
-chunks, rendered batches, and rendered primitive parts alongside normal renderer
-statistics.
+Each batch computes its own bounding box and sphere. Three.js performs frustum
+culling at chunk granularity instead of treating the city as one global batch.
+The frame overlay reports rendered chunks, batches, and primitive parts
+alongside normal renderer statistics.
 
-The `Occupied chunks` debug layer shows only cells that currently contain
-buildings. Empty grid cells do not create scene objects.
+The `Occupied chunks` debug layer shows only cells containing buildings. Empty
+grid cells do not create scene objects.
 
 ## Measured baseline
 
@@ -50,48 +49,53 @@ They are comparison data, not universal hardware guarantees.
 
 | View | Rendered chunks | Massing batches | Box parts | Draw calls | Triangles | Approx. FPS |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| aerial | 17 / 17 | 17 / 17 | 86 / 86 | 31 | 1,526 | 120 |
-| rooftop | 7 / 17 | 7 / 17 | 41 / 86 | 20 | 986 | 120 |
-| street | 9 / 17 | 9 / 17 | 55 / 86 | 22 | 1,154 | 120 |
+| aerial | 46 / 46 | 46 / 46 | 4,903 / 4,903 | 62 | 67,830 | 120 |
+| rooftop | 29 / 46 | 29 / 46 | 3,474 / 4,903 | 45 | 50,682 | 120 |
+| street | 13 / 46 | 13 / 46 | 1,546 / 4,903 | 28 | 27,546 | 120 |
 
-The first expanded chunk/material implementation rendered the aerial view in 37
-calls with 110 scene objects. Consolidating material categories into per-instance
-colors brings the same 50 buildings to 31 calls and 87 objects. The street preset
-rejects eight chunks and thirty-one box parts.
+Rooftop and street culling remain useful despite the coarse cell size: the
+street preset renders 28% of occupied chunks and 31% of all box parts. The
+solid transport network adds two merged surface batches independent of the
+number of road segments. Segment ribbons, bounded bevels, shared-endpoint fills,
+sampled bridge and terminal-ramp spans add approximately 8,500 triangles in
+every preset. The previous round fill at every source vertex and clipped
+endpoint added about
+12,200 unnecessary coplanar triangles. The normal scene remains at 85 objects
+and the observed frame rate remains unchanged.
 
-The candidate-coverage audit adds six hidden line objects for the six rejection
-reasons currently present, bringing the default scene to 93 objects without
-changing the 31-call aerial baseline. Enabling an audit reason adds one debug
-line draw call; audit overlays are diagnostic and are excluded from the default
-render budget comparison.
+Stable block labels are created only while their debug layer is enabled. This
+keeps the normal scene at 85 objects; enabling all 118 CSS labels raises it to
+203 temporarily, and disabling the layer removes them again. Enabling a
+candidate-audit reason adds one debug-line draw call. Audit overlays are excluded
+from the default budget comparison.
 
-This is intentionally reported as a tradeoff, not an unconditional performance
-improvement. The finer culling boundary becomes valuable when more chunks exist;
-at the current scale, frame time remains effectively unchanged.
+## Current budgets
 
-## Initial budgets
-
-- default spatial cell: 200 m;
+- default spatial cell: 250 m;
 - one massing draw call per visible occupied chunk;
 - one shared primitive geometry/material and no per-building Three.js object;
-- current aerial target: at most 32 total draw calls and 100 scene objects;
-- current street target: at most 25 total draw calls and 1,200 triangles;
+- two merged road-surface draw calls for all visible non-tunnel roads;
+- aerial target: at most 65 total draw calls and 90 scene objects;
+- street target: at most 30 total draw calls and 60,000 triangles;
 - sampled interaction target: at least 60 FPS on the development machine.
 
 These budgets should be revisited after any substantial block or district
-expansion. A claim of improvement should compare the same seed, camera preset,
+expansion. Performance comparisons must use the same seed, camera preset,
 viewport, and enabled debug layers.
 
 ## Deferred work
 
-- No chunk streaming or asynchronous rebuilding is needed for 17 chunks.
+- No chunk streaming or asynchronous rebuilding is needed for 46 chunks.
 - No maximum view distance is applied; culling currently uses the camera frustum.
 - No LOD or skyline proxy exists.
-- Structural roads and water are still batched by feature category rather than
-  spatial chunk.
+- Structural roads and water are batched by feature category rather than spatial
+  chunk.
+- Road chunking can avoid submitting the complete joined network in close views,
+  but is deferred while the measured frame rate remains stable and the network
+  stays below the revised triangle budget.
 - JavaScript heap is not displayed because portable browser memory reporting is
   not consistently available.
 
-The current expansion remains inside the draw-call, object-count, triangle, and
-frame-rate budgets. Distance/LOD policy should be introduced only when another
-measured expansion justifies it.
+The current expansion remains inside revised draw-call, object-count, triangle,
+and frame-rate budgets. Distance or LOD policy should be introduced only when a
+later measured expansion justifies it.

@@ -2,7 +2,7 @@ import type { ChunkedCityMassing, CityMassingChunk } from '../model/cityChunks';
 import type { BuildingDefinition, CityMassingDefinition } from '../model/cityMassing';
 import type { Point2 } from '../model/processedCity';
 
-export const DEFAULT_CITY_CHUNK_SIZE_METRES = 200;
+export const DEFAULT_CITY_CHUNK_SIZE_METRES = 250;
 
 export function chunkCityMassing(
   massing: CityMassingDefinition,

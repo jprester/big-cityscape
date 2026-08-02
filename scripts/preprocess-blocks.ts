@@ -33,11 +33,14 @@ console.log(`Polygon candidates: ${processed.metadata.counts.polygonCandidates}`
 console.log(`Candidate audit entries: ${processed.candidateAudit.length}`);
 console.log(`Blocks: ${processed.metadata.counts.blocks}`);
 console.log(
-  `Blocks by buildable derivation: ${JSON.stringify(processed.metadata.counts.blocksByBuildableDerivation)}`,
+  `Buildable regions: ${processed.metadata.counts.buildableRegions} ${JSON.stringify(processed.metadata.counts.regionsByDerivation)}`,
 );
 console.log(`Discarded candidates: ${processed.metadata.counts.discardedCandidates}`);
 console.log(
   `Discard reasons: ${JSON.stringify(processed.metadata.counts.discardedByReason)}`,
+);
+console.log(
+  `Discarded buildable regions: ${processed.metadata.counts.discardedBuildableRegions} ${JSON.stringify(processed.metadata.counts.discardedRegionsByReason)}`,
 );
 console.log(
   `Candidate source area by outcome: ${JSON.stringify(summarizeCandidateAreaByOutcome())}`,
@@ -47,7 +50,7 @@ console.log(
   `Exclusions: rail ${processed.metadata.exclusions.railBufferMetres} m, water ${processed.metadata.exclusions.waterBufferMetres} m, surface roads ${processed.metadata.exclusions.surfaceRoadBufferMetres} m`,
 );
 console.log(
-  `Buildable policy: ${processed.metadata.buildable.insetMetres} m inset, ${processed.metadata.buildable.minimumAreaSquareMetres} m² minimum, ${processed.metadata.buildable.concaveStrategy}`,
+  `Buildable policy: ${processed.metadata.buildable.insetMetres} m inset, ${processed.metadata.buildable.minimumRegionAreaSquareMetres} m² minimum region, ${processed.metadata.buildable.minimumAreaSquareMetres} m² minimum aggregate, ${processed.metadata.buildable.concaveStrategy}`,
 );
 console.log(
   `Total block area: ${processed.metadata.totalBlockAreaSquareMetres.toLocaleString('en-US')} m²`,

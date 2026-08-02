@@ -121,8 +121,16 @@ export function insetConvexPolygon(
     return intersection;
   });
 
-  if (!isConvexPolygon(inset) || polygonArea(inset) <= EPSILON) {
-    throw new Error('Buildable inset collapsed the block polygon.');
+  const sourceArea = polygonArea(polygon);
+  const insetArea = polygonArea(inset);
+
+  if (
+    !isConvexPolygon(inset) ||
+    insetArea <= EPSILON ||
+    insetArea >= sourceArea - EPSILON ||
+    !inset.every((point) => pointInPolygon(point, polygon))
+  ) {
+    throw new Error('Buildable inset is invalid or escapes the source polygon.');
   }
 
   return inset;

@@ -41,6 +41,16 @@ describe('block polygon geometry', () => {
     expect(() => insetConvexPolygon(concave, 10)).toThrow(/convex/);
   });
 
+  it('rejects an acute-corner miter that escapes the source polygon', () => {
+    const acuteTriangle = [
+      [0, 0],
+      [100, 0],
+      [1, 0.1],
+    ] as const;
+
+    expect(() => insetConvexPolygon(acuteTriangle, 6)).toThrow(/escapes/);
+  });
+
   it('detects polygon intersections and true separation', () => {
     const overlapping = [
       [90, 20],

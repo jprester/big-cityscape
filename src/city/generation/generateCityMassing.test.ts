@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { CityBlock, ProcessedCityBlocks } from '../model/cityBlocks';
-import type { Point2 } from '../model/processedCity';
+import type { Point2, RoadPath } from '../model/processedCity';
+import type { ResidualFabricDefinition } from '../model/residualFabric';
 import {
   fitStreetAlignedRectangle,
   orientedRectangleCorners,
@@ -10,7 +11,7 @@ import { generateCityMassing } from './generateCityMassing';
 import { CITY_MASSING_CONFIG } from './massingConfig';
 
 const CITY_BLOCKS: ProcessedCityBlocks = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   metadata: {
     sourceStructureFile: 'test.json',
     sourceStructureSha256: 'test',
@@ -24,7 +25,8 @@ const CITY_BLOCKS: ProcessedCityBlocks = {
     buildable: {
       insetMetres: 6,
       minimumAreaSquareMetres: 600,
-      concaveStrategy: 'largest-inset-triangle',
+      minimumRegionAreaSquareMetres: 100,
+      concaveStrategy: 'all-viable-inset-triangles',
     },
     counts: {
       districts: 3,
@@ -43,7 +45,15 @@ const CITY_BLOCKS: ProcessedCityBlocks = {
         insetFailure: 0,
         insufficientBuildableArea: 0,
       },
-      blocksByBuildableDerivation: {
+      discardedBuildableRegions: 0,
+      discardedRegionsByReason: {
+        area: 0,
+        railClearance: 0,
+        waterClearance: 0,
+        roadClearance: 0,
+      },
+      buildableRegions: 3,
+      regionsByDerivation: {
         convexInset: 3,
         triangulatedInset: 0,
       },
@@ -111,15 +121,38 @@ describe('block-aligned massing placement', () => {
       ),
     ).toBe(true);
   });
+
+  it('searches off-centre when a narrow triangular lot cannot fit at its centroid', () => {
+    const polygon = [
+      [262.27, 77.59],
+      [373.65, 113.54],
+      [360.62, 97.06],
+    ] as const;
+    const placement = fitStreetAlignedRectangle(polygon);
+
+    expect(placement.widthMetres).toBeGreaterThanOrEqual(8);
+    expect(placement.depthMetres).toBeGreaterThanOrEqual(8);
+    expect(
+      orientedRectangleCorners(placement).every((point) =>
+        pointInPolygon(point, polygon),
+      ),
+    ).toBe(true);
+  });
 });
 
 describe('generateCityMassing', () => {
   it('is stable for the same semantic input regardless of block order', () => {
-    const first = generateCityMassing(CITY_BLOCKS);
-    const repeated = generateCityMassing(CITY_BLOCKS);
+    const cityBlocks = addSecondaryRegion(CITY_BLOCKS);
+    const first = generateCityMassing(cityBlocks);
+    const repeated = generateCityMassing(cityBlocks);
     const reversed = generateCityMassing({
-      ...CITY_BLOCKS,
-      blocks: [...CITY_BLOCKS.blocks].reverse(),
+      ...cityBlocks,
+      blocks: [...cityBlocks.blocks]
+        .reverse()
+        .map((block) => ({
+          ...block,
+          buildableRegions: [...block.buildableRegions].reverse(),
+        })),
     });
 
     expect(repeated).toEqual(first);
@@ -142,10 +175,21 @@ describe('generateCityMassing', () => {
   it('keeps every footprint inside its block and selects one landmark', () => {
     const result = generateCityMassing(CITY_BLOCKS);
     const blocksById = new Map(CITY_BLOCKS.blocks.map((block) => [block.id, block]));
+    const regionsById = new Map(
+      CITY_BLOCKS.blocks.flatMap((block) =>
+        block.buildableRegions.map((region) => [region.id, region] as const),
+      ),
+    );
     const landmarks = result.buildings.filter((building) => building.role === 'landmark');
 
     expect(landmarks).toHaveLength(1);
     expect(landmarks[0]?.heightMetres).toBe(CITY_MASSING_CONFIG.landmark.heightMetres);
+    expect(
+      Math.min(
+        landmarks[0]?.parts[0]?.widthMetres ?? 0,
+        landmarks[0]?.parts[0]?.depthMetres ?? 0,
+      ),
+    ).toBeGreaterThan(30);
     expect(result.metadata.maximumHeightMetres).toBe(
       CITY_MASSING_CONFIG.landmark.heightMetres,
     );
@@ -158,21 +202,18 @@ describe('generateCityMassing', () => {
 
     for (const building of result.buildings) {
       const block = blocksById.get(building.blockId);
+      const region = regionsById.get(building.regionId);
 
       expect(block).toBeDefined();
+      expect(region).toBeDefined();
       expect(
         building.footprint.every((point) =>
-          pointInPolygon(point, block?.buildablePolygon ?? []),
+          pointInPolygon(point, region?.polygon ?? []),
         ),
       ).toBe(true);
       expect(building.parts.every((part) => part.heightMetres > 0)).toBe(true);
-      expect(building.parts).toHaveLength(
-        building.archetype === 'podium-tower'
-          ? 2
-          : building.archetype === 'stepped-tower'
-            ? 3
-            : 1,
-      );
+      expect(building.parts.length).toBeGreaterThanOrEqual(1);
+      expect(building.parts.length).toBeLessThanOrEqual(3);
       expect(
         Math.max(
           ...building.parts.map(
@@ -181,6 +222,81 @@ describe('generateCityMassing', () => {
         ),
       ).toBeCloseTo(building.heightMetres, 5);
     }
+  });
+
+  it('adds residual fabric as deterministic background massing', () => {
+    const fabric: ResidualFabricDefinition = {
+      seed: CITY_MASSING_CONFIG.seed,
+      lots: [
+        {
+          id: 'fabric-x0-z0',
+          districtId: 'west-mixed',
+          center: [0, 0],
+          widthMetres: 8,
+          depthMetres: 10,
+          rotationRadians: 0,
+          footprint: createRectangle([0, 0], 8, 10),
+        },
+      ],
+      metadata: {
+        gridSpacingMetres: 12,
+        candidates: 1,
+        lots: 1,
+        discardedCandidates: 0,
+        discardedByReason: {
+          bounds: 0,
+          coverage: 0,
+          roadClearance: 0,
+          railClearance: 0,
+          waterClearance: 0,
+          existingBuilding: 0,
+        },
+      },
+    };
+    const result = generateCityMassing(
+      CITY_BLOCKS,
+      CITY_MASSING_CONFIG,
+      fabric,
+    );
+    const generated = result.buildings.find(
+      (building) => building.source === 'residual-fabric',
+    );
+
+    expect(result.metadata.sourceFabricLots).toBe(1);
+    expect(result.metadata.countsBySource).toEqual({
+      'road-block': result.metadata.buildings - 1,
+      'residual-fabric': 1,
+    });
+    expect(generated).toMatchObject({
+      id: 'fabric-x0-z0/building-1',
+      blockId: 'fabric:west-mixed',
+      regionId: 'fabric-x0-z0',
+      role: 'background',
+    });
+  });
+
+  it('removes block-derived buildings that collide with a visible road corridor', () => {
+    const baseline = generateCityMassing(CITY_BLOCKS);
+    const road: RoadPath = {
+      id: 'elevated-road/through-west-block',
+      sourceKind: 'motorway',
+      class: 'motorway',
+      layer: 2,
+      bridge: true,
+      tunnel: false,
+      paths: [[[-830, -450], [-710, -450]]],
+    };
+    const cleared = generateCityMassing(
+      CITY_BLOCKS,
+      CITY_MASSING_CONFIG,
+      undefined,
+      [road],
+    );
+
+    expect(cleared.buildings.length).toBeLessThan(baseline.buildings.length);
+    expect(
+      cleared.buildings.some((building) => building.blockId === 'west-block'),
+    ).toBe(false);
   });
 });
 
@@ -195,15 +311,23 @@ function createBlock(
 ): CityBlock {
   const polygon = createRectangle(center, widthMetres + 12, depthMetres + 12);
   const buildablePolygon = createRectangle(center, widthMetres, depthMetres);
+  const regionId = `${id}/region-main`;
 
   return {
     id,
     districtId,
     profile: 'regular-urban',
     derivation: 'road-polygonized',
-    buildableDerivation: 'convex-inset',
     polygon,
-    buildablePolygon,
+    buildableRegions: [
+      {
+        id: regionId,
+        derivation: 'convex-inset',
+        polygon: buildablePolygon,
+        centroid: center,
+        areaSquareMetres: buildableAreaSquareMetres,
+      },
+    ],
     centroid: center,
     areaSquareMetres,
     buildableAreaSquareMetres,
@@ -224,4 +348,29 @@ function createRectangle(
     [centerX + halfWidth, centerZ + halfDepth],
     [centerX - halfWidth, centerZ + halfDepth],
   ];
+}
+
+function addSecondaryRegion(
+  cityBlocks: ProcessedCityBlocks,
+): ProcessedCityBlocks {
+  return {
+    ...cityBlocks,
+    blocks: cityBlocks.blocks.map((block, blockIndex) =>
+      blockIndex === 0
+        ? {
+            ...block,
+            buildableRegions: [
+              ...block.buildableRegions,
+              {
+                id: `${block.id}/region-secondary`,
+                derivation: 'convex-inset',
+                polygon: createRectangle([610, -260], 20, 20),
+                centroid: [610, -260],
+                areaSquareMetres: 400,
+              },
+            ],
+          }
+        : block,
+    ),
+  };
 }

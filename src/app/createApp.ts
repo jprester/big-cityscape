@@ -6,15 +6,19 @@ import { addBlockDebugLayers } from '../city/debug/addBlockDebugLayers';
 import { addBlockCoverageAuditLayers } from '../city/debug/addBlockCoverageAuditLayers';
 import { addBuildingDebugLayers } from '../city/debug/addBuildingDebugLayers';
 import { addChunkDebugLayer } from '../city/debug/addChunkDebugLayer';
+import { addResidualFabricDebugLayer } from '../city/debug/addResidualFabricDebugLayer';
 import { addStructureDebugLayers } from '../city/debug/addStructureDebugLayers';
 import { chunkCityMassing } from '../city/generation/chunkCityMassing';
 import { generateCityMassing } from '../city/generation/generateCityMassing';
+import { generateResidualFabric } from '../city/generation/generateResidualFabric';
 import {
   CITY_MASSING_CONFIG,
   DEFAULT_CITY_MASSING_SEED,
 } from '../city/generation/massingConfig';
 import type { BuildingDefinition } from '../city/model/cityMassing';
 import { addCityMassingLayer } from '../city/rendering/addCityMassingLayer';
+import { addRoadSurfaceLayer } from '../city/rendering/addRoadSurfaceLayer';
+import { createRoadSurfaceNetwork } from '../city/rendering/createRoadSurfaceNetwork';
 import { createDebugPanel } from '../debug/createDebugPanel';
 import { DebugLayerManager } from '../debug/DebugLayerManager';
 import { createInspectionCamera } from './createInspectionCamera';
@@ -36,11 +40,32 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
   }
 
   const requestedSeed = readMassingSeed(window.location.search);
-  const massing = generateCityMassing(cityBlocks, {
+  const massingConfig = {
     ...CITY_MASSING_CONFIG,
     seed: requestedSeed,
-  });
+  };
+  const structuralMassing = generateCityMassing(
+    cityBlocks,
+    massingConfig,
+    undefined,
+    city.roads,
+  );
+  const residualFabric = generateResidualFabric(
+    city,
+    structuralMassing.buildings.map((building) => building.footprint),
+    requestedSeed,
+  );
+  const massing = generateCityMassing(
+    cityBlocks,
+    massingConfig,
+    residualFabric,
+    city.roads,
+  );
   const chunkedMassing = chunkCityMassing(massing);
+  const roadSurfaceNetwork = createRoadSurfaceNetwork(
+    city.roads,
+    city.metadata.clip.bounds,
+  );
   const landmark = massing.buildings.find(
     (building) => building.id === massing.metadata.landmarkBuildingId,
   );
@@ -76,9 +101,11 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
     heightMetres: landmark.heightMetres,
   });
   const debugLayers = createFoundationDebugLayers(scene, worldSizeMetres);
-  addStructureDebugLayers(debugLayers, city);
+  addRoadSurfaceLayer(debugLayers, roadSurfaceNetwork);
+  addStructureDebugLayers(debugLayers, city, roadSurfaceNetwork);
   addBlockDebugLayers(debugLayers, cityBlocks);
   addBlockCoverageAuditLayers(debugLayers, cityBlocks);
+  addResidualFabricDebugLayer(debugLayers, residualFabric);
   const massingRenderLayer = addCityMassingLayer(debugLayers, chunkedMassing);
   addBuildingDebugLayers(debugLayers, massing);
   addChunkDebugLayer(debugLayers, chunkedMassing);

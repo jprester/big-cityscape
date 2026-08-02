@@ -4,7 +4,8 @@ const EPSILON = 1e-7;
 const MAXIMUM_FIT_SCALE = 0.9;
 const MINIMUM_FIT_SCALE = 0.1;
 const FIT_SCALE_STEP = 0.05;
-const MINIMUM_PLACEMENT_DIMENSION_METRES = 8;
+export const MINIMUM_PLACEMENT_DIMENSION_METRES = 6;
+const CENTER_SEARCH_FRACTIONS = [0.25, 0.375, 0.5, 0.625, 0.75] as const;
 
 export type OrientedRectangle = Readonly<{
   center: Point2;
@@ -28,41 +29,56 @@ export function fitStreetAlignedRectangle(
   const depthRange = projectionRange(polygon, center, axisDepth);
   const widthSpanMetres = widthRange.maximum - widthRange.minimum;
   const depthSpanMetres = depthRange.maximum - depthRange.minimum;
+  const centerCandidates = createCenterCandidates(
+    polygon,
+    center,
+    axisWidth,
+    axisDepth,
+    widthRange,
+    depthRange,
+  );
   let bestRectangle: OrientedRectangle | undefined;
 
-  for (
-    let widthScale = MAXIMUM_FIT_SCALE;
-    widthScale >= MINIMUM_FIT_SCALE - EPSILON;
-    widthScale -= FIT_SCALE_STEP
-  ) {
-    const widthMetres = widthSpanMetres * widthScale;
-
-    if (widthMetres < MINIMUM_PLACEMENT_DIMENSION_METRES) {
-      continue;
-    }
-
+  for (const candidateCenter of centerCandidates) {
     for (
-      let depthScale = MAXIMUM_FIT_SCALE;
-      depthScale >= MINIMUM_FIT_SCALE - EPSILON;
-      depthScale -= FIT_SCALE_STEP
+      let widthScale = MAXIMUM_FIT_SCALE;
+      widthScale >= MINIMUM_FIT_SCALE - EPSILON;
+      widthScale -= FIT_SCALE_STEP
     ) {
-      const depthMetres = depthSpanMetres * depthScale;
+      const widthMetres = widthSpanMetres * widthScale;
 
-      if (depthMetres < MINIMUM_PLACEMENT_DIMENSION_METRES) {
+      if (widthMetres < MINIMUM_PLACEMENT_DIMENSION_METRES) {
         continue;
       }
 
-      const rectangle = { center, widthMetres, depthMetres, rotationRadians };
-
-      if (
-        orientedRectangleCorners(rectangle).every((point) =>
-          pointInPolygon(point, polygon),
-        ) &&
-        (bestRectangle === undefined ||
-          widthMetres * depthMetres >
-            bestRectangle.widthMetres * bestRectangle.depthMetres)
+      for (
+        let depthScale = MAXIMUM_FIT_SCALE;
+        depthScale >= MINIMUM_FIT_SCALE - EPSILON;
+        depthScale -= FIT_SCALE_STEP
       ) {
-        bestRectangle = rectangle;
+        const depthMetres = depthSpanMetres * depthScale;
+
+        if (depthMetres < MINIMUM_PLACEMENT_DIMENSION_METRES) {
+          continue;
+        }
+
+        const rectangle = {
+          center: candidateCenter,
+          widthMetres,
+          depthMetres,
+          rotationRadians,
+        };
+
+        if (
+          orientedRectangleCorners(rectangle).every((point) =>
+            pointInPolygon(point, polygon),
+          ) &&
+          (bestRectangle === undefined ||
+            widthMetres * depthMetres >
+              bestRectangle.widthMetres * bestRectangle.depthMetres)
+        ) {
+          bestRectangle = rectangle;
+        }
       }
     }
   }
@@ -72,6 +88,41 @@ export function fitStreetAlignedRectangle(
   }
 
   throw new Error('A usable street-aligned placement rectangle could not be fitted.');
+}
+
+function createCenterCandidates(
+  polygon: readonly Point2[],
+  polygonCenter: Point2,
+  widthAxis: Point2,
+  depthAxis: Point2,
+  widthRange: Readonly<{ minimum: number; maximum: number }>,
+  depthRange: Readonly<{ minimum: number; maximum: number }>,
+): readonly Point2[] {
+  const candidates: Point2[] = [polygonCenter];
+  const seen = new Set([pointKey(polygonCenter)]);
+
+  for (const widthFraction of CENTER_SEARCH_FRACTIONS) {
+    const widthOffset = lerp(widthRange.minimum, widthRange.maximum, widthFraction);
+
+    for (const depthFraction of CENTER_SEARCH_FRACTIONS) {
+      const depthOffset = lerp(depthRange.minimum, depthRange.maximum, depthFraction);
+      const candidate = addAxes(
+        polygonCenter,
+        widthAxis,
+        widthOffset,
+        depthAxis,
+        depthOffset,
+      );
+      const key = pointKey(candidate);
+
+      if (!seen.has(key) && pointInPolygon(candidate, polygon)) {
+        candidates.push(candidate);
+        seen.add(key);
+      }
+    }
+  }
+
+  return candidates;
 }
 
 export function splitOrientedRectangle(
@@ -266,6 +317,14 @@ function addAxes(
     center[0] + widthAxis[0] * widthDistance + depthAxis[0] * depthDistance,
     center[1] + widthAxis[1] * widthDistance + depthAxis[1] * depthDistance,
   ];
+}
+
+function lerp(start: number, end: number, fraction: number): number {
+  return start + (end - start) * fraction;
+}
+
+function pointKey([x, z]: Point2): string {
+  return `${x},${z}`;
 }
 
 function pointOnSegment(point: Point2, start: Point2, end: Point2): boolean {

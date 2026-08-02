@@ -8,12 +8,16 @@ export type WeightedArchetype = Readonly<{
 }>;
 
 export type DistrictMassingProfile = Readonly<{
-  heightRangeMetres: readonly [minimum: number, maximum: number];
+  fabricHeightRangeMetres: readonly [minimum: number, maximum: number];
+  backgroundHeightRangeMetres: readonly [minimum: number, maximum: number];
+  anchorHeightRangeMetres: readonly [minimum: number, maximum: number];
   clusterCenter: Point2;
   clusterRadiusMetres: number;
   targetLotAreaSquareMetres: number;
-  maximumBuildingsPerBlock: number;
-  archetypes: readonly WeightedArchetype[];
+  maximumBuildingsPerRegion: number;
+  fabricArchetypes: readonly WeightedArchetype[];
+  backgroundArchetypes: readonly WeightedArchetype[];
+  anchorArchetypes: readonly WeightedArchetype[];
 }>;
 
 export type CityMassingConfig = Readonly<{
@@ -35,48 +39,86 @@ export const CITY_MASSING_CONFIG: CityMassingConfig = {
   },
   profiles: {
     'dense-central-core': {
-      heightRangeMetres: [72, 218],
+      fabricHeightRangeMetres: [12, 42],
+      backgroundHeightRangeMetres: [28, 82],
+      anchorHeightRangeMetres: [95, 218],
       clusterCenter: [690, -225],
       clusterRadiusMetres: 390,
-      targetLotAreaSquareMetres: 1_550,
-      maximumBuildingsPerBlock: 3,
-      archetypes: [
-        { archetype: 'podium-tower', weight: 0.46 },
-        { archetype: 'stepped-tower', weight: 0.3 },
-        { archetype: 'box-tower', weight: 0.24 },
+      targetLotAreaSquareMetres: 360,
+      maximumBuildingsPerRegion: 7,
+      fabricArchetypes: [
+        { archetype: 'slab', weight: 0.72 },
+        { archetype: 'box-tower', weight: 0.28 },
+      ],
+      backgroundArchetypes: [
+        { archetype: 'slab', weight: 0.45 },
+        { archetype: 'box-tower', weight: 0.3 },
+        { archetype: 'podium-tower', weight: 0.2 },
+        { archetype: 'stepped-tower', weight: 0.05 },
+      ],
+      anchorArchetypes: [
+        { archetype: 'podium-tower', weight: 0.55 },
+        { archetype: 'stepped-tower', weight: 0.35 },
+        { archetype: 'box-tower', weight: 0.1 },
       ],
     },
     'commercial-transition': {
-      heightRangeMetres: [42, 148],
+      fabricHeightRangeMetres: [10, 34],
+      backgroundHeightRangeMetres: [24, 72],
+      anchorHeightRangeMetres: [76, 148],
       clusterCenter: [570, 120],
       clusterRadiusMetres: 520,
-      targetLotAreaSquareMetres: 2_200,
-      maximumBuildingsPerBlock: 3,
-      archetypes: [
-        { archetype: 'slab', weight: 0.45 },
-        { archetype: 'podium-tower', weight: 0.38 },
-        { archetype: 'stepped-tower', weight: 0.17 },
+      targetLotAreaSquareMetres: 450,
+      maximumBuildingsPerRegion: 6,
+      fabricArchetypes: [
+        { archetype: 'slab', weight: 0.78 },
+        { archetype: 'box-tower', weight: 0.22 },
+      ],
+      backgroundArchetypes: [
+        { archetype: 'slab', weight: 0.55 },
+        { archetype: 'box-tower', weight: 0.25 },
+        { archetype: 'podium-tower', weight: 0.2 },
+      ],
+      anchorArchetypes: [
+        { archetype: 'podium-tower', weight: 0.5 },
+        { archetype: 'slab', weight: 0.3 },
+        { archetype: 'stepped-tower', weight: 0.2 },
       ],
     },
     'dense-mixed': {
-      heightRangeMetres: [30, 108],
+      fabricHeightRangeMetres: [8, 28],
+      backgroundHeightRangeMetres: [18, 58],
+      anchorHeightRangeMetres: [62, 108],
       clusterCenter: [-770, -455],
       clusterRadiusMetres: 310,
-      targetLotAreaSquareMetres: 1_600,
-      maximumBuildingsPerBlock: 2,
-      archetypes: [
-        { archetype: 'slab', weight: 0.54 },
-        { archetype: 'box-tower', weight: 0.36 },
-        { archetype: 'podium-tower', weight: 0.1 },
+      targetLotAreaSquareMetres: 320,
+      maximumBuildingsPerRegion: 7,
+      fabricArchetypes: [
+        { archetype: 'slab', weight: 0.82 },
+        { archetype: 'box-tower', weight: 0.18 },
+      ],
+      backgroundArchetypes: [
+        { archetype: 'slab', weight: 0.6 },
+        { archetype: 'box-tower', weight: 0.35 },
+        { archetype: 'podium-tower', weight: 0.05 },
+      ],
+      anchorArchetypes: [
+        { archetype: 'slab', weight: 0.4 },
+        { archetype: 'box-tower', weight: 0.3 },
+        { archetype: 'podium-tower', weight: 0.3 },
       ],
     },
     'infrastructure-edge': {
-      heightRangeMetres: [18, 62],
+      fabricHeightRangeMetres: [7, 20],
+      backgroundHeightRangeMetres: [14, 38],
+      anchorHeightRangeMetres: [40, 62],
       clusterCenter: [0, 0],
       clusterRadiusMetres: 500,
-      targetLotAreaSquareMetres: 2_400,
-      maximumBuildingsPerBlock: 1,
-      archetypes: [{ archetype: 'slab', weight: 1 }],
+      targetLotAreaSquareMetres: 550,
+      maximumBuildingsPerRegion: 4,
+      fabricArchetypes: [{ archetype: 'slab', weight: 1 }],
+      backgroundArchetypes: [{ archetype: 'slab', weight: 1 }],
+      anchorArchetypes: [{ archetype: 'slab', weight: 1 }],
     },
   },
 };

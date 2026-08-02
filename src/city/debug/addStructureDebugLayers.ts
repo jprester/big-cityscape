@@ -7,6 +7,7 @@ import type {
   RoadClass,
   TransportPath,
 } from '../model/processedCity';
+import type { RoadSurfaceNetwork } from '../rendering/createRoadSurfaceNetwork';
 
 const ROAD_HEIGHT_METRES = 0.45;
 const WATER_HEIGHT_METRES = 0.25;
@@ -36,21 +37,31 @@ const ROAD_STYLES: Readonly<Record<RoadClass, Readonly<{ color: number; opacity:
 export function addStructureDebugLayers(
   layers: DebugLayerManager,
   city: ProcessedCityStructure,
+  roadSurfaceNetwork: RoadSurfaceNetwork,
 ): void {
-  addRoadLayer(layers, city);
+  addRoadLayer(layers, city, roadSurfaceNetwork);
   addRailLayer(layers, city);
   addWaterLayer(layers, city);
   addBoundsLayer(layers, city.metadata.clip.bounds);
 }
 
-function addRoadLayer(layers: DebugLayerManager, city: ProcessedCityStructure): void {
+function addRoadLayer(
+  layers: DebugLayerManager,
+  city: ProcessedCityStructure,
+  roadSurfaceNetwork: RoadSurfaceNetwork,
+): void {
   const group = new THREE.Group();
   group.name = 'debug:roads';
   const resources: Array<THREE.BufferGeometry | THREE.Material> = [];
 
   for (const roadClass of ROAD_CLASSES) {
-    const roads = city.roads.filter((road) => road.class === roadClass);
-    const geometry = createLineGeometry(roads, ROAD_HEIGHT_METRES);
+    const geometry = createRoadLineGeometry(
+      roadSurfaceNetwork,
+      city.roads.filter(
+        (road) => road.class === roadClass && road.tunnel,
+      ),
+      roadClass,
+    );
 
     if (geometry === undefined) {
       continue;
@@ -75,6 +86,47 @@ function addRoadLayer(layers: DebugLayerManager, city: ProcessedCityStructure): 
     object: group,
     dispose: () => disposeResources(resources),
   });
+}
+
+function createRoadLineGeometry(
+  network: RoadSurfaceNetwork,
+  tunnels: readonly TransportPath[],
+  roadClass: RoadClass,
+): THREE.BufferGeometry | undefined {
+  const positions: number[] = [];
+
+  for (const path of network.paths) {
+    if (path.road.class !== roadClass) {
+      continue;
+    }
+
+    for (let index = 1; index < path.points.length; index += 1) {
+      const start = path.points[index - 1];
+      const end = path.points[index];
+
+      if (start !== undefined && end !== undefined) {
+        positions.push(
+          start[0],
+          start[1] + 0.08,
+          start[2],
+          end[0],
+          end[1] + 0.08,
+          end[2],
+        );
+      }
+    }
+  }
+
+  appendLinePositions(positions, tunnels, ROAD_HEIGHT_METRES);
+
+  if (positions.length === 0) {
+    return undefined;
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geometry.computeBoundingSphere();
+  return geometry;
 }
 
 function addRailLayer(layers: DebugLayerManager, city: ProcessedCityStructure): void {
@@ -202,6 +254,24 @@ function createLineGeometry(
 ): THREE.BufferGeometry | undefined {
   const positions: number[] = [];
 
+  appendLinePositions(positions, features, heightMetres);
+
+  if (positions.length === 0) {
+    return undefined;
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geometry.computeBoundingSphere();
+  return geometry;
+}
+
+function appendLinePositions(
+  positions: number[],
+  features: readonly TransportPath[],
+  heightMetres: number,
+): void {
+
   for (const feature of features) {
     for (const path of feature.paths) {
       for (let index = 1; index < path.length; index += 1) {
@@ -221,15 +291,6 @@ function createLineGeometry(
       }
     }
   }
-
-  if (positions.length === 0) {
-    return undefined;
-  }
-
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-  geometry.computeBoundingSphere();
-  return geometry;
 }
 
 function createWaterShapes(rings: readonly (readonly Point2[])[]): readonly THREE.Shape[] {

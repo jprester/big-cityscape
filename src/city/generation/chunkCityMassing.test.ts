@@ -15,6 +15,10 @@ const MASSING: CityMassingDefinition = {
   buildings: BUILDINGS,
   metadata: {
     sourceBlocks: 4,
+    sourceRegions: 4,
+    sourceFabricLots: 0,
+    populatedRegions: 4,
+    skippedRegions: 0,
     buildings: 4,
     primitiveParts: 7,
     landmarkBuildingId: 'origin',
@@ -30,6 +34,10 @@ const MASSING: CityMassingDefinition = {
       commercial: 4,
       'mixed-use': 0,
       landmark: 0,
+    },
+    countsBySource: {
+      'road-block': 4,
+      'residual-fabric': 0,
     },
   },
 };
@@ -89,7 +97,9 @@ function createBuilding(
 
   return {
     id,
+    source: 'road-block',
     blockId: `block-${id}`,
+    regionId: `block-${id}/region-main`,
     districtId: 'test',
     seed: 1,
     role: 'background',

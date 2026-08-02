@@ -1,8 +1,8 @@
 # Buildable block preprocessing
 
-The block stage derives a reviewed first coverage set from the normalized
-Milestone 1 structure. This is an offline data stage: the browser loads only the
-resulting compact JSON and has no GIS dependency.
+The block stage derives reviewed city coverage from the normalized structural
+data. This is an offline stage: the browser loads only compact domain JSON and
+has no GIS dependency.
 
 ## Reproducible command
 
@@ -11,103 +11,116 @@ npm run preprocess:blocks
 ```
 
 The command reads `references/processed/city-structure.json` and writes
-`references/processed/city-blocks.json`. Its configuration lives in
-`scripts/blocks/config.ts`, and the output records the source structure SHA-256
-so mismatched artifacts can be diagnosed.
+`references/processed/city-blocks.json`. Configuration lives in
+`scripts/blocks/config.ts`. The output records the source structure SHA-256 so
+mismatched artifacts can be diagnosed.
 
 ## Derivation
 
 The preprocessor:
 
-1. selects road paths at source layer zero that are neither bridges nor tunnels;
+1. selects source-layer-zero road paths that are neither bridges nor tunnels;
 2. polygonizes their correctly noded linework into closed road-bounded faces;
 3. retains faces from 1,500 m² through 40,000 m²;
-4. accepts simple single-ring faces and applies 14 m rail and 10 m water
-   clearances;
-5. creates a constant-distance 6 m inset for convex faces;
-6. deterministically ear-clips concave faces and selects their largest viable
-   6 m inset triangle;
-7. requires at least 600 m² of buildable area;
-8. verifies at least 4 m clearance from every selected surface-road path; and
+4. accepts simple single-ring faces and creates a constant-distance 6 m inset
+   for convex faces;
+5. deterministically ear-clips concave faces and preserves every viable 6 m
+   inset triangle, rejecting acute-corner miters that escape their source
+   triangle;
+6. removes individual inset regions below 100 m²;
+7. removes individual regions that violate 14 m rail, 10 m water, or 4 m
+   surface-road clearance, without discarding unaffected parts of the block;
+8. requires at least 600 m² of aggregate safe buildable area; and
 9. assigns a district and block profile from explicit spatial and area rules.
 
 `@turf/polygonize` is used only by the Node.js preprocessing script. It is a
-focused development dependency, not a general GIS layer or a runtime dependency.
-Polygonization assumes the normalized road endpoints are already correctly
-noded; dangling lines do not create a face.
+focused development dependency, not a runtime GIS layer. Polygonization assumes
+the normalized road endpoints are already correctly noded; dangling lines do
+not create a face.
 
-Ear clipping is a small local geometry routine with area-preservation tests; it
+Ear clipping is a small local geometry routine with area-preservation tests. It
 does not add another GIS dependency. Concave source boundaries remain intact in
-the domain data. Only their conservative buildable zones are triangular.
+domain data; their conservative placement regions are triangular.
 
-The checked-in dataset was derived from 453 surface-road paths. Polygonization
-found 236 candidates and retained 41 blocks: 20 full convex insets and 21
-triangulated concave insets. The other 195 candidates are fully accounted for:
+## Current artifact and audit
 
-| Reason | Count |
+The checked-in artifact was derived from 453 surface-road paths. Polygonization
+found 236 candidates and retained 118 blocks containing 274 buildable regions:
+21 full convex insets and 253 triangulated concave insets. The other 118
+candidates are fully accounted for:
+
+| Candidate reason | Count |
 | --- | ---: |
 | outside the configured area range | 33 |
 | unsupported polygon topology | 0 |
-| concave derivation failure | 0 |
-| rail exclusion | 73 |
-| water exclusion | 4 |
-| surface-road exclusion | 66 |
+| concave derivation failure | 5 |
+| rail exclusion | 13 |
+| water exclusion | 0 |
+| surface-road exclusion | 2 |
 | inset failure | 3 |
-| buildable area below 600 m² | 16 |
+| buildable area below 600 m² | 62 |
 
-Every polygonizer result is also stored as a deterministic candidate-audit
-entry with a stable ID, source outline, centroid, area, and outcome. Rejected
-outcomes have separate disabled-by-default debug layers, so area, rail, water,
-road, inset, and buildable-area decisions can be compared directly against the
-structural linework. This diagnostic data remains declarative; Three.js objects
-are created only by the debug view.
+Region-level filtering also reports every discarded derived region:
 
-The audit makes the next coverage bottleneck explicit. Rail-clearance rejection
-accounts for 73 candidates and 516,612 m² of source-face area; road-clearance
-rejection accounts for 66 candidates and 407,717 m². The rail candidates are
-spatially concentrated around the imported infrastructure corridors. The road
-candidates are distributed through otherwise urban fabric, making road
-intersection noding the first geometry behavior to investigate before relaxing
-any clearance threshold.
+| Region reason | Count |
+| --- | ---: |
+| area below 100 m² | 298 |
+| rail clearance | 44 |
+| water clearance | 6 |
+| surface-road clearance | 12 |
 
-The retained blocks cover 229,762.31 m²; their buildable polygons cover
-76,747.50 m². Individual block areas range from 1,686.79 m² to 33,172.41 m²;
-buildable areas range from 605.45 m² to 10,301.63 m².
+Every polygonizer result is stored as a deterministic candidate-audit entry
+with a stable ID, source outline, centroid, area, and outcome. Rejected outcomes
+have separate disabled-by-default debug layers. Partial region removals are
+reported in aggregate metadata rather than silently discarded.
+
+An earlier audit exposed unbounded acute-triangle miter intersections outside
+their source triangles. Requiring every inset vertex to remain inside its source
+polygon, and requiring inset area to shrink, removes those invalid regions.
+Preserving all remaining viable ears then exposes multiple safe regions instead
+of only one region per concave block.
+
+Rail and water checks operate on those regions. This preserves safe land in a
+partially intersected block while retaining the configured clearance; the former
+whole-block rail policy was the principal cause of disconnected coverage.
+
+The retained blocks cover 934,447.78 m² and their safe regions cover 282,599.38
+m². Individual block areas range from 1,686.79 m² to 38,191.27 m²; individual
+region areas range from 100.72 m² to 10,301.63 m². The compact JSON artifact is
+177,026 bytes.
 
 ## Stable IDs and domain data
 
 Each polygon ring is rounded to centimetres and canonicalized across starting
-vertex and winding direction. Its semantic ID is a short SHA-256 geometry hash,
-so the ID does not depend on polygonizer result order or Three.js scene order.
-The domain JSON remains the source of truth; render objects are created only by
-the debug layer.
+vertex and winding direction. Block and region IDs use short SHA-256 geometry
+hashes, so identities do not depend on polygonizer result order or Three.js
+scene order. The domain JSON remains the source of truth; render objects are
+created only by downstream render and debug layers.
 
-The current spatial rules create three inspectable districts:
+The current fictional-city rules create three inspectable districts:
 
-- `east-core`: fourteen blocks east of X = 450 m and north of the clip origin;
-- `west-mixed`: eleven blocks west of that boundary and north of the origin;
-- `riverfront-transition`: sixteen blocks at or south of Z = 0 m.
+- `east-core`: 33 blocks east of X = 450 m and north of the clip origin;
+- `west-mixed`: 37 blocks west of that boundary and north of the origin;
+- `riverfront-transition`: 48 blocks at or south of Z = 0 m.
 
 Non-riverfront blocks receive compact, regular, or large-parcel profiles from
-their source area. The current retained sample contains six compact, nineteen
-regular, and sixteen riverfront blocks; no retained non-riverfront block reaches
-the large-parcel threshold.
-
-These are intentionally simple fictional-city semantics, not claims about Osaka
+source area. The sample contains seven compact, 49 regular, 14 large-parcel,
+and 48 riverfront blocks. These are fictional semantics, not claims about Osaka
 land use.
 
 ## Current limitations
 
-- Concave road faces use one conservative inset triangle rather than a complete
-  concave offset, leaving some otherwise buildable area unused.
+- Concave faces use separate conservative inset triangles rather than a complete
+  concave offset. Insetting triangulation-internal edges creates intentional
+  gaps and leaves some otherwise buildable area unused.
 - Multipart polygons and holes are reported as unsupported.
 - District boundaries are explicit first-pass rules, not inferred land use.
-- No parcel subdivision or building placement occurs in this stage.
-- Manual overrides are supported as a future policy but the current dataset uses
-  none; awkward candidates are rejected with a reason instead.
+- The output provides placement regions, not a cadastral parcel model; lot
+  subdivision and building placement remain downstream concerns.
+- Manual overrides are supported as a future policy, but the current artifact
+  uses none.
 
-The next coverage increment should node road paths at true intersections before
-polygonization and measure how many of the 66 road-clearance candidates become
-valid faces. Concave multi-region buildable derivation and parcel subdivision
-remain subsequent improvements; neither should be approximated by simply
-reducing infrastructure clearances.
+The residual-fabric stage documented in `MASSING.md` now supplies safe background
+coverage without weakening this high-confidence block artifact. Future block
+recovery should therefore focus on meaningful primary parcels, anchors, or
+manual overrides rather than using block count as a proxy for visual density.

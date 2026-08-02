@@ -14,6 +14,20 @@ export type BlockProfile =
 
 export type BuildableDerivation = 'convex-inset' | 'triangulated-inset';
 
+export type BuildableRegionDiscardReason =
+  | 'area'
+  | 'railClearance'
+  | 'waterClearance'
+  | 'roadClearance';
+
+export type BuildableRegion = Readonly<{
+  id: string;
+  derivation: BuildableDerivation;
+  polygon: readonly Point2[];
+  centroid: Point2;
+  areaSquareMetres: number;
+}>;
+
 export type BlockCandidateDiscardReason =
   | 'area'
   | 'unsupportedTopology'
@@ -45,16 +59,15 @@ export type CityBlock = Readonly<{
   districtId: string;
   profile: BlockProfile;
   derivation: 'road-polygonized';
-  buildableDerivation: BuildableDerivation;
   polygon: readonly Point2[];
-  buildablePolygon: readonly Point2[];
+  buildableRegions: readonly BuildableRegion[];
   centroid: Point2;
   areaSquareMetres: number;
   buildableAreaSquareMetres: number;
 }>;
 
 export type ProcessedCityBlocks = Readonly<{
-  schemaVersion: 1;
+  schemaVersion: 2;
   metadata: Readonly<{
     sourceStructureFile: string;
     sourceStructureSha256: string;
@@ -68,7 +81,8 @@ export type ProcessedCityBlocks = Readonly<{
     buildable: Readonly<{
       insetMetres: number;
       minimumAreaSquareMetres: number;
-      concaveStrategy: 'largest-inset-triangle';
+      minimumRegionAreaSquareMetres: number;
+      concaveStrategy: 'all-viable-inset-triangles';
     }>;
     counts: Readonly<{
       districts: number;
@@ -78,7 +92,12 @@ export type ProcessedCityBlocks = Readonly<{
       manualOverrides: number;
       discardedCandidates: number;
       discardedByReason: Readonly<Record<BlockCandidateDiscardReason, number>>;
-      blocksByBuildableDerivation: Readonly<{
+      discardedBuildableRegions: number;
+      discardedRegionsByReason: Readonly<
+        Record<BuildableRegionDiscardReason, number>
+      >;
+      buildableRegions: number;
+      regionsByDerivation: Readonly<{
         convexInset: number;
         triangulatedInset: number;
       }>;
