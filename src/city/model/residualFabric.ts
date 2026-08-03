@@ -6,7 +6,8 @@ export type ResidualFabricDiscardReason =
   | 'roadClearance'
   | 'railClearance'
   | 'waterClearance'
-  | 'existingBuilding';
+  | 'existingBuilding'
+  | 'fabricOverlap';
 
 export type ResidualFabricLot = Readonly<{
   id: string;

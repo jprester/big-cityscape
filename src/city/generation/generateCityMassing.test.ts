@@ -172,6 +172,18 @@ describe('generateCityMassing', () => {
     );
   });
 
+  it('uses one canonical orientation for every region in a semantic block', () => {
+    const result = generateCityMassing(addSecondaryRegion(CITY_BLOCKS));
+    const rotations = new Set(
+      result.buildings
+        .filter((building) => building.blockId === 'east-block')
+        .flatMap((building) => building.parts)
+        .map((part) => part.rotationRadians.toFixed(6)),
+    );
+
+    expect(rotations.size).toBe(1);
+  });
+
   it('keeps every footprint inside its block and selects one landmark', () => {
     const result = generateCityMassing(CITY_BLOCKS);
     const blocksById = new Map(CITY_BLOCKS.blocks.map((block) => [block.id, block]));
@@ -183,6 +195,7 @@ describe('generateCityMassing', () => {
     const landmarks = result.buildings.filter((building) => building.role === 'landmark');
 
     expect(landmarks).toHaveLength(1);
+    expect(landmarks[0]?.archetype).toBe('landmark-spire');
     expect(landmarks[0]?.heightMetres).toBe(CITY_MASSING_CONFIG.landmark.heightMetres);
     expect(
       Math.min(
@@ -213,7 +226,7 @@ describe('generateCityMassing', () => {
       ).toBe(true);
       expect(building.parts.every((part) => part.heightMetres > 0)).toBe(true);
       expect(building.parts.length).toBeGreaterThanOrEqual(1);
-      expect(building.parts.length).toBeLessThanOrEqual(3);
+      expect(building.parts.length).toBeLessThanOrEqual(4);
       expect(
         Math.max(
           ...building.parts.map(
@@ -250,6 +263,7 @@ describe('generateCityMassing', () => {
           railClearance: 0,
           waterClearance: 0,
           existingBuilding: 0,
+          fabricOverlap: 0,
         },
       },
     };

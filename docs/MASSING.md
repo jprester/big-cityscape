@@ -10,8 +10,9 @@ urban-design decisions.
 ```text
 processed city blocks
 → district massing profiles
+→ continuous citywide height field
 → stable buildable regions
-→ block-aligned placement zones and lots
+→ block composition or block-aligned lots
 processed roads, rail, water, and occupied footprints
 → deterministic residual-fabric lots
 → deterministic building definitions
@@ -33,25 +34,32 @@ Each block, region, and building is generated independently from a child seed
 derived from the root seed and stable semantic IDs. Input blocks and regions are
 sorted by ID, so generation does not depend on JSON order or scene traversal.
 
-For each convex buildable region, the generator:
+Each semantic block first derives one dominant axial street-grid orientation
+from all of its boundary edges. Every buildable region in that block receives
+the same orientation. For each convex buildable region, the generator:
 
 1. finds its longest edge as the local street-alignment axis;
 2. searches independent width and depth scales plus a small deterministic set
    of off-centre positions for a conservative oriented rectangle;
 3. requires all four rectangle corners to remain inside the region;
-4. derives one to seven lots from regional area and district profile,
-   subdividing the placement zone along its longest dimension with 7 m gaps; and
+4. reserves viable large regions for one perimeter, commercial, shared-podium,
+   or megastructure composition; otherwise derives one to seven lots from
+   regional area and district profile, subdividing the placement zone along its
+   longest dimension with 7 m gaps; and
 5. creates every footprint and primitive part within its assigned lot.
 
 The configured landmark is the exception to subdivision: it reserves the
-largest region in its selected block as one parcel so its 286 m height is
-supported by a credible podium and tower plate.
+largest region in its selected block as one parcel so its 300 m height is
+supported by a credible podium and tower plate. The mass uses four
+progressively narrower plates and the same cool material family as the city, so
+it reads as a skyline landmark rather than an orange debug marker.
 
 Lot count follows regional area and district profile rather than a city-wide
-random scatter. The first lot in the largest region of each block is an anchor;
-remaining lots form lower background fabric. Changing the seed alters archetype
-selection, plate sizes, materials, and bounded height variation, but not block
-hierarchy or lot count. Every non-landmark height is capped from both the minor
+random scatter. The first lot in the largest region of each block is an anchor.
+Sufficiently large regions inside the height field can also become secondary
+anchors; remaining lots form lower background fabric. Changing the seed alters
+archetype selection, plate sizes, materials, and bounded height variation, but
+not the planned centres. Every non-landmark height is capped from both the minor
 floor-plate dimension and footprint area. Very narrow lots therefore become
 lower infill rather than implausibly slender towers.
 
@@ -59,13 +67,21 @@ lower infill rather than implausibly slender towers.
 
 Closed road polygons are not required for background coverage. A second pure
 data stage samples the complete working bounds on a stable 12 m grid and creates
-5–7 m by 7–9 m lots aligned to the nearest surface road. A candidate survives
-only when its exact centimetre-rounded footprint:
+5–7 m by 7–9 m lots. Lots inside a retained block use that block's exact
+orientation. Other lots sample non-motorway street segments within 110 m using
+length and distance weights. Street directions are treated axially, so two
+perpendicular sides of one urban grid reinforce the same frame, and the result
+is snapped to 5° bands to remove segment-by-segment angular noise. Both centre
+coordinates are then snapped to the resulting 12 m oriented lattice. Retained
+blocks anchor their lattice at the block centroid; the surrounding field uses
+the world origin. A candidate survives only when its exact centimetre-rounded
+footprint:
 
 - remains inside the working bounds;
 - clears the configured road-class setback;
 - clears rail by 14 m and water by 10 m; and
-- stays at least 0.1 m from every block-driven building footprint.
+- stays at least 0.1 m from every block-driven building and previously accepted
+  residual footprint.
 
 Uniform spatial indices limit clearance and overlap checks to nearby segments
 and footprints. Candidate IDs derive from signed grid coordinates, and all size,
@@ -83,27 +99,38 @@ The first profiles are explicit and easy to tune:
 | dense mixed | 8–28 m | 18–58 m | 62–108 m |
 | infrastructure edge | 7–20 m | 14–38 m | 40–62 m |
 
-Height within each range follows distance from a configured district cluster
-centre and limited seeded variation. The largest safe block in `east-core`
-receives one deterministic 286 m stepped landmark. These are fictional-city
-rules, not inferred Osaka land use.
+Height within each range samples one explicit continuous field containing a
+primary core, two weaker secondary centres, and each district's local cluster.
+The field determines skyline structure first; limited seeded variation operates
+inside that structure. The largest safe block in `east-core` receives one
+deterministic 300 m composed landmark. These are fictional-city rules, not
+inferred Osaka land use.
 
 ## Primitive vocabulary and current output
 
-The domain model contains four archetypes with height-sensitive variants:
+The domain model contains nine compatible archetypes with height-sensitive
+variants:
 
 - `box-tower`: a compact box, or a broad base plus inset tower when tall;
 - `slab`: one elongated, street-aligned box;
-- `podium-tower`: a broad low mass, adding an inset tower plate only when tall;
+- `perimeter-block`: four street-wall bars enclosing an open court;
+- `podium-tower`: a broad street base, inset tower, and mechanical crown;
+- `multi-tower-podium`: one shared base, a dominant tower and a lower secondary
+  tower;
 - `stepped-tower`: a broad low mass, or three progressively smaller stacked
-  plates when tall.
+  plates when tall;
+- `commercial-block`: a broad base with offset upper and roof plates;
+- `megastructure`: one large base, cross-spine, and unequal major masses; and
+- `landmark-spire`: a broad podium and three progressively narrower skyline
+  plates.
 
-Compact lots use higher footprint coverage than larger tower parcels. The
-default seed produces 610 block-driven buildings plus 4,181 residual-fabric
-buildings: 4,791 definitions and 4,903 primitive parts
-with an observed height range of 9–286 m. The low residual height bands create a
-continuous urban carpet while the block-driven anchors and landmark retain the
-skyline hierarchy.
+Complex compositions require a viable parcel width and otherwise fall back to a
+slab. Compact lots use higher footprint coverage than larger tower parcels. The
+current default seed produces 4,674 definitions and 4,843 primitive parts in 46
+chunks, with height bands of 4,647 low-rise, 24 mid-rise, two high-rise, and one
+300 m landmark. The low residual height band creates a continuous urban carpet;
+the block-driven secondary anchors now create visible peaks instead of relying
+on one isolated tower.
 
 Each definition retains its source category, building ID, block ID, region or
 fabric-lot ID, district ID, root-derived seed, role, archetype, material
@@ -167,6 +194,12 @@ The debug panel exposes:
 
 - Residual coverage is a regular road-aligned sampling field, not a cadastral or
   organically subdivided parcel model.
+- The residual field still dominates the citywide height histogram. Reaching a
+  realistic percentage of mid-rise buildings requires grouping adjacent proxy
+  lots into larger block compositions rather than making narrow lots taller.
+- The rectangular working boundary remains visible from the aerial preset. A
+  low-detail surrounding proxy city plus distance fog is intentionally deferred
+  until foreground block hierarchy is stable.
 - Twenty-five narrow or awkward safe regions cannot fit the current 6 m minimum
   placement dimension and are explicitly reported as skipped.
 - Placement subdivides one conservative rectangular zone per region along one

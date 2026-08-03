@@ -20,8 +20,20 @@ export type DistrictMassingProfile = Readonly<{
   anchorArchetypes: readonly WeightedArchetype[];
 }>;
 
+export type HeightFieldCentre = Readonly<{
+  center: Point2;
+  radiusMetres: number;
+  strength: number;
+}>;
+
+export type CityHeightFieldConfig = Readonly<{
+  centres: readonly HeightFieldCentre[];
+  districtClusterWeight: number;
+}>;
+
 export type CityMassingConfig = Readonly<{
   seed: number;
+  heightField: CityHeightFieldConfig;
   landmark: Readonly<{
     districtId: string;
     heightMetres: number;
@@ -33,9 +45,17 @@ export const DEFAULT_CITY_MASSING_SEED = 20_260_801;
 
 export const CITY_MASSING_CONFIG: CityMassingConfig = {
   seed: DEFAULT_CITY_MASSING_SEED,
+  heightField: {
+    centres: [
+      { center: [690, -225], radiusMetres: 560, strength: 1 },
+      { center: [545, 135], radiusMetres: 390, strength: 0.68 },
+      { center: [-770, -455], radiusMetres: 330, strength: 0.52 },
+    ],
+    districtClusterWeight: 0.3,
+  },
   landmark: {
     districtId: 'east-core',
-    heightMetres: 286,
+    heightMetres: 300,
   },
   profiles: {
     'dense-central-core': {
@@ -51,15 +71,18 @@ export const CITY_MASSING_CONFIG: CityMassingConfig = {
         { archetype: 'box-tower', weight: 0.28 },
       ],
       backgroundArchetypes: [
-        { archetype: 'slab', weight: 0.45 },
-        { archetype: 'box-tower', weight: 0.3 },
-        { archetype: 'podium-tower', weight: 0.2 },
-        { archetype: 'stepped-tower', weight: 0.05 },
+        { archetype: 'slab', weight: 0.34 },
+        { archetype: 'box-tower', weight: 0.2 },
+        { archetype: 'perimeter-block', weight: 0.18 },
+        { archetype: 'podium-tower', weight: 0.18 },
+        { archetype: 'commercial-block', weight: 0.1 },
       ],
       anchorArchetypes: [
-        { archetype: 'podium-tower', weight: 0.55 },
-        { archetype: 'stepped-tower', weight: 0.35 },
-        { archetype: 'box-tower', weight: 0.1 },
+        { archetype: 'podium-tower', weight: 0.34 },
+        { archetype: 'multi-tower-podium', weight: 0.28 },
+        { archetype: 'stepped-tower', weight: 0.23 },
+        { archetype: 'commercial-block', weight: 0.1 },
+        { archetype: 'megastructure', weight: 0.05 },
       ],
     },
     'commercial-transition': {
@@ -75,14 +98,18 @@ export const CITY_MASSING_CONFIG: CityMassingConfig = {
         { archetype: 'box-tower', weight: 0.22 },
       ],
       backgroundArchetypes: [
-        { archetype: 'slab', weight: 0.55 },
-        { archetype: 'box-tower', weight: 0.25 },
-        { archetype: 'podium-tower', weight: 0.2 },
+        { archetype: 'slab', weight: 0.42 },
+        { archetype: 'box-tower', weight: 0.18 },
+        { archetype: 'perimeter-block', weight: 0.18 },
+        { archetype: 'podium-tower', weight: 0.14 },
+        { archetype: 'commercial-block', weight: 0.08 },
       ],
       anchorArchetypes: [
-        { archetype: 'podium-tower', weight: 0.5 },
-        { archetype: 'slab', weight: 0.3 },
-        { archetype: 'stepped-tower', weight: 0.2 },
+        { archetype: 'podium-tower', weight: 0.36 },
+        { archetype: 'multi-tower-podium', weight: 0.24 },
+        { archetype: 'slab', weight: 0.16 },
+        { archetype: 'stepped-tower', weight: 0.14 },
+        { archetype: 'commercial-block', weight: 0.1 },
       ],
     },
     'dense-mixed': {
@@ -98,14 +125,17 @@ export const CITY_MASSING_CONFIG: CityMassingConfig = {
         { archetype: 'box-tower', weight: 0.18 },
       ],
       backgroundArchetypes: [
-        { archetype: 'slab', weight: 0.6 },
-        { archetype: 'box-tower', weight: 0.35 },
-        { archetype: 'podium-tower', weight: 0.05 },
+        { archetype: 'slab', weight: 0.52 },
+        { archetype: 'box-tower', weight: 0.22 },
+        { archetype: 'perimeter-block', weight: 0.16 },
+        { archetype: 'podium-tower', weight: 0.1 },
       ],
       anchorArchetypes: [
-        { archetype: 'slab', weight: 0.4 },
-        { archetype: 'box-tower', weight: 0.3 },
-        { archetype: 'podium-tower', weight: 0.3 },
+        { archetype: 'slab', weight: 0.28 },
+        { archetype: 'box-tower', weight: 0.2 },
+        { archetype: 'podium-tower', weight: 0.28 },
+        { archetype: 'multi-tower-podium', weight: 0.14 },
+        { archetype: 'commercial-block', weight: 0.1 },
       ],
     },
     'infrastructure-edge': {

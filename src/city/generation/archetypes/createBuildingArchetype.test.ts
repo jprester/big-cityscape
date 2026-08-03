@@ -62,13 +62,46 @@ describe('createBuildingArchetype', () => {
   it('preserves the explicit height of a manually selected landmark', () => {
     const building = createBuildingArchetype(
       COMPACT_LOT,
-      'stepped-tower',
-      286,
+      'landmark-spire',
+      340,
       createSeededRandom(47),
       { preserveHeight: true },
     );
 
-    expect(building.heightMetres).toBe(286);
-    expect(building.parts).toHaveLength(3);
+    expect(building.heightMetres).toBe(340);
+    expect(building.parts).toHaveLength(4);
+  });
+
+  it('composes a perimeter block around an open centre', () => {
+    const building = createBuildingArchetype(
+      { ...COMPACT_LOT, widthMetres: 72, depthMetres: 54 },
+      'perimeter-block',
+      38,
+      createSeededRandom(53),
+    );
+
+    expect(building.parts).toHaveLength(4);
+    expect(
+      building.parts.every(
+        (part) =>
+          part.widthMetres < building.parts[0]!.widthMetres ||
+          part.depthMetres < building.parts[2]!.depthMetres,
+      ),
+    ).toBe(true);
+  });
+
+  it('builds a shared podium with a dominant and secondary tower', () => {
+    const building = createBuildingArchetype(
+      { ...COMPACT_LOT, widthMetres: 80, depthMetres: 58 },
+      'multi-tower-podium',
+      180,
+      createSeededRandom(59),
+    );
+
+    expect(building.parts).toHaveLength(4);
+    expect(building.parts[0]?.baseHeightMetres).toBe(0);
+    expect(building.parts[1]?.heightMetres).toBeGreaterThan(
+      building.parts[3]?.heightMetres ?? 0,
+    );
   });
 });

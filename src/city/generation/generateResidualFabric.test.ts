@@ -3,6 +3,7 @@ import type { ProcessedCityBlocks } from '../model/cityBlocks';
 import type { ProcessedCityStructure } from '../model/processedCity';
 import {
   generateResidualFabric,
+  snapPointToOrientedGrid,
   type ResidualFabricConfig,
 } from './generateResidualFabric';
 
@@ -13,6 +14,8 @@ const CONFIG: ResidualFabricConfig = {
   depthRangeMetres: [10, 11],
   railClearanceMetres: 8,
   waterClearanceMetres: 5,
+  orientationSearchRadiusMetres: 80,
+  orientationSnapDegrees: 5,
   roadClearanceMetres: {
     motorway: 8,
     trunk: 8,
@@ -184,6 +187,28 @@ const BLOCKS: ProcessedCityBlocks = {
 };
 
 describe('generateResidualFabric', () => {
+  it('snaps both coordinates to one rotated local lattice', () => {
+    const origin = [14, -9] as const;
+    const rotationRadians = Math.PI / 6;
+    const snapped = snapPointToOrientedGrid(
+      [41, 28],
+      origin,
+      rotationRadians,
+      12,
+    );
+    const deltaX = snapped[0] - origin[0];
+    const deltaZ = snapped[1] - origin[1];
+    const localWidth =
+      deltaX * Math.cos(rotationRadians) +
+      deltaZ * Math.sin(rotationRadians);
+    const localDepth =
+      -deltaX * Math.sin(rotationRadians) +
+      deltaZ * Math.cos(rotationRadians);
+
+    expect(localWidth / 12).toBeCloseTo(Math.round(localWidth / 12), 3);
+    expect(localDepth / 12).toBeCloseTo(Math.round(localDepth / 12), 3);
+  });
+
   it('is deterministic and independent of source feature order', () => {
     const occupied = BLOCKS.blocks.flatMap((block) =>
       block.buildableRegions.map((region) => region.polygon),
@@ -220,12 +245,62 @@ describe('generateResidualFabric', () => {
     expect(result.metadata.discardedByReason.roadClearance).toBeGreaterThan(0);
     expect(result.metadata.discardedByReason.railClearance).toBeGreaterThan(0);
     expect(result.metadata.discardedByReason.existingBuilding).toBeGreaterThan(0);
+    expect(
+      new Set(result.lots.map((lot) => lot.center.join(','))).size,
+    ).toBe(result.lots.length);
 
     for (const lot of result.lots) {
       expect(Math.abs(lot.center[0])).toBeGreaterThan(0);
       expect(lot.center[1]).not.toBe(-18);
       expect(lot.center[1]).not.toBe(36);
       expect(lot.footprint).toHaveLength(4);
+      expect(lot.rotationRadians).toBe(0);
     }
   });
+
+  it('uses an exact containing-block orientation instead of parcel-local road noise', () => {
+    const rotationRadians = 0.3;
+    const cityBlocks: ProcessedCityBlocks = {
+      ...BLOCKS,
+      blocks: BLOCKS.blocks.map((block) => ({
+        ...block,
+        polygon: createRotatedRectangle([-36, -36], 30, rotationRadians),
+      })),
+    };
+    const result = generateResidualFabric(
+      CITY,
+      [],
+      123,
+      CONFIG,
+      cityBlocks,
+    );
+    const blockLot = result.lots.find(
+      (lot) => lot.center[0] === -36 && lot.center[1] === -36,
+    );
+
+    expect(blockLot).toBeDefined();
+    expect(blockLot?.rotationRadians).toBeCloseTo(rotationRadians, 6);
+  });
 });
+
+function createRotatedRectangle(
+  center: readonly [number, number],
+  sizeMetres: number,
+  rotationRadians: number,
+): readonly (readonly [number, number])[] {
+  const halfSize = sizeMetres / 2;
+  const cosine = Math.cos(rotationRadians);
+  const sine = Math.sin(rotationRadians);
+
+  const corners = [
+    [-halfSize, -halfSize],
+    [halfSize, -halfSize],
+    [halfSize, halfSize],
+    [-halfSize, halfSize],
+  ] as const;
+
+  return corners.map(([x, z]) => [
+    center[0] + x * cosine - z * sine,
+    center[1] + x * sine + z * cosine,
+  ] as const);
+}

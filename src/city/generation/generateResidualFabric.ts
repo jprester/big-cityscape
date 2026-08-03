@@ -6,12 +6,17 @@ import type {
   RoadClass,
   RoadPath,
 } from '../model/processedCity';
+import type { ProcessedCityBlocks } from '../model/cityBlocks';
 import type {
   ResidualFabricDefinition,
   ResidualFabricDiscardReason,
   ResidualFabricLot,
 } from '../model/residualFabric';
-import { orientedRectangleCorners, type OrientedRectangle } from './blockPlacement';
+import {
+  dominantPolygonRotation,
+  orientedRectangleCorners,
+  type OrientedRectangle,
+} from './blockPlacement';
 
 const EPSILON = 1e-7;
 
@@ -23,6 +28,8 @@ export type ResidualFabricConfig = Readonly<{
   railClearanceMetres: number;
   waterClearanceMetres: number;
   roadClearanceMetres: Readonly<Record<RoadClass, number>>;
+  orientationSearchRadiusMetres: number;
+  orientationSnapDegrees: number;
 }>;
 
 export const RESIDUAL_FABRIC_CONFIG: ResidualFabricConfig = {
@@ -32,6 +39,8 @@ export const RESIDUAL_FABRIC_CONFIG: ResidualFabricConfig = {
   depthRangeMetres: [7, 9],
   railClearanceMetres: 14,
   waterClearanceMetres: 10,
+  orientationSearchRadiusMetres: 110,
+  orientationSnapDegrees: 5,
   roadClearanceMetres: {
     motorway: 16,
     trunk: 14,
@@ -65,7 +74,19 @@ type SegmentIndex = Readonly<{
 
 type PolygonIndex = Readonly<{
   cellSizeMetres: number;
-  buckets: ReadonlyMap<string, readonly (readonly Point2[])[]>;
+  buckets: Map<string, Array<readonly Point2[]>>;
+}>;
+
+type BlockOrientationRegion = Readonly<{
+  id: string;
+  polygon: readonly Point2[];
+  origin: Point2;
+  rotationRadians: number;
+}>;
+
+type OrientationFrame = Readonly<{
+  origin: Point2;
+  rotationRadians: number;
 }>;
 
 export function createRoadClearancePredicate(
@@ -88,6 +109,7 @@ export function generateResidualFabric(
   occupiedFootprints: readonly (readonly Point2[])[],
   seed: number,
   config: ResidualFabricConfig = RESIDUAL_FABRIC_CONFIG,
+  cityBlocks?: ProcessedCityBlocks,
 ): ResidualFabricDefinition {
   validateConfig(config);
 
@@ -111,10 +133,17 @@ export function generateResidualFabric(
     createPathSegments(railway.paths, config.railClearanceMetres),
   ).sort(compareSegments);
   const roadIndex = createSegmentIndex(roadSegments);
+  const orientationSegments = city.roads
+    .filter((road) => !road.tunnel && road.class !== 'motorway')
+    .flatMap((road) => createPathSegments(road.paths, 0))
+    .sort(compareSegments);
+  const orientationIndex = createSegmentIndex(orientationSegments);
+  const blockOrientationRegions = createBlockOrientationRegions(cityBlocks);
   const railIndex = createSegmentIndex(railSegments);
   const occupiedIndex = createPolygonIndex(
     occupiedFootprints.map((footprint) => footprint.map(roundPoint)),
   );
+  const acceptedFabricIndex = createPolygonIndex([]);
   const discardedByReason = createDiscardCounts();
   const lots: ResidualFabricLot[] = [];
   let candidates = 0;
@@ -127,7 +156,7 @@ export function generateResidualFabric(
   for (let gridZ = minimumGridZ; gridZ <= maximumGridZ; gridZ += 1) {
     for (let gridX = minimumGridX; gridX <= maximumGridX; gridX += 1) {
       candidates += 1;
-      const center: Point2 = [gridX * spacing, gridZ * spacing];
+      const sampleCenter: Point2 = [gridX * spacing, gridZ * spacing];
       const lotSeed = deriveSeed(seed, 'residual-fabric', `${gridX},${gridZ}`);
       const random = createSeededRandom(lotSeed);
 
@@ -136,12 +165,30 @@ export function generateResidualFabric(
         continue;
       }
 
-      const nearestRoad = findNearestSegment(
-        center,
-        querySegmentIndex(roadIndex, expandPoint(center, 120)),
+      const blockFrame = findContainingBlockOrientation(
+        sampleCenter,
+        blockOrientationRegions,
       );
       const rotationRadians = roundToMillionth(
-        nearestRoad?.rotationRadians ?? 0,
+        blockFrame?.rotationRadians ??
+          selectLocalGridRotation(
+            sampleCenter,
+            querySegmentIndex(
+              orientationIndex,
+              expandPoint(
+                sampleCenter,
+                config.orientationSearchRadiusMetres,
+              ),
+            ),
+            config.orientationSearchRadiusMetres,
+            config.orientationSnapDegrees,
+          ),
+      );
+      const center = snapPointToOrientedGrid(
+        sampleCenter,
+        blockFrame?.origin ?? [0, 0],
+        rotationRadians,
+        spacing,
       );
       const placement: OrientedRectangle = {
         center,
@@ -193,6 +240,20 @@ export function generateResidualFabric(
         discardedByReason.existingBuilding += 1;
         continue;
       }
+
+      if (
+        queryPolygonIndex(acceptedFabricIndex, polygonBounds(footprint)).some(
+          (accepted) =>
+            roundToHundredth(
+              minimumPolygonDistance(footprint, accepted),
+            ) < 0.1,
+        )
+      ) {
+        discardedByReason.fabricOverlap += 1;
+        continue;
+      }
+
+      addPolygonToIndex(acceptedFabricIndex, footprint);
 
       lots.push({
         id: `fabric-x${encodeGridIndex(gridX)}-z${encodeGridIndex(gridZ)}`,
@@ -275,12 +336,130 @@ function validateConfig(config: ResidualFabricConfig): void {
   ];
 
   if (
+    !Number.isFinite(config.orientationSearchRadiusMetres) ||
+    config.orientationSearchRadiusMetres <= 0 ||
+    !Number.isFinite(config.orientationSnapDegrees) ||
+    config.orientationSnapDegrees <= 0 ||
+    config.orientationSnapDegrees > 45
+  ) {
+    throw new RangeError(
+      'Residual-fabric orientation sampling requires a positive radius and a snap angle in (0, 45].',
+    );
+  }
+
+  if (
     clearances.some(
       (clearance) => !Number.isFinite(clearance) || clearance < 0,
     )
   ) {
     throw new RangeError('Residual-fabric clearances must be finite and non-negative.');
   }
+}
+
+function createBlockOrientationRegions(
+  cityBlocks: ProcessedCityBlocks | undefined,
+): readonly BlockOrientationRegion[] {
+  return [...(cityBlocks?.blocks ?? [])]
+    .sort((first, second) => first.id.localeCompare(second.id))
+    .map((block) => ({
+      id: block.id,
+      polygon: block.polygon,
+      origin: block.centroid,
+      rotationRadians: dominantPolygonRotation(block.polygon),
+    }));
+}
+
+function findContainingBlockOrientation(
+  point: Point2,
+  regions: readonly BlockOrientationRegion[],
+): OrientationFrame | undefined {
+  const region = regions.find((candidate) =>
+    pointInPolygon(point, candidate.polygon),
+  );
+
+  return region === undefined
+    ? undefined
+    : { origin: region.origin, rotationRadians: region.rotationRadians };
+}
+
+export function snapPointToOrientedGrid(
+  point: Point2,
+  origin: Point2,
+  rotationRadians: number,
+  spacingMetres: number,
+): Point2 {
+  const cosine = Math.cos(rotationRadians);
+  const sine = Math.sin(rotationRadians);
+  const deltaX = point[0] - origin[0];
+  const deltaZ = point[1] - origin[1];
+  const localWidth = deltaX * cosine + deltaZ * sine;
+  const localDepth = -deltaX * sine + deltaZ * cosine;
+  const snappedWidth = Math.round(localWidth / spacingMetres) * spacingMetres;
+  const snappedDepth = Math.round(localDepth / spacingMetres) * spacingMetres;
+
+  return roundPoint([
+    origin[0] + snappedWidth * cosine - snappedDepth * sine,
+    origin[1] + snappedWidth * sine + snappedDepth * cosine,
+  ]);
+}
+
+function selectLocalGridRotation(
+  point: Point2,
+  segments: readonly PathSegment[],
+  searchRadiusMetres: number,
+  snapDegrees: number,
+): number {
+  let weightedCosine = 0;
+  let weightedSine = 0;
+  let strongestSegment: PathSegment | undefined;
+  let strongestWeight = 0;
+
+  for (const segment of segments) {
+    const distanceMetres = pointSegmentDistance(
+      point,
+      segment.start,
+      segment.end,
+    );
+
+    if (distanceMetres >= searchRadiusMetres) {
+      continue;
+    }
+
+    const segmentLengthMetres = Math.hypot(
+      segment.end[0] - segment.start[0],
+      segment.end[1] - segment.start[1],
+    );
+    const proximity = 1 - distanceMetres / searchRadiusMetres;
+    const weight = Math.min(segmentLengthMetres, 80) * proximity * proximity;
+    const axisAngle = segment.rotationRadians * 4;
+    weightedCosine += Math.cos(axisAngle) * weight;
+    weightedSine += Math.sin(axisAngle) * weight;
+
+    if (weight > strongestWeight) {
+      strongestSegment = segment;
+      strongestWeight = weight;
+    }
+  }
+
+  const unsnappedRotation =
+    Math.hypot(weightedCosine, weightedSine) > EPSILON
+      ? Math.atan2(weightedSine, weightedCosine) / 4
+      : normalizeQuarterTurn(strongestSegment?.rotationRadians ?? 0);
+  const snapRadians = (snapDegrees * Math.PI) / 180;
+
+  return normalizeQuarterTurn(
+    Math.round(unsnappedRotation / snapRadians) * snapRadians,
+  );
+}
+
+function normalizeQuarterTurn(rotationRadians: number): number {
+  const quarterTurn = Math.PI / 2;
+
+  return (
+    ((rotationRadians + quarterTurn / 2) % quarterTurn + quarterTurn) %
+      quarterTurn -
+    quarterTurn / 2
+  );
 }
 
 function createDiscardCounts(): Record<ResidualFabricDiscardReason, number> {
@@ -291,6 +470,7 @@ function createDiscardCounts(): Record<ResidualFabricDiscardReason, number> {
     railClearance: 0,
     waterClearance: 0,
     existingBuilding: 0,
+    fabricOverlap: 0,
   };
 }
 
@@ -316,30 +496,6 @@ function createPathSegments(
       ];
     }),
   );
-}
-
-function findNearestSegment(
-  point: Point2,
-  segments: readonly PathSegment[],
-): (PathSegment & Readonly<{ distanceMetres: number }>) | undefined {
-  let nearest: (PathSegment & Readonly<{ distanceMetres: number }>) | undefined;
-
-  for (const segment of segments) {
-    const distanceMetres = roundToHundredth(
-      pointSegmentDistance(point, segment.start, segment.end),
-    );
-
-    if (
-      nearest === undefined ||
-      distanceMetres < nearest.distanceMetres - EPSILON ||
-      (Math.abs(distanceMetres - nearest.distanceMetres) <= EPSILON &&
-        compareSegments(segment, nearest) < 0)
-    ) {
-      nearest = { ...segment, distanceMetres };
-    }
-  }
-
-  return nearest;
 }
 
 function violatesSegmentClearance(
@@ -446,6 +602,30 @@ function createPolygonIndex(
   }
 
   return { cellSizeMetres, buckets };
+}
+
+function addPolygonToIndex(
+  index: PolygonIndex,
+  polygon: readonly Point2[],
+): void {
+  const bounds = polygonBounds(polygon);
+  const minimumCellX = Math.floor(bounds.minX / index.cellSizeMetres);
+  const maximumCellX = Math.floor(bounds.maxX / index.cellSizeMetres);
+  const minimumCellZ = Math.floor(bounds.minZ / index.cellSizeMetres);
+  const maximumCellZ = Math.floor(bounds.maxZ / index.cellSizeMetres);
+
+  for (let cellZ = minimumCellZ; cellZ <= maximumCellZ; cellZ += 1) {
+    for (let cellX = minimumCellX; cellX <= maximumCellX; cellX += 1) {
+      const key = `${cellX},${cellZ}`;
+      const bucket = index.buckets.get(key);
+
+      if (bucket === undefined) {
+        index.buckets.set(key, [polygon]);
+      } else {
+        bucket.push(polygon);
+      }
+    }
+  }
 }
 
 function queryPolygonIndex(

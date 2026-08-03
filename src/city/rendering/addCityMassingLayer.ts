@@ -9,7 +9,7 @@ import type {
 const MATERIAL_COLORS: Readonly<Record<MassingMaterialCategory, number>> = {
   commercial: 0x567c91,
   'mixed-use': 0x777d86,
-  landmark: 0xb57a58,
+  landmark: 0x9bb2be,
 };
 
 export type CityMassingFrameStats = Readonly<{

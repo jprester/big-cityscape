@@ -27,8 +27,19 @@ const MASSING: CityMassingDefinition = {
     countsByArchetype: {
       'box-tower': 4,
       slab: 0,
+      'perimeter-block': 0,
       'podium-tower': 0,
+      'multi-tower-podium': 0,
       'stepped-tower': 0,
+      'commercial-block': 0,
+      megastructure: 0,
+      'landmark-spire': 0,
+    },
+    countsByHeightBand: {
+      'low-rise': 4,
+      'mid-rise': 0,
+      'high-rise': 0,
+      landmark: 0,
     },
     countsByMaterial: {
       commercial: 4,

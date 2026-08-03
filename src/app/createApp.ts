@@ -54,6 +54,8 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
     city,
     structuralMassing.buildings.map((building) => building.footprint),
     requestedSeed,
+    undefined,
+    cityBlocks,
   );
   const massing = generateCityMassing(
     cityBlocks,

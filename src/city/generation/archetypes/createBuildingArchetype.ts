@@ -65,7 +65,12 @@ function createFootprintRectangle(
             random.float(compactLot ? 0.78 : 0.6, compactLot ? 0.9 : 0.74),
             random.float(0.86, 0.96),
           );
+    case 'perimeter-block':
+      return scaleOrientedRectangle(lot, 0.94, 0.92);
     case 'podium-tower':
+    case 'multi-tower-podium':
+    case 'commercial-block':
+    case 'megastructure':
       return scaleOrientedRectangle(
         lot,
         random.float(0.88, 0.96),
@@ -77,6 +82,8 @@ function createFootprintRectangle(
         random.float(0.68, 0.8),
         random.float(0.66, 0.78),
       );
+    case 'landmark-spire':
+      return scaleOrientedRectangle(lot, 0.94, 0.92);
   }
 }
 
@@ -95,6 +102,8 @@ function createParts(
       return [createPart(footprint, 0, totalHeightMetres)];
     case 'slab':
       return [createPart(footprint, 0, totalHeightMetres)];
+    case 'perimeter-block':
+      return createPerimeterBlockParts(footprint, totalHeightMetres);
     case 'podium-tower': {
       if (totalHeightMetres < 34) {
         return [createPart(footprint, 0, totalHeightMetres)];
@@ -111,15 +120,30 @@ function createParts(
         random.float(-0.035, 0.035) * footprint.depthMetres,
       );
 
+      const crownHeightMetres = roundToTenth(
+        clamp(totalHeightMetres * 0.08, 4, 12),
+      );
+      const towerHeightMetres = roundToTenth(
+        totalHeightMetres - podiumHeightMetres - crownHeightMetres,
+      );
+      const crown = scaleOrientedRectangle(tower, 0.82, 0.78);
+
       return [
         createPart(footprint, 0, podiumHeightMetres),
+        createPart(tower, podiumHeightMetres, towerHeightMetres),
         createPart(
-          tower,
-          podiumHeightMetres,
-          roundToTenth(totalHeightMetres - podiumHeightMetres),
+          crown,
+          podiumHeightMetres + towerHeightMetres,
+          crownHeightMetres,
         ),
       ];
     }
+    case 'multi-tower-podium':
+      return createMultiTowerPodiumParts(
+        footprint,
+        totalHeightMetres,
+        random,
+      );
     case 'stepped-tower': {
       if (totalHeightMetres < 52) {
         return [createPart(footprint, 0, totalHeightMetres)];
@@ -149,6 +173,12 @@ function createParts(
         createPart(upper, lowerHeight + middleHeight, upperHeight),
       ];
     }
+    case 'commercial-block':
+      return createCommercialBlockParts(footprint, totalHeightMetres, random);
+    case 'megastructure':
+      return createMegastructureParts(footprint, totalHeightMetres);
+    case 'landmark-spire':
+      return createLandmarkSpireParts(footprint, totalHeightMetres, random);
   }
 }
 
@@ -164,20 +194,195 @@ function constrainHeight(
   const areaScale = Math.sqrt(
     footprint.widthMetres * footprint.depthMetres,
   );
-  const [minorFactor, areaFactor] =
-    archetype === 'slab'
-      ? [3.5, 4.5]
-      : archetype === 'box-tower'
-        ? [4.5, 5.25]
-        : archetype === 'podium-tower'
-          ? [5.5, 6.5]
-          : [7.5, 8];
+  const factors: Readonly<Record<BuildingArchetype, readonly [number, number]>> = {
+    'box-tower': [4.5, 5.25],
+    slab: [3.5, 4.5],
+    'perimeter-block': [2.2, 3],
+    'podium-tower': [5.5, 6.5],
+    'multi-tower-podium': [6.25, 7],
+    'stepped-tower': [7.5, 8],
+    'commercial-block': [3.25, 4],
+    megastructure: [4.25, 5],
+    'landmark-spire': [9, 10],
+  };
+  const [minorFactor, areaFactor] = factors[archetype];
   const maximumHeight = Math.min(
     minorDimension * minorFactor,
     areaScale * areaFactor,
   );
 
   return roundToTenth(Math.min(requestedHeightMetres, maximumHeight));
+}
+
+function createPerimeterBlockParts(
+  footprint: OrientedRectangle,
+  totalHeightMetres: number,
+): readonly BuildingMassPart[] {
+  const depthBarScale = 0.22;
+  const widthBarScale = 0.2;
+  const depthOffset = footprint.depthMetres * (0.5 - depthBarScale / 2);
+  const widthOffset = footprint.widthMetres * (0.5 - widthBarScale / 2);
+  const secondaryHeight = roundToTenth(totalHeightMetres * 0.78);
+
+  return [
+    createPart(
+      scaleOrientedRectangle(footprint, 1, depthBarScale, 0, -depthOffset),
+      0,
+      totalHeightMetres,
+    ),
+    createPart(
+      scaleOrientedRectangle(footprint, 1, depthBarScale, 0, depthOffset),
+      0,
+      secondaryHeight,
+    ),
+    createPart(
+      scaleOrientedRectangle(footprint, widthBarScale, 0.56, -widthOffset, 0),
+      0,
+      secondaryHeight,
+    ),
+    createPart(
+      scaleOrientedRectangle(footprint, widthBarScale, 0.56, widthOffset, 0),
+      0,
+      roundToTenth(totalHeightMetres * 0.9),
+    ),
+  ];
+}
+
+function createMultiTowerPodiumParts(
+  footprint: OrientedRectangle,
+  totalHeightMetres: number,
+  random: SeededRandom,
+): readonly BuildingMassPart[] {
+  if (totalHeightMetres < 54) {
+    return createCommercialBlockParts(footprint, totalHeightMetres, random);
+  }
+
+  const podiumHeight = roundToTenth(clamp(totalHeightMetres * 0.075, 9, 18));
+  const primary = scaleOrientedRectangle(
+    footprint,
+    0.34,
+    0.52,
+    -footprint.widthMetres * 0.22,
+    footprint.depthMetres * 0.06,
+  );
+  const secondary = scaleOrientedRectangle(
+    footprint,
+    0.3,
+    0.46,
+    footprint.widthMetres * 0.24,
+    -footprint.depthMetres * 0.08,
+  );
+  const crownHeight = roundToTenth(clamp(totalHeightMetres * 0.055, 4, 10));
+  const primaryBodyHeight = roundToTenth(
+    totalHeightMetres - podiumHeight - crownHeight,
+  );
+  const secondaryTop = roundToTenth(totalHeightMetres * random.float(0.62, 0.76));
+
+  return [
+    createPart(footprint, 0, podiumHeight),
+    createPart(primary, podiumHeight, primaryBodyHeight),
+    createPart(
+      scaleOrientedRectangle(primary, 0.8, 0.78),
+      podiumHeight + primaryBodyHeight,
+      crownHeight,
+    ),
+    createPart(secondary, podiumHeight, secondaryTop - podiumHeight),
+  ];
+}
+
+function createCommercialBlockParts(
+  footprint: OrientedRectangle,
+  totalHeightMetres: number,
+  random: SeededRandom,
+): readonly BuildingMassPart[] {
+  if (totalHeightMetres < 22) {
+    return [createPart(footprint, 0, totalHeightMetres)];
+  }
+
+  const baseHeight = roundToTenth(clamp(totalHeightMetres * 0.32, 8, 18));
+  const upper = scaleOrientedRectangle(
+    footprint,
+    0.82,
+    0.66,
+    random.float(-0.04, 0.04) * footprint.widthMetres,
+    random.float(-0.08, 0.08) * footprint.depthMetres,
+  );
+  const roof = scaleOrientedRectangle(upper, 0.72, 0.68);
+  const roofHeight = roundToTenth(clamp(totalHeightMetres * 0.12, 3, 8));
+
+  return [
+    createPart(footprint, 0, baseHeight),
+    createPart(upper, baseHeight, totalHeightMetres - baseHeight - roofHeight),
+    createPart(roof, totalHeightMetres - roofHeight, roofHeight),
+  ];
+}
+
+function createMegastructureParts(
+  footprint: OrientedRectangle,
+  totalHeightMetres: number,
+): readonly BuildingMassPart[] {
+  const baseHeight = roundToTenth(clamp(totalHeightMetres * 0.16, 12, 24));
+  const spine = scaleOrientedRectangle(footprint, 0.88, 0.32);
+  const left = scaleOrientedRectangle(
+    footprint,
+    0.3,
+    0.58,
+    -footprint.widthMetres * 0.25,
+    0,
+  );
+  const right = scaleOrientedRectangle(
+    footprint,
+    0.3,
+    0.58,
+    footprint.widthMetres * 0.25,
+    0,
+  );
+
+  return [
+    createPart(footprint, 0, baseHeight),
+    createPart(spine, baseHeight, roundToTenth(totalHeightMetres * 0.38)),
+    createPart(left, baseHeight, roundToTenth(totalHeightMetres - baseHeight)),
+    createPart(
+      right,
+      baseHeight,
+      roundToTenth(totalHeightMetres * 0.78 - baseHeight),
+    ),
+  ];
+}
+
+function createLandmarkSpireParts(
+  footprint: OrientedRectangle,
+  totalHeightMetres: number,
+  random: SeededRandom,
+): readonly BuildingMassPart[] {
+  const podiumHeight = roundToTenth(clamp(totalHeightMetres * 0.045, 12, 18));
+  const lower = scaleOrientedRectangle(footprint, 0.88, 0.84);
+  const middle = scaleOrientedRectangle(
+    lower,
+    0.82,
+    0.8,
+    footprint.widthMetres * 0.025,
+    0,
+  );
+  const upper = scaleOrientedRectangle(
+    middle,
+    0.78,
+    0.74,
+    random.float(-0.02, 0.02) * footprint.widthMetres,
+    0,
+  );
+  const lowerHeight = roundToTenth(totalHeightMetres * 0.48);
+  const middleHeight = roundToTenth(totalHeightMetres * 0.27);
+  const upperHeight = roundToTenth(
+    totalHeightMetres - podiumHeight - lowerHeight - middleHeight,
+  );
+
+  return [
+    createPart(footprint, 0, podiumHeight),
+    createPart(lower, podiumHeight, lowerHeight),
+    createPart(middle, podiumHeight + lowerHeight, middleHeight),
+    createPart(upper, podiumHeight + lowerHeight + middleHeight, upperHeight),
+  ];
 }
 
 function createSetbackTowerParts(

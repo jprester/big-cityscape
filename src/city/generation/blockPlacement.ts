@@ -16,13 +16,15 @@ export type OrientedRectangle = Readonly<{
 
 export function fitStreetAlignedRectangle(
   polygon: readonly Point2[],
+  preferredRotationRadians?: number,
 ): OrientedRectangle {
   if (polygon.length < 3) {
     throw new Error('A placement polygon requires at least three points.');
   }
 
   const center = polygonCentroid(polygon);
-  const rotationRadians = longestEdgeRotation(polygon);
+  const rotationRadians =
+    preferredRotationRadians ?? dominantPolygonRotation(polygon);
   const axisWidth: Point2 = [Math.cos(rotationRadians), Math.sin(rotationRadians)];
   const axisDepth: Point2 = [-axisWidth[1], axisWidth[0]];
   const widthRange = projectionRange(polygon, center, axisWidth);
@@ -266,18 +268,26 @@ function polygonCentroid(polygon: readonly Point2[]): Point2 {
   return [weightedX / (3 * twiceArea), weightedZ / (3 * twiceArea)];
 }
 
-function longestEdgeRotation(polygon: readonly Point2[]): number {
+export function dominantPolygonRotation(
+  polygon: readonly Point2[],
+): number {
   let longestLengthSquared = 0;
-  let rotationRadians = 0;
+  let fallbackRotationRadians = 0;
+  let weightedCosine = 0;
+  let weightedSine = 0;
 
   forEachEdge(polygon, (start, end) => {
     const deltaX = end[0] - start[0];
     const deltaZ = end[1] - start[1];
     const lengthSquared = deltaX * deltaX + deltaZ * deltaZ;
+    const lengthMetres = Math.sqrt(lengthSquared);
+    const rotationRadians = Math.atan2(deltaZ, deltaX);
+    weightedCosine += Math.cos(rotationRadians * 4) * lengthMetres;
+    weightedSine += Math.sin(rotationRadians * 4) * lengthMetres;
 
     if (lengthSquared > longestLengthSquared) {
       longestLengthSquared = lengthSquared;
-      rotationRadians = Math.atan2(deltaZ, deltaX);
+      fallbackRotationRadians = rotationRadians;
     }
   });
 
@@ -285,7 +295,9 @@ function longestEdgeRotation(polygon: readonly Point2[]): number {
     throw new Error('A placement polygon has no usable street edge.');
   }
 
-  return rotationRadians;
+  return Math.hypot(weightedCosine, weightedSine) > EPSILON
+    ? Math.atan2(weightedSine, weightedCosine) / 4
+    : fallbackRotationRadians;
 }
 
 function projectionRange(

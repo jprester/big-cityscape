@@ -96,7 +96,7 @@ function addHeightLayer(
 
   layers.add({
     id: 'building-heights',
-    label: `Height range ${minimumHeight.toFixed(0)}–${massing.metadata.maximumHeightMetres.toFixed(0)} m`,
+    label: `Height bands ${massing.metadata.countsByHeightBand['low-rise']} / ${massing.metadata.countsByHeightBand['mid-rise']} / ${massing.metadata.countsByHeightBand['high-rise']} / ${massing.metadata.countsByHeightBand.landmark}`,
     object: lines,
     visible: false,
     dispose: () => {

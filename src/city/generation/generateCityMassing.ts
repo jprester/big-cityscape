@@ -9,6 +9,7 @@ import type {
 import {
   BUILDING_SOURCES,
   BUILDING_ARCHETYPES,
+  BUILDING_HEIGHT_BANDS,
   MASSING_MATERIAL_CATEGORIES,
 } from '../model/cityMassing';
 import type {
@@ -21,11 +22,13 @@ import type { Point2, RoadClass, RoadPath } from '../model/processedCity';
 import type { ResidualFabricDefinition } from '../model/residualFabric';
 import {
   fitStreetAlignedRectangle,
+  dominantPolygonRotation,
   MINIMUM_PLACEMENT_DIMENSION_METRES,
   type OrientedRectangle,
   splitOrientedRectangle,
 } from './blockPlacement';
 import { createBuildingArchetype } from './archetypes/createBuildingArchetype';
+import { sampleCityHeightField } from './cityHeightField';
 import { createRoadClearancePredicate } from './generateResidualFabric';
 import {
   CITY_MASSING_CONFIG,
@@ -90,6 +93,7 @@ export function generateCityMassing(
 
     const profile = config.profiles[districtProfile];
     const anchorRegion = selectAnchorRegion(block);
+    const blockRotationRadians = dominantPolygonRotation(block.polygon);
 
     for (const region of [...block.buildableRegions].sort((first, second) =>
       first.id.localeCompare(second.id),
@@ -97,7 +101,10 @@ export function generateCityMassing(
       let placementZone: OrientedRectangle;
 
       try {
-        placementZone = fitStreetAlignedRectangle(region.polygon);
+        placementZone = fitStreetAlignedRectangle(
+          region.polygon,
+          blockRotationRadians,
+        );
       } catch {
         skippedRegions += 1;
         continue;
@@ -105,7 +112,21 @@ export function generateCityMassing(
 
       const landmarkRegion =
         block.id === landmarkBlock.id && region.id === anchorRegion.id;
-      const requestedBuildingCount = landmarkRegion
+      const heightFieldInfluence = sampleCityHeightField(
+        region.centroid,
+        profile,
+        config.heightField,
+      );
+      const composedArchetype = landmarkRegion
+        ? 'landmark-spire'
+        : selectRegionComposition(
+            placementZone,
+            heightFieldInfluence,
+            createSeededRandom(
+              deriveSeed(config.seed, block.id, region.id, 'composition'),
+            ),
+          );
+      const requestedBuildingCount = composedArchetype !== undefined
         ? 1
         : Math.max(
             1,
@@ -117,6 +138,10 @@ export function generateCityMassing(
             ),
           );
       const lots = createUsableLots(placementZone, requestedBuildingCount);
+      const regionCreatesAnchor =
+        region.id === anchorRegion.id ||
+        (heightFieldInfluence >= 0.38 &&
+          placementZone.widthMetres * placementZone.depthMetres >= 900);
       populatedRegionIds.add(region.id);
 
       for (let lotIndex = 0; lotIndex < lots.length; lotIndex += 1) {
@@ -134,24 +159,27 @@ export function generateCityMassing(
         );
         const random = createSeededRandom(buildingSeed);
         const role = selectBuildingRole(
-          region.id === anchorRegion.id,
+          regionCreatesAnchor,
           lotIndex,
           block.id === landmarkBlock.id,
         );
         const archetype =
-          role === 'landmark'
-            ? 'stepped-tower'
-            : selectWeightedArchetype(
+          composedArchetype ??
+          selectCompatibleArchetype(
+            lot,
+            selectWeightedArchetype(
                 random,
                 role === 'anchor'
                   ? profile.anchorArchetypes
                   : profile.backgroundArchetypes,
-              );
+            ),
+          );
         const heightMetres = selectBuildingHeight(
           region.centroid,
           Math.min(lot.widthMetres, lot.depthMetres),
           role,
           profile,
+          config,
           config.landmark.heightMetres,
           random,
         );
@@ -201,6 +229,7 @@ export function generateCityMassing(
     const heightMetres = selectFabricHeight(
       lot.center,
       profile,
+      config,
       random,
     );
     const generatedArchetype = createBuildingArchetype(
@@ -271,6 +300,12 @@ export function generateCityMassing(
         BUILDING_ARCHETYPES,
         clearedBuildings.map((building) => building.archetype),
       ),
+      countsByHeightBand: countBy(
+        BUILDING_HEIGHT_BANDS,
+        clearedBuildings.map((building) =>
+          selectHeightBand(building.heightMetres),
+        ),
+      ),
       countsByMaterial: countBy(
         MASSING_MATERIAL_CATEGORIES,
         clearedBuildings.map((building) => building.material),
@@ -338,6 +373,71 @@ function selectBuildingRole(
   return 'background';
 }
 
+function selectRegionComposition(
+  placementZone: OrientedRectangle,
+  heightFieldInfluence: number,
+  random: SeededRandom,
+): BuildingArchetype | undefined {
+  const areaSquareMetres =
+    placementZone.widthMetres * placementZone.depthMetres;
+  const minorDimensionMetres = Math.min(
+    placementZone.widthMetres,
+    placementZone.depthMetres,
+  );
+
+  if (minorDimensionMetres < 22) {
+    return undefined;
+  }
+
+  const selection = random.next();
+
+  if (
+    areaSquareMetres >= 4_000
+  ) {
+    return 'megastructure';
+  }
+
+  if (areaSquareMetres >= 1_050 && heightFieldInfluence >= 0.55) {
+    return 'multi-tower-podium';
+  }
+
+  if (areaSquareMetres >= 900) {
+    if (selection < 0.5) {
+      return 'perimeter-block';
+    }
+
+    return 'commercial-block';
+  }
+
+  if (areaSquareMetres >= 600 && selection < 0.24) {
+    return 'perimeter-block';
+  }
+
+  return undefined;
+}
+
+function selectCompatibleArchetype(
+  lot: OrientedRectangle,
+  archetype: BuildingArchetype,
+): BuildingArchetype {
+  const minorDimensionMetres = Math.min(
+    lot.widthMetres,
+    lot.depthMetres,
+  );
+
+  if (
+    minorDimensionMetres < 24 &&
+    (archetype === 'perimeter-block' ||
+      archetype === 'commercial-block' ||
+      archetype === 'multi-tower-podium' ||
+      archetype === 'megastructure')
+  ) {
+    return 'slab';
+  }
+
+  return archetype;
+}
+
 function selectWeightedArchetype(
   random: SeededRandom,
   archetypes: readonly WeightedArchetype[],
@@ -380,6 +480,7 @@ function selectBuildingHeight(
   lotMinorDimensionMetres: number,
   role: BuildingRole,
   profile: DistrictMassingProfile,
+  config: CityMassingConfig,
   landmarkHeightMetres: number,
   random: SeededRandom,
 ): number {
@@ -387,22 +488,30 @@ function selectBuildingHeight(
     return landmarkHeightMetres;
   }
 
-  const distanceToCluster = Math.hypot(
-    centroid[0] - profile.clusterCenter[0],
-    centroid[1] - profile.clusterCenter[1],
-  );
-  const clusterInfluence = clamp(
-    1 - distanceToCluster / profile.clusterRadiusMetres,
-    0,
-    1,
+  const fieldInfluence = sampleCityHeightField(
+    centroid,
+    profile,
+    config.heightField,
   );
   const [minimumHeight, maximumHeight] =
     role === 'anchor'
       ? profile.anchorHeightRangeMetres
       : profile.backgroundHeightRangeMetres;
+  const backgroundCoreMaximum = Math.max(
+    maximumHeight,
+    profile.anchorHeightRangeMetres[1] * 0.72,
+  );
+  const plannedMaximum =
+    role === 'anchor'
+      ? maximumHeight
+      : maximumHeight +
+        (backgroundCoreMaximum - maximumHeight) * fieldInfluence ** 2;
   const coherentHeight =
     minimumHeight +
-    (maximumHeight - minimumHeight) * (0.2 + clusterInfluence * 0.8);
+    (plannedMaximum - minimumHeight) *
+      (role === 'anchor'
+        ? 0.15 + fieldInfluence * 0.85
+        : 0.18 + fieldInfluence * 0.64);
   const variedHeight = coherentHeight * random.float(0.88, 1.12);
   const constrainedParcelMinimum = minimumHeight * 0.65;
   const parcelCapacityHeight = Math.max(
@@ -414,7 +523,7 @@ function selectBuildingHeight(
     clamp(
       Math.min(variedHeight, parcelCapacityHeight),
       constrainedParcelMinimum,
-      maximumHeight,
+      plannedMaximum,
     ),
   );
 }
@@ -422,27 +531,29 @@ function selectBuildingHeight(
 function selectFabricHeight(
   center: Point2,
   profile: DistrictMassingProfile,
+  config: CityMassingConfig,
   random: SeededRandom,
 ): number {
   const [minimumHeight, maximumHeight] = profile.fabricHeightRangeMetres;
-  const distanceToCluster = Math.hypot(
-    center[0] - profile.clusterCenter[0],
-    center[1] - profile.clusterCenter[1],
+  const fieldInfluence = sampleCityHeightField(
+    center,
+    profile,
+    config.heightField,
   );
-  const clusterInfluence = clamp(
-    1 - distanceToCluster / profile.clusterRadiusMetres,
-    0,
-    1,
-  );
+  const coreMaximum =
+    maximumHeight +
+    (profile.backgroundHeightRangeMetres[1] - maximumHeight) *
+      fieldInfluence ** 2 *
+      0.72;
   const coherentHeight =
     minimumHeight +
-    (maximumHeight - minimumHeight) * (0.15 + clusterInfluence * 0.55);
+    (coreMaximum - minimumHeight) * (0.14 + fieldInfluence * 0.52);
 
   return roundToTenth(
     clamp(
       coherentHeight * random.float(0.82, 1.18),
       minimumHeight,
-      maximumHeight,
+      coreMaximum,
     ),
   );
 }
@@ -461,6 +572,24 @@ function selectMaterial(
   }
 
   return random.next() < 0.82 ? 'commercial' : 'mixed-use';
+}
+
+function selectHeightBand(
+  heightMetres: number,
+): (typeof BUILDING_HEIGHT_BANDS)[number] {
+  if (heightMetres < 60) {
+    return 'low-rise';
+  }
+
+  if (heightMetres < 150) {
+    return 'mid-rise';
+  }
+
+  if (heightMetres < 300) {
+    return 'high-rise';
+  }
+
+  return 'landmark';
 }
 
 function countBy<const Key extends string>(
