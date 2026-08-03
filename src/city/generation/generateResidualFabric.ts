@@ -35,8 +35,8 @@ export type ResidualFabricConfig = Readonly<{
 export const RESIDUAL_FABRIC_CONFIG: ResidualFabricConfig = {
   gridSpacingMetres: 12,
   coverageProbability: 1,
-  widthRangeMetres: [5, 7],
-  depthRangeMetres: [7, 9],
+  widthRangeMetres: [4.7, 7.1],
+  depthRangeMetres: [6.2, 9.4],
   railClearanceMetres: 14,
   waterClearanceMetres: 10,
   orientationSearchRadiusMetres: 110,
@@ -727,7 +727,7 @@ function compareSegments(first: PathSegment, second: PathSegment): number {
   );
 }
 
-function minimumPolygonDistance(
+export function minimumPolygonDistance(
   first: readonly Point2[],
   second: readonly Point2[],
 ): number {

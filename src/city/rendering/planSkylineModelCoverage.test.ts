@@ -31,6 +31,31 @@ describe('planSkylineModelCoverage', () => {
     expect(first.get('landmark')).toBe('skyscraper-1');
   });
 
+  it('uses the naturally broad high-rise 31 model on an oversized skyline parcel', () => {
+    const buildings = Array.from({ length: 12 }, (_, index) =>
+      createBuilding(
+        index === 0 ? 'landmark' : index === 4 ? 'wide-tower' : `tower-${index}`,
+        300 - index * 5,
+        index === 0 ? 'landmark' : 'anchor',
+        index === 4 ? 60 : 30,
+        index === 4 ? 40 : 30,
+      ),
+    );
+    const models = [
+      ...Array.from({ length: 16 }, (_, index) =>
+        createModel(`skyscraper-${index + 1}`, 400 - index * 10, 'skyscraper'),
+      ),
+      createModel('high-rise-31', 60, 'high-rise'),
+    ];
+    const coverage = planSkylineModelCoverage(buildings, models);
+
+    expect(coverage.size).toBe(11);
+    expect(coverage.get('wide-tower')).toBe('high-rise-31');
+    expect(
+      [...coverage.values()].filter((modelId) => modelId.startsWith('skyscraper-')),
+    ).toHaveLength(10);
+  });
+
   it('reserves every high-rise variant outside skyscraper sites', () => {
     const buildings = Array.from({ length: 40 }, (_, index) =>
       createBuilding(`building-${index}`, 150 - index, 'background'),
@@ -54,7 +79,12 @@ function createBuilding(
   id: string,
   heightMetres: number,
   role: BuildingDefinition['role'],
+  widthMetres = 30,
+  depthMetres = 30,
 ): BuildingDefinition {
+  const halfWidth = widthMetres / 2;
+  const halfDepth = depthMetres / 2;
+
   return {
     id,
     source: 'road-block',
@@ -66,17 +96,17 @@ function createBuilding(
     archetype: role === 'landmark' ? 'landmark-spire' : 'podium-tower',
     material: role === 'landmark' ? 'landmark' : 'commercial',
     footprint: [
-      [-15, -15],
-      [15, -15],
-      [15, 15],
-      [-15, 15],
+      [-halfWidth, -halfDepth],
+      [halfWidth, -halfDepth],
+      [halfWidth, halfDepth],
+      [-halfWidth, halfDepth],
     ],
     heightMetres,
     parts: [
       {
         center: [0, 0],
-        widthMetres: 30,
-        depthMetres: 30,
+        widthMetres,
+        depthMetres,
         baseHeightMetres: 0,
         heightMetres,
         rotationRadians: 0,

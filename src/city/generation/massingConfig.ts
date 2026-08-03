@@ -41,9 +41,18 @@ export type CityMassingConfig = Readonly<{
   }>;
   highRise: Readonly<{
     promotedBuildingCount: number;
+    distributedBuildingCount: number;
+    distributionCellSizeMetres: number;
     minimumParcelDimensionMetres: number;
+    distributedMinimumParcelDimensionMetres: number;
     heightRangeMetres: readonly [minimum: number, maximum: number];
     maximumHeightToParcelRatio: number;
+  }>;
+  tallBuildingClearance: Readonly<{
+    minimumHeightMetres: number;
+    minimumSetbackMetres: number;
+    maximumSetbackMetres: number;
+    heightToSetbackRatio: number;
   }>;
   landmark: Readonly<{
     districtId: string;
@@ -71,9 +80,18 @@ export const CITY_MASSING_CONFIG: CityMassingConfig = {
   },
   highRise: {
     promotedBuildingCount: 120,
-    minimumParcelDimensionMetres: 8,
-    heightRangeMetres: [55, 145],
-    maximumHeightToParcelRatio: 9.5,
+    distributedBuildingCount: 50,
+    distributionCellSizeMetres: 220,
+    minimumParcelDimensionMetres: 6,
+    distributedMinimumParcelDimensionMetres: 5,
+    heightRangeMetres: [45, 135],
+    maximumHeightToParcelRatio: 9,
+  },
+  tallBuildingClearance: {
+    minimumHeightMetres: 60,
+    minimumSetbackMetres: 8,
+    maximumSetbackMetres: 28,
+    heightToSetbackRatio: 0.1,
   },
   landmark: {
     districtId: 'east-core',

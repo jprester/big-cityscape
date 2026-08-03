@@ -7,6 +7,7 @@ import {
   type BuildingModelLibrary,
   type LoadedBuildingModel,
 } from './loadBuildingModels';
+import type { BuildingModelCategory } from './buildingModelCatalog';
 import {
   selectBuildingModel,
   type BuildingModelPlacement,
@@ -49,7 +50,16 @@ export async function addCityMassingLayer(
     emissive: 0x10100f,
   });
   const renderedChunkIds = new Set<string>();
-  const usedModelIds = new Set<string>();
+  const modelInstancesByCategory: Record<BuildingModelCategory, number> = {
+    residential: 0,
+    'high-rise': 0,
+    skyscraper: 0,
+  };
+  const modelIdsByCategory: Record<BuildingModelCategory, Set<string>> = {
+    residential: new Set(),
+    'high-rise': new Set(),
+    skyscraper: new Set(),
+  };
   const buildings = massing.chunks.flatMap((chunk) => chunk.buildings);
   const skylineModelCoverage = planSkylineModelCoverage(
     buildings,
@@ -77,7 +87,8 @@ export async function addCityMassingLayer(
     );
 
     for (const placement of placements) {
-      usedModelIds.add(placement.model.id);
+      modelInstancesByCategory[placement.model.category] += 1;
+      modelIdsByCategory[placement.model.category].add(placement.model.id);
     }
 
     const batch = createChunkBatch(chunk, placements, material);
@@ -116,7 +127,7 @@ export async function addCityMassingLayer(
 
   layers.add({
     id: 'building-models',
-    label: `${massing.metadata.buildings} model buildings · ${usedModelIds.size} / ${library.models.length} variants · ${skylineModelCoverage.size} skyscrapers · ${highRiseModelCoverage.size} high-rise variants`,
+    label: `${massing.metadata.buildings} model buildings · ${modelInstancesByCategory.residential} residential · ${modelInstancesByCategory['high-rise']} high-rises (${modelIdsByCategory['high-rise'].size} variants) · ${modelInstancesByCategory.skyscraper} skyscrapers`,
     object: group,
     dispose: () => {
       group.traverse((object) => {

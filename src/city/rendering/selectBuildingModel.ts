@@ -16,8 +16,11 @@ export type BuildingModelPlacement = Readonly<{
   rotateModelQuarterTurn: boolean;
 }>;
 
-const HIGH_RISE_MINIMUM_HEIGHT_METRES = 62;
+const HIGH_RISE_MINIMUM_HEIGHT_METRES = 44;
 const MODEL_SELECTION_WINDOW = 7;
+const MODEL_REPLACEMENTS: Readonly<Record<string, readonly string[]>> = {
+  'high-rise-5': ['high-rise-31', 'high-rise-29'],
+};
 
 export function selectBuildingModel(
   building: BuildingDefinition,
@@ -60,14 +63,21 @@ export function selectBuildingModel(
     throw new Error(`Building "${building.id}" could not select a model.`);
   }
 
+  const replacementModel = MODEL_REPLACEMENTS[selected.model.id]
+    ?.map((modelId) => models.find((model) => model.id === modelId))
+    .find((model) => model !== undefined);
+  const resolved = replacementModel === undefined
+    ? selected
+    : rankModel(replacementModel, footprint, building.heightMetres);
+
   return {
     building,
-    model: selected.model,
+    model: resolved.model,
     center: footprint.center,
     widthMetres: footprint.widthMetres,
     depthMetres: footprint.depthMetres,
     rotationRadians: footprint.rotationRadians,
-    rotateModelQuarterTurn: selected.rotateModelQuarterTurn,
+    rotateModelQuarterTurn: resolved.rotateModelQuarterTurn,
   };
 }
 

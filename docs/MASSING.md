@@ -103,9 +103,10 @@ Height within each range samples one explicit continuous field containing a
 primary core, two weaker secondary centres, and each district's local cluster.
 The field determines skyline structure first; limited seeded variation operates
 inside that structure. A second deterministic pass creates a broad downtown
-belt of up to 120 high-rises between 55 and 145 m, then promotes ten wider sites
-to 130–224 m skyscrapers. The largest safe block in `east-core` receives one
-287 m landmark. These are fictional-city rules, not inferred Osaka land use.
+belt of up to 120 high-rises between 45 and 135 m, then adds up to 50 shorter
+secondary high-rises across previously unserved 220 m cells. Ten wider sites
+become 130–224 m skyscrapers. The largest safe block in `east-core` receives
+one 287 m landmark. These are fictional-city rules, not inferred Osaka land use.
 
 ## Primitive vocabulary and current output
 
@@ -127,10 +128,19 @@ variants:
 
 Complex compositions require a viable parcel width and otherwise fall back to a
 slab. Compact lots use higher footprint coverage than larger tower parcels. The
-current default seed produces 4,674 definitions in 46 chunks, with height bands
-of 4,566 low-rise, 99 mid-rise, eight high-rise, and one landmark. The low
+current default seed produces 4,429 definitions in 46 chunks, with height bands
+of 4,341 low-rise, 80 mid-rise, seven high-rise, and one landmark. The low
 residual height band creates a continuous urban carpet; the high-rise belt now
-provides a legible transition into the smaller skyscraper cluster.
+provides a legible transition into the smaller skyscraper cluster. Residential
+height and footprint dimensions use independently seeded variation of roughly
+20 percent, avoiding repeated rows with identical silhouettes.
+
+After skyline promotion, buildings at least 60 m tall claim a height-scaled
+setback between 8 m and 28 m beyond their actual footprint. Taller definitions
+win deterministic conflicts, and only lower neighbors inside that exact
+footprint clearance are removed. This opens plaza or podium breathing room
+around large models without thinning the ordinary residential grid or moving
+the street network.
 
 Each definition retains its source category, building ID, block ID, region or
 fabric-lot ID, district ID, root-derived seed, role, archetype, material
@@ -138,10 +148,15 @@ category, footprint, height, and primitive parts.
 
 ## Rendering and inspection
 
-The 79 low-poly GLB assets are normalized once and rendered through one
+The 78 low-poly GLB assets are normalized once and rendered through one
 `BatchedMesh` per occupied 250 m chunk with a shared cement-grey Lambert
-material. Eleven representative skyscraper assets remain rare, while all 37
-high-rise variants receive at least one deterministic downtown placement. Two
+material. Ten representative skyscraper assets remain rare, while 36 selected
+high-rise variants are represented across 180 deterministic placements. The
+broadest non-landmark skyline parcel uses the naturally wide high-rise 31
+model instead of stretching a slender skyscraper asset; the other ten skyline
+sites retain representative skyscraper models. High-rise 5 is retired at model
+selection time and deterministically replaced by high-rise 31, with high-rise
+29 available as the fallback. Two
 non-shadow-casting lights make forms readable without introducing facade
 shaders or atmosphere. Rendering is demand-driven: it runs at no more than 60
 FPS during camera movement, stops after OrbitControls damping settles, pauses

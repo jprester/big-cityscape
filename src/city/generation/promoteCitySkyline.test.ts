@@ -20,7 +20,10 @@ describe('promoteCitySkyline', () => {
       },
       highRise: {
         promotedBuildingCount: 20,
+        distributedBuildingCount: 0,
+        distributionCellSizeMetres: 220,
         minimumParcelDimensionMetres: 10,
+        distributedMinimumParcelDimensionMetres: 10,
         heightRangeMetres: [62, 120] as const,
         maximumHeightToParcelRatio: 9.5,
       },
@@ -62,9 +65,77 @@ describe('promoteCitySkyline', () => {
       ).toBeCloseTo(building.heightMetres, 5);
     }
   });
+
+  it('adds high-rises to cells outside the central cluster', () => {
+    const buildings = Array.from({ length: 40 }, (_, index) =>
+      createBuilding(index),
+    );
+    const districtProfiles = new Map([
+      ['east-core', 'dense-central-core'] as const,
+    ]);
+    const config = {
+      ...CITY_MASSING_CONFIG,
+      skyline: {
+        promotedTowerCount: 1,
+        minimumParcelDimensionMetres: 24,
+        heightRangeMetres: [160, 180] as const,
+      },
+      highRise: {
+        promotedBuildingCount: 2,
+        distributedBuildingCount: 5,
+        distributionCellSizeMetres: 50,
+        minimumParcelDimensionMetres: 10,
+        distributedMinimumParcelDimensionMetres: 10,
+        heightRangeMetres: [62, 120] as const,
+        maximumHeightToParcelRatio: 9.5,
+      },
+    };
+    const promoted = promoteCitySkyline(buildings, districtProfiles, config);
+
+    expect(
+      promoted.filter(
+        (building) =>
+          building.heightMetres >= 62 && building.heightMetres <= 120,
+      ),
+    ).toHaveLength(7);
+  });
+
+  it('can place secondary high-rises in residual-fabric cells', () => {
+    const buildings = Array.from({ length: 12 }, (_, index) =>
+      createBuilding(index, 'residual-fabric'),
+    );
+    const districtProfiles = new Map([
+      ['east-core', 'dense-central-core'] as const,
+    ]);
+    const config = {
+      ...CITY_MASSING_CONFIG,
+      skyline: {
+        promotedTowerCount: 0,
+        minimumParcelDimensionMetres: 24,
+        heightRangeMetres: [160, 180] as const,
+      },
+      highRise: {
+        promotedBuildingCount: 0,
+        distributedBuildingCount: 5,
+        distributionCellSizeMetres: 50,
+        minimumParcelDimensionMetres: 10,
+        distributedMinimumParcelDimensionMetres: 10,
+        heightRangeMetres: [62, 120] as const,
+        maximumHeightToParcelRatio: 9.5,
+      },
+    };
+    const promoted = promoteCitySkyline(buildings, districtProfiles, config);
+
+    expect(
+      promoted.filter((building) => building.heightMetres >= 62),
+    ).toHaveLength(5);
+  });
 });
 
-function createBuilding(index: number): BuildingDefinition {
+function createBuilding(
+  index: number,
+  source: BuildingDefinition['source'] = 'road-block',
+): BuildingDefinition {
   const centerX = 520 + (index % 8) * 35;
   const centerZ = -330 + Math.floor(index / 8) * 40;
   const halfSize = 15;
@@ -72,7 +143,7 @@ function createBuilding(index: number): BuildingDefinition {
 
   return {
     id: `east-core/block-${index}/building-1`,
-    source: 'road-block',
+    source,
     blockId: `block-${index}`,
     regionId: `region-${index}`,
     districtId: 'east-core',

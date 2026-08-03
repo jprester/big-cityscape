@@ -37,6 +37,7 @@ import {
   type WeightedArchetype,
 } from './massingConfig';
 import { promoteCitySkyline } from './promoteCitySkyline';
+import { enforceTallBuildingClearance } from './enforceTallBuildingClearance';
 
 const BUILDING_GAP_METRES = 7;
 const BUILDING_ROAD_CLEARANCE_METRES: Readonly<Record<RoadClass, number>> = {
@@ -263,10 +264,14 @@ export function generateCityMassing(
   const roadClearedBuildings = buildings.filter((building) =>
     footprintClearsRoads(building.footprint),
   );
-  const clearedBuildings = promoteCitySkyline(
+  const promotedBuildings = promoteCitySkyline(
     roadClearedBuildings,
     districtProfiles,
     config,
+  );
+  const clearedBuildings = enforceTallBuildingClearance(
+    promotedBuildings,
+    config.tallBuildingClearance,
   );
   clearedBuildings.sort((first, second) => first.id.localeCompare(second.id));
 
@@ -555,13 +560,7 @@ function selectFabricHeight(
     minimumHeight +
     (coreMaximum - minimumHeight) * (0.14 + fieldInfluence * 0.52);
 
-  return roundToTenth(
-    clamp(
-      coherentHeight * random.float(0.82, 1.18),
-      minimumHeight,
-      coreMaximum,
-    ),
-  );
+  return roundToTenth(coherentHeight * random.float(0.8, 1.2));
 }
 
 function selectMaterial(

@@ -26,6 +26,7 @@ export function promoteCitySkyline(
   const skylineCandidates = rankedCandidates
     .filter(
       ({ building }) =>
+        building.source === 'road-block' &&
         minimumFootprintDimension(building) >=
         config.skyline.minimumParcelDimensionMetres,
     )
@@ -33,14 +34,37 @@ export function promoteCitySkyline(
   const skylineBuildingIds = new Set(
     skylineCandidates.map(({ building }) => building.id),
   );
-  const highRiseCandidates = rankedCandidates
+  const highRisePool = rankedCandidates
     .filter(
       ({ building }) =>
+        building.source === 'road-block' &&
         !skylineBuildingIds.has(building.id) &&
         minimumFootprintDimension(building) >=
           config.highRise.minimumParcelDimensionMetres,
-    )
-    .slice(0, config.highRise.promotedBuildingCount);
+    );
+  const centralHighRiseCandidates = highRisePool.slice(
+    0,
+    config.highRise.promotedBuildingCount,
+  );
+  const centralHighRiseBuildingIds = new Set(
+    centralHighRiseCandidates.map(({ building }) => building.id),
+  );
+  const distributedHighRiseCandidates = selectDistributedCandidates(
+    rankedCandidates.filter(
+      ({ building }) =>
+        !skylineBuildingIds.has(building.id) &&
+        !centralHighRiseBuildingIds.has(building.id) &&
+        minimumFootprintDimension(building) >=
+          config.highRise.distributedMinimumParcelDimensionMetres,
+    ),
+    centralHighRiseCandidates,
+    config.highRise.distributedBuildingCount,
+    config.highRise.distributionCellSizeMetres,
+  );
+  const highRiseCandidates = [
+    ...centralHighRiseCandidates,
+    ...distributedHighRiseCandidates,
+  ];
   const promotedHeights = new Map<string, number>();
 
   assignTierHeights(
@@ -80,6 +104,46 @@ export function promoteCitySkyline(
   });
 }
 
+function selectDistributedCandidates(
+  candidates: readonly RankedCandidate[],
+  centralCandidates: readonly RankedCandidate[],
+  count: number,
+  cellSizeMetres: number,
+): RankedCandidate[] {
+  const occupiedCells = new Set(
+    centralCandidates.map(({ building }) =>
+      distributionCellId(building, cellSizeMetres),
+    ),
+  );
+  const bestByCell = new Map<string, RankedCandidate>();
+
+  for (const candidate of candidates) {
+    const cellId = distributionCellId(candidate.building, cellSizeMetres);
+
+    if (occupiedCells.has(cellId) || bestByCell.has(cellId)) {
+      continue;
+    }
+
+    bestByCell.set(cellId, candidate);
+  }
+
+  return Array.from(bestByCell.values())
+    .sort(
+      (first, second) =>
+        second.score - first.score ||
+        first.building.id.localeCompare(second.building.id),
+    )
+    .slice(0, count);
+}
+
+function distributionCellId(
+  building: BuildingDefinition,
+  cellSizeMetres: number,
+): string {
+  const center = footprintCenter(building);
+  return `${Math.floor(center[0] / cellSizeMetres)},${Math.floor(center[1] / cellSizeMetres)}`;
+}
+
 type RankedCandidate = Readonly<{
   building: BuildingDefinition;
   score: number;
@@ -91,10 +155,7 @@ function rankCandidates(
   config: CityMassingConfig,
 ): RankedCandidate[] {
   return buildings
-    .filter(
-      (building) =>
-        building.source === 'road-block' && building.role !== 'landmark',
-    )
+    .filter((building) => building.role !== 'landmark')
     .map((building) => ({
       building,
       score: skylineScore(building, districtProfiles, config),

@@ -24,7 +24,7 @@ const RESIDENTIAL_MODEL_NUMBERS = [
 ] as const;
 
 const HIGH_RISE_MODEL_NUMBERS = createIntegerRange(1, 37);
-const SKYSCRAPER_MODEL_NUMBERS = createIntegerRange(1, 17);
+const SKYSCRAPER_MODEL_NUMBERS = createIntegerRange(1, 16);
 
 export const BUILDING_MODEL_CATALOG: readonly BuildingModelCatalogEntry[] = [
   ...createCatalogEntries('residential', RESIDENTIAL_MODEL_NUMBERS),

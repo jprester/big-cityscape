@@ -28,13 +28,13 @@ describe('selectBuildingModelCategory', () => {
   });
 
   it('keeps every supplied asset in the explicit runtime catalogue', () => {
-    expect(BUILDING_MODEL_CATALOG).toHaveLength(79);
+    expect(BUILDING_MODEL_CATALOG).toHaveLength(78);
     expect(
       countByCategory(BUILDING_MODEL_CATALOG.map((entry) => entry.category)),
     ).toEqual({
       residential: 25,
       'high-rise': 37,
-      skyscraper: 17,
+      skyscraper: 16,
     });
     expect(new Set(BUILDING_MODEL_CATALOG.map((entry) => entry.id)).size).toBe(
       BUILDING_MODEL_CATALOG.length,
@@ -67,6 +67,18 @@ describe('selectBuildingModel', () => {
     ]);
 
     expect(selected.rotateModelQuarterTurn).toBe(true);
+  });
+
+  it('replaces the retired high-rise 5 asset with high-rise 31', () => {
+    const building = createBuilding(170, 'background', 60, 45);
+    const models = [
+      createModel('high-rise-5', 'high-rise', 55, 190, 45),
+      createModel('high-rise-29', 'high-rise', 93, 99, 84),
+      createModel('high-rise-31', 'high-rise', 70, 60, 70),
+    ];
+    const placement = selectBuildingModel(building, models, 'high-rise-5');
+
+    expect(placement.model.id).toBe('high-rise-31');
   });
 });
 
