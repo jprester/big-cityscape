@@ -1,24 +1,35 @@
 import * as THREE from 'three';
 import type { DebugLayerManager } from '../../debug/DebugLayerManager';
-import type { ChunkedCityMassing } from '../model/cityChunks';
-import type {
-  BuildingMassPart,
-  MassingMaterialCategory,
-} from '../model/cityMassing';
+import type { ChunkedCityMassing, CityMassingChunk } from '../model/cityChunks';
+import type { MassingMaterialCategory } from '../model/cityMassing';
+import {
+  loadBuildingModels,
+  type BuildingModelLibrary,
+  type LoadedBuildingModel,
+} from './loadBuildingModels';
+import {
+  selectBuildingModel,
+  type BuildingModelPlacement,
+} from './selectBuildingModel';
+import {
+  planHighRiseModelCoverage,
+  planSkylineModelCoverage,
+} from './planSkylineModelCoverage';
 
 const MATERIAL_COLORS: Readonly<Record<MassingMaterialCategory, number>> = {
-  commercial: 0x567c91,
-  'mixed-use': 0x777d86,
-  landmark: 0x9bb2be,
+  commercial: 0x8c8a84,
+  'mixed-use': 0x8c8a84,
+  landmark: 0x8c8a84,
 };
+const MODEL_FOOTPRINT_FILL = 0.96;
 
 export type CityMassingFrameStats = Readonly<{
   renderedChunks: number;
   totalChunks: number;
   renderedBatches: number;
   totalBatches: number;
-  renderedParts: number;
-  totalParts: number;
+  renderedInstances: number;
+  totalInstances: number;
 }>;
 
 export type CityMassingRenderLayer = Readonly<{
@@ -26,90 +37,93 @@ export type CityMassingRenderLayer = Readonly<{
   getFrameStats: () => CityMassingFrameStats;
 }>;
 
-export function addCityMassingLayer(
+export async function addCityMassingLayer(
   layers: DebugLayerManager,
   massing: ChunkedCityMassing,
-): CityMassingRenderLayer {
+): Promise<CityMassingRenderLayer> {
+  const library = await loadBuildingModels();
   const group = new THREE.Group();
-  group.name = 'city:primitive-massing';
-  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  group.name = 'city:building-models';
   const material = new THREE.MeshLambertMaterial({
     color: 0xffffff,
-    emissive: 0x0b1115,
+    emissive: 0x10100f,
   });
-  const transform = new THREE.Matrix4();
-  const position = new THREE.Vector3();
-  const rotation = new THREE.Quaternion();
-  const scale = new THREE.Vector3();
-  const yAxis = new THREE.Vector3(0, 1, 0);
   const renderedChunkIds = new Set<string>();
+  const usedModelIds = new Set<string>();
+  const buildings = massing.chunks.flatMap((chunk) => chunk.buildings);
+  const skylineModelCoverage = planSkylineModelCoverage(
+    buildings,
+    library.models,
+  );
+  const highRiseModelCoverage = planHighRiseModelCoverage(
+    buildings,
+    library.models,
+    new Set(skylineModelCoverage.keys()),
+  );
+  const reservedModelCoverage = new Map([
+    ...skylineModelCoverage,
+    ...highRiseModelCoverage,
+  ]);
   let renderedBatches = 0;
-  let renderedParts = 0;
-  let totalBatches = 0;
+  let renderedInstances = 0;
 
   for (const chunk of massing.chunks) {
-    const parts = chunk.buildings.flatMap((building) =>
-      building.parts.map((part) => ({ part, material: building.material })),
+    const placements = chunk.buildings.map((building) =>
+      selectBuildingModel(
+        building,
+        library.models,
+        reservedModelCoverage.get(building.id),
+      ),
     );
-    const instances = new THREE.InstancedMesh(geometry, material, parts.length);
-    instances.name = `primitive-masses:${chunk.id}`;
-    instances.userData = {
-      chunkId: chunk.id,
-      gridX: chunk.gridX,
-      gridZ: chunk.gridZ,
-    };
-    instances.castShadow = false;
-    instances.receiveShadow = false;
-    instances.onBeforeRender = () => {
+
+    for (const placement of placements) {
+      usedModelIds.add(placement.model.id);
+    }
+
+    const batch = createChunkBatch(chunk, placements, material);
+    const prepareBatch = batch.onBeforeRender.bind(batch);
+    batch.onBeforeRender = (
+      renderer,
+      scene,
+      camera,
+      geometry,
+      renderMaterial,
+      renderGroup,
+    ) => {
+      prepareBatch(
+        renderer,
+        scene,
+        camera,
+        geometry,
+        renderMaterial,
+        renderGroup,
+      );
       renderedChunkIds.add(chunk.id);
       renderedBatches += 1;
-      renderedParts += parts.length;
+      renderedInstances += placements.length;
     };
-
-    for (let index = 0; index < parts.length; index += 1) {
-      const instance = parts[index];
-
-      if (instance === undefined) {
-        continue;
-      }
-
-      composePartTransform(
-        instance.part,
-        transform,
-        position,
-        rotation,
-        scale,
-        yAxis,
-      );
-      instances.setMatrixAt(index, transform);
-      instances.setColorAt(index, new THREE.Color(MATERIAL_COLORS[instance.material]));
-    }
-
-    instances.instanceMatrix.needsUpdate = true;
-
-    if (instances.instanceColor !== null) {
-      instances.instanceColor.needsUpdate = true;
-    }
-
-    instances.computeBoundingBox();
-    instances.computeBoundingSphere();
-    group.add(instances);
-    totalBatches += 1;
+    group.add(batch);
   }
 
-  const hemisphereLight = new THREE.HemisphereLight(0xc3ddeb, 0x172028, 2.1);
+  disposeModelLibrary(library);
+
+  const hemisphereLight = new THREE.HemisphereLight(0xe3e1da, 0x252624, 2.1);
   hemisphereLight.name = 'massing:hemisphere-light';
-  const directionalLight = new THREE.DirectionalLight(0xffe5c6, 2.4);
+  const directionalLight = new THREE.DirectionalLight(0xfff4e5, 2.4);
   directionalLight.name = 'massing:key-light';
   directionalLight.position.set(-650, 900, 420);
   group.add(hemisphereLight, directionalLight);
 
   layers.add({
-    id: 'primitive-masses',
-    label: `${massing.metadata.buildings} buildings · ${massing.metadata.chunks} chunks`,
+    id: 'building-models',
+    label: `${massing.metadata.buildings} model buildings · ${usedModelIds.size} / ${library.models.length} variants · ${skylineModelCoverage.size} skyscrapers · ${highRiseModelCoverage.size} high-rise variants`,
     object: group,
     dispose: () => {
-      geometry.dispose();
+      group.traverse((object) => {
+        if (object instanceof THREE.BatchedMesh) {
+          object.dispose();
+        }
+      });
       material.dispose();
     },
   });
@@ -118,33 +132,141 @@ export function addCityMassingLayer(
     beginFrame: () => {
       renderedChunkIds.clear();
       renderedBatches = 0;
-      renderedParts = 0;
+      renderedInstances = 0;
     },
     getFrameStats: () => ({
       renderedChunks: renderedChunkIds.size,
       totalChunks: massing.metadata.chunks,
       renderedBatches,
-      totalBatches,
-      renderedParts,
-      totalParts: massing.metadata.primitiveParts,
+      totalBatches: massing.metadata.chunks,
+      renderedInstances,
+      totalInstances: massing.metadata.buildings,
     }),
   };
 }
 
-function composePartTransform(
-  part: BuildingMassPart,
+function createChunkBatch(
+  chunk: CityMassingChunk,
+  placements: readonly BuildingModelPlacement[],
+  material: THREE.MeshLambertMaterial,
+): THREE.BatchedMesh {
+  const models = uniqueModels(placements);
+  const maximumVertexCount = models.reduce(
+    (total, model) => total + model.geometry.getAttribute('position').count,
+    0,
+  );
+  const maximumIndexCount = models.reduce(
+    (total, model) => total + (model.geometry.index?.count ?? 0),
+    0,
+  );
+  const batch = new THREE.BatchedMesh(
+    placements.length,
+    maximumVertexCount,
+    maximumIndexCount,
+    material,
+  );
+  batch.name = `building-models:${chunk.id}`;
+  batch.userData = {
+    chunkId: chunk.id,
+    gridX: chunk.gridX,
+    gridZ: chunk.gridZ,
+  };
+  batch.castShadow = false;
+  batch.receiveShadow = false;
+  batch.perObjectFrustumCulled = false;
+  batch.sortObjects = false;
+
+  const geometryIds = new Map<string, number>();
+
+  for (const model of models) {
+    geometryIds.set(model.id, batch.addGeometry(model.geometry));
+  }
+
+  const transform = new THREE.Matrix4();
+  const position = new THREE.Vector3();
+  const rotation = new THREE.Quaternion();
+  const scale = new THREE.Vector3();
+  const yAxis = new THREE.Vector3(0, 1, 0);
+  const color = new THREE.Color();
+
+  for (const placement of placements) {
+    const geometryId = geometryIds.get(placement.model.id);
+
+    if (geometryId === undefined) {
+      throw new Error(`Model "${placement.model.id}" is missing from its chunk batch.`);
+    }
+
+    const instanceId = batch.addInstance(geometryId);
+    composeModelTransform(
+      placement,
+      transform,
+      position,
+      rotation,
+      scale,
+      yAxis,
+    );
+    batch.setMatrixAt(instanceId, transform);
+    color.setHex(MATERIAL_COLORS[placement.building.material]);
+    batch.setColorAt(instanceId, color);
+  }
+
+  batch.computeBoundingBox();
+  batch.computeBoundingSphere();
+  return batch;
+}
+
+function composeModelTransform(
+  placement: BuildingModelPlacement,
   transform: THREE.Matrix4,
   position: THREE.Vector3,
   rotation: THREE.Quaternion,
   scale: THREE.Vector3,
   yAxis: THREE.Vector3,
 ): void {
-  position.set(
-    part.center[0],
-    part.baseHeightMetres + part.heightMetres / 2,
-    part.center[1],
+  position.set(placement.center[0], 0, placement.center[1]);
+  rotation.setFromAxisAngle(
+    yAxis,
+    -placement.rotationRadians +
+      (placement.rotateModelQuarterTurn ? Math.PI / 2 : 0),
   );
-  rotation.setFromAxisAngle(yAxis, -part.rotationRadians);
-  scale.set(part.widthMetres, part.heightMetres, part.depthMetres);
+
+  if (placement.rotateModelQuarterTurn) {
+    scale.set(
+      (placement.depthMetres * MODEL_FOOTPRINT_FILL) /
+        placement.model.widthMetres,
+      placement.building.heightMetres / placement.model.heightMetres,
+      (placement.widthMetres * MODEL_FOOTPRINT_FILL) /
+        placement.model.depthMetres,
+    );
+  } else {
+    scale.set(
+      (placement.widthMetres * MODEL_FOOTPRINT_FILL) /
+        placement.model.widthMetres,
+      placement.building.heightMetres / placement.model.heightMetres,
+      (placement.depthMetres * MODEL_FOOTPRINT_FILL) /
+        placement.model.depthMetres,
+    );
+  }
+
   transform.compose(position, rotation, scale);
+}
+
+function uniqueModels(
+  placements: readonly BuildingModelPlacement[],
+): readonly LoadedBuildingModel[] {
+  const models = new Map<string, LoadedBuildingModel>();
+
+  for (const placement of placements) {
+    models.set(placement.model.id, placement.model);
+  }
+
+  return Array.from(models.values()).sort((first, second) =>
+    first.id.localeCompare(second.id),
+  );
+}
+
+function disposeModelLibrary(library: BuildingModelLibrary): void {
+  for (const model of library.models) {
+    model.geometry.dispose();
+  }
 }

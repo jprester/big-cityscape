@@ -36,6 +36,7 @@ import {
   type DistrictMassingProfile,
   type WeightedArchetype,
 } from './massingConfig';
+import { promoteCitySkyline } from './promoteCitySkyline';
 
 const BUILDING_GAP_METRES = 7;
 const BUILDING_ROAD_CLEARANCE_METRES: Readonly<Record<RoadClass, number>> = {
@@ -259,8 +260,13 @@ export function generateCityMassing(
     roadExclusions,
     BUILDING_ROAD_CLEARANCE_METRES,
   );
-  const clearedBuildings = buildings.filter((building) =>
+  const roadClearedBuildings = buildings.filter((building) =>
     footprintClearsRoads(building.footprint),
+  );
+  const clearedBuildings = promoteCitySkyline(
+    roadClearedBuildings,
+    districtProfiles,
+    config,
   );
   clearedBuildings.sort((first, second) => first.id.localeCompare(second.id));
 
@@ -585,7 +591,7 @@ function selectHeightBand(
     return 'mid-rise';
   }
 
-  if (heightMetres < 300) {
+  if (heightMetres < 275) {
     return 'high-rise';
   }
 

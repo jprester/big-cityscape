@@ -24,7 +24,10 @@ import { DebugLayerManager } from '../debug/DebugLayerManager';
 import { createInspectionCamera } from './createInspectionCamera';
 import { createPerformancePanel } from './createPerformancePanel';
 
-const MAX_PIXEL_RATIO = 2;
+const MAX_PIXEL_RATIO = 1.5;
+const MAX_ACTIVE_FRAMES_PER_SECOND = 60;
+const MIN_FRAME_INTERVAL_MILLISECONDS =
+  1_000 / MAX_ACTIVE_FRAMES_PER_SECOND - 0.5;
 
 export type CityFieldApp = Readonly<{
   start: () => void;
@@ -85,7 +88,7 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
-    powerPreference: 'high-performance',
+    powerPreference: 'low-power',
   });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.domElement.className = 'city-canvas';
@@ -108,7 +111,10 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
   addBlockDebugLayers(debugLayers, cityBlocks);
   addBlockCoverageAuditLayers(debugLayers, cityBlocks);
   addResidualFabricDebugLayer(debugLayers, residualFabric);
-  const massingRenderLayer = addCityMassingLayer(debugLayers, chunkedMassing);
+  const massingRenderLayer = await addCityMassingLayer(
+    debugLayers,
+    chunkedMassing,
+  );
   addBuildingDebugLayers(debugLayers, massing);
   addChunkDebugLayer(debugLayers, chunkedMassing);
   debugLayers.setVisible('districts', false);
@@ -120,6 +126,94 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
     scene,
     massingRenderLayer.getFrameStats,
   );
+  let isRunning = false;
+  let isDisposed = false;
+  let cameraInteractionActive = false;
+  let animationFrameId: number | undefined;
+  let previousTimeMilliseconds: number | undefined;
+
+  const requestRender = (): void => {
+    if (
+      !isRunning ||
+      isDisposed ||
+      document.hidden ||
+      animationFrameId !== undefined
+    ) {
+      return;
+    }
+
+    animationFrameId = window.requestAnimationFrame(renderFrame);
+  };
+
+  const renderFrame = (timeMilliseconds: number): void => {
+    animationFrameId = undefined;
+
+    if (!isRunning || isDisposed || document.hidden) {
+      return;
+    }
+
+    if (
+      previousTimeMilliseconds !== undefined &&
+      timeMilliseconds - previousTimeMilliseconds <
+        MIN_FRAME_INTERVAL_MILLISECONDS
+    ) {
+      requestRender();
+      return;
+    }
+
+    const deltaSeconds =
+      previousTimeMilliseconds === undefined
+        ? 0
+        : Math.max(0, (timeMilliseconds - previousTimeMilliseconds) / 1_000);
+
+    previousTimeMilliseconds = timeMilliseconds;
+    const cameraChanged = inspectionCamera.update(Math.min(deltaSeconds, 0.1));
+    massingRenderLayer.beginFrame();
+    renderer.render(scene, inspectionCamera.camera);
+    labelRenderer.render(scene, inspectionCamera.camera);
+    performancePanel.update(deltaSeconds);
+
+    if (cameraInteractionActive || cameraChanged) {
+      requestRender();
+    } else {
+      previousTimeMilliseconds = undefined;
+      performancePanel.setIdle();
+    }
+  };
+
+  const onCameraInteractionStart = (): void => {
+    cameraInteractionActive = true;
+    requestRender();
+  };
+  const onCameraInteractionEnd = (): void => {
+    cameraInteractionActive = false;
+    requestRender();
+  };
+  const onCameraChange = (): void => requestRender();
+  const onVisibilityChange = (): void => {
+    if (document.hidden) {
+      if (animationFrameId !== undefined) {
+        window.cancelAnimationFrame(animationFrameId);
+        animationFrameId = undefined;
+      }
+
+      cameraInteractionActive = false;
+      previousTimeMilliseconds = undefined;
+      performancePanel.setIdle();
+      return;
+    }
+
+    requestRender();
+  };
+
+  inspectionCamera.controls.addEventListener(
+    'start',
+    onCameraInteractionStart,
+  );
+  inspectionCamera.controls.addEventListener('end', onCameraInteractionEnd);
+  inspectionCamera.controls.addEventListener('change', onCameraChange);
+  document.addEventListener('visibilitychange', onVisibilityChange);
+
   const debugPanel = createDebugPanel(
     debugLayers,
     [
@@ -140,6 +234,7 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
       },
     ],
     `Milestone 4 · seed ${massing.seed}`,
+    requestRender,
   );
 
   host.replaceChildren(
@@ -157,38 +252,26 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
     renderer.setSize(width, height, false);
     labelRenderer.setSize(width, height);
     inspectionCamera.resize(width, height);
+    requestRender();
   };
 
   const resizeObserver = new ResizeObserver(resize);
   resizeObserver.observe(host);
   resize();
 
-  let isRunning = false;
-  let isDisposed = false;
-  let previousTimeMilliseconds: number | undefined;
-
-  const renderFrame = (timeMilliseconds: number): void => {
-    const deltaSeconds =
-      previousTimeMilliseconds === undefined
-        ? 0
-        : Math.max(0, (timeMilliseconds - previousTimeMilliseconds) / 1_000);
-
-    previousTimeMilliseconds = timeMilliseconds;
-    inspectionCamera.update(Math.min(deltaSeconds, 0.1));
-    massingRenderLayer.beginFrame();
-    renderer.render(scene, inspectionCamera.camera);
-    labelRenderer.render(scene, inspectionCamera.camera);
-    performancePanel.update(deltaSeconds);
-  };
-
   const stop = (): void => {
     if (!isRunning) {
       return;
     }
 
-    renderer.setAnimationLoop(null);
+    if (animationFrameId !== undefined) {
+      window.cancelAnimationFrame(animationFrameId);
+      animationFrameId = undefined;
+    }
+
     isRunning = false;
     previousTimeMilliseconds = undefined;
+    performancePanel.setIdle();
   };
 
   return {
@@ -201,8 +284,8 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
         return;
       }
 
-      renderer.setAnimationLoop(renderFrame);
       isRunning = true;
+      requestRender();
     },
     stop,
     dispose: () => {
@@ -212,6 +295,16 @@ export async function createApp(host: HTMLElement): Promise<CityFieldApp> {
 
       stop();
       resizeObserver.disconnect();
+      inspectionCamera.controls.removeEventListener(
+        'start',
+        onCameraInteractionStart,
+      );
+      inspectionCamera.controls.removeEventListener(
+        'end',
+        onCameraInteractionEnd,
+      );
+      inspectionCamera.controls.removeEventListener('change', onCameraChange);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
       debugPanel.dispose();
       performancePanel.dispose();
       inspectionCamera.dispose();

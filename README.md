@@ -24,9 +24,9 @@ npm run build
 
 ## Inspection controls
 
-- Left mouse drag: pan across the ground plane
-- Right mouse drag: orbit around the current target
-- Mouse wheel or pinch: zoom
+- Left mouse drag: orbit around the current target
+- Right mouse drag: pan
+- Middle mouse drag, mouse wheel, or pinch: zoom
 - **Aerial**, **Rooftop**, and **Street**: restore reproducible comparison views
 
 Append `?seed=123` to the development URL to inspect another deterministic

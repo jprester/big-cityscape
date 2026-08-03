@@ -15,6 +15,7 @@ export function createDebugPanel(
   layers: DebugLayerManager,
   cameraPresets: readonly CameraPresetAction[],
   milestoneLabel = 'Milestone 0',
+  invalidate: () => void = () => {},
 ): DebugPanel {
   const element = document.createElement('aside');
   element.className = 'debug-panel';
@@ -41,12 +42,13 @@ export function createDebugPanel(
     input.type = 'checkbox';
     input.checked = layer.visible;
 
-    const onChange = (): void => {
+    const handleChange = (): void => {
       layers.setVisible(layer.id, input.checked);
+      invalidate();
     };
 
-    input.addEventListener('change', onChange);
-    disposers.push(() => input.removeEventListener('change', onChange));
+    input.addEventListener('change', handleChange);
+    disposers.push(() => input.removeEventListener('change', handleChange));
     label.append(input, document.createTextNode(layer.label));
     controls.append(label);
   }
@@ -60,14 +62,19 @@ export function createDebugPanel(
     button.type = 'button';
     button.dataset.cameraPreset = preset.id;
     button.textContent = preset.label;
-    button.addEventListener('click', preset.activate);
-    disposers.push(() => button.removeEventListener('click', preset.activate));
+    const activatePreset = (): void => {
+      preset.activate();
+      invalidate();
+    };
+
+    button.addEventListener('click', activatePreset);
+    disposers.push(() => button.removeEventListener('click', activatePreset));
     cameraControls.append(button);
   }
 
   const help = document.createElement('p');
   help.className = 'debug-panel__help';
-  help.textContent = 'Left drag: pan · Right drag: orbit · Wheel: zoom';
+  help.textContent = 'Left drag: orbit · Right drag: pan · Wheel: zoom';
 
   element.append(eyebrow, title, controls, cameraControls, help);
 

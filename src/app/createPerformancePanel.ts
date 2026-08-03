@@ -12,11 +12,12 @@ type MetricName =
   | 'visible'
   | 'chunks'
   | 'batches'
-  | 'parts';
+  | 'instances';
 
 export type PerformancePanel = Readonly<{
   element: HTMLElement;
   update: (deltaSeconds: number) => void;
+  setIdle: () => void;
   dispose: () => void;
 }>;
 
@@ -41,22 +42,14 @@ export function createPerformancePanel(
   if (getMassingStats !== undefined) {
     addMetric(element, outputs, 'chunks', 'Rendered chunks', '0 / 0');
     addMetric(element, outputs, 'batches', 'Massing batches', '0 / 0');
-    addMetric(element, outputs, 'parts', 'Massing parts', '0 / 0');
+    addMetric(element, outputs, 'instances', 'Model instances', '0 / 0');
   }
 
   let elapsedSeconds = 0;
   let frameCount = 0;
+  let hasReportedFrameRate = false;
 
-  const update = (deltaSeconds: number): void => {
-    elapsedSeconds += deltaSeconds;
-    frameCount += 1;
-
-    if (elapsedSeconds < UPDATE_INTERVAL_SECONDS) {
-      return;
-    }
-
-    const framesPerSecond = frameCount / elapsedSeconds;
-    const millisecondsPerFrame = (elapsedSeconds * 1_000) / frameCount;
+  const updateSceneMetrics = (): void => {
     let objectCount = -1;
     let visibleObjectCount = -1;
 
@@ -67,8 +60,6 @@ export function createPerformancePanel(
       visibleObjectCount += 1;
     });
 
-    setMetric(outputs, 'fps', framesPerSecond.toFixed(0));
-    setMetric(outputs, 'frame', `${millisecondsPerFrame.toFixed(1)} ms`);
     setMetric(outputs, 'calls', formatCount(renderer.info.render.calls));
     setMetric(outputs, 'triangles', formatCount(renderer.info.render.triangles));
     setMetric(outputs, 'objects', formatCount(Math.max(0, objectCount)));
@@ -88,10 +79,32 @@ export function createPerformancePanel(
       );
       setMetric(
         outputs,
-        'parts',
-        `${massingStats.renderedParts} / ${massingStats.totalParts}`,
+        'instances',
+        `${massingStats.renderedInstances} / ${massingStats.totalInstances}`,
       );
     }
+  };
+
+  const update = (deltaSeconds: number): void => {
+    elapsedSeconds += deltaSeconds;
+    frameCount += 1;
+    updateSceneMetrics();
+
+    if (frameCount === 1 && !hasReportedFrameRate) {
+      setMetric(outputs, 'fps', 'Active');
+      setMetric(outputs, 'frame', 'Rendering');
+    }
+
+    if (elapsedSeconds < UPDATE_INTERVAL_SECONDS) {
+      return;
+    }
+
+    const framesPerSecond = frameCount / elapsedSeconds;
+    const millisecondsPerFrame = (elapsedSeconds * 1_000) / frameCount;
+
+    setMetric(outputs, 'fps', framesPerSecond.toFixed(0));
+    setMetric(outputs, 'frame', `${millisecondsPerFrame.toFixed(1)} ms`);
+    hasReportedFrameRate = true;
 
     elapsedSeconds = 0;
     frameCount = 0;
@@ -100,6 +113,14 @@ export function createPerformancePanel(
   return {
     element,
     update,
+    setIdle: () => {
+      updateSceneMetrics();
+      setMetric(outputs, 'fps', 'Idle');
+      setMetric(outputs, 'frame', 'On demand');
+      elapsedSeconds = 0;
+      frameCount = 0;
+      hasReportedFrameRate = false;
+    },
     dispose: () => {
       element.remove();
     },

@@ -94,17 +94,18 @@ The first profiles are explicit and easy to tune:
 
 | District profile | Residual fabric | Block background | Anchor |
 | --- | ---: | ---: | ---: |
-| dense central core | 12–42 m | 28–82 m | 95–218 m |
-| commercial transition | 10–34 m | 24–72 m | 76–148 m |
-| dense mixed | 8–28 m | 18–58 m | 62–108 m |
+| dense central core | 12–42 m | 36–132 m | 125–285 m |
+| commercial transition | 10–34 m | 28–102 m | 92–205 m |
+| dense mixed | 8–28 m | 18–58 m | 72–142 m |
 | infrastructure edge | 7–20 m | 14–38 m | 40–62 m |
 
 Height within each range samples one explicit continuous field containing a
 primary core, two weaker secondary centres, and each district's local cluster.
 The field determines skyline structure first; limited seeded variation operates
-inside that structure. The largest safe block in `east-core` receives one
-deterministic 300 m composed landmark. These are fictional-city rules, not
-inferred Osaka land use.
+inside that structure. A second deterministic pass creates a broad downtown
+belt of up to 120 high-rises between 55 and 145 m, then promotes ten wider sites
+to 130–224 m skyscrapers. The largest safe block in `east-core` receives one
+287 m landmark. These are fictional-city rules, not inferred Osaka land use.
 
 ## Primitive vocabulary and current output
 
@@ -126,11 +127,10 @@ variants:
 
 Complex compositions require a viable parcel width and otherwise fall back to a
 slab. Compact lots use higher footprint coverage than larger tower parcels. The
-current default seed produces 4,674 definitions and 4,843 primitive parts in 46
-chunks, with height bands of 4,647 low-rise, 24 mid-rise, two high-rise, and one
-300 m landmark. The low residual height band creates a continuous urban carpet;
-the block-driven secondary anchors now create visible peaks instead of relying
-on one isolated tower.
+current default seed produces 4,674 definitions in 46 chunks, with height bands
+of 4,566 low-rise, 99 mid-rise, eight high-rise, and one landmark. The low
+residual height band creates a continuous urban carpet; the high-rise belt now
+provides a legible transition into the smaller skyscraper cluster.
 
 Each definition retains its source category, building ID, block ID, region or
 fabric-lot ID, district ID, root-derived seed, role, archetype, material
@@ -138,10 +138,14 @@ category, footprint, height, and primitive parts.
 
 ## Rendering and inspection
 
-All parts share one unit box geometry and one Lambert material. One
-`InstancedMesh` is rendered per occupied 250 m chunk, with commercial, mixed-use,
-or landmark color per instance. Two non-shadow-casting lights make forms readable
-without introducing facade shaders or atmosphere.
+The 79 low-poly GLB assets are normalized once and rendered through one
+`BatchedMesh` per occupied 250 m chunk with a shared cement-grey Lambert
+material. Eleven representative skyscraper assets remain rare, while all 37
+high-rise variants receive at least one deterministic downtown placement. Two
+non-shadow-casting lights make forms readable without introducing facade
+shaders or atmosphere. Rendering is demand-driven: it runs at no more than 60
+FPS during camera movement, stops after OrbitControls damping settles, pauses
+while the page is hidden, and caps Retina pixel density at 1.5.
 
 Before geometry creation, the 510 split source ways become a continuous render
 network. Four tunnels remain debug-only; the other 506 roads preserve 252 exact

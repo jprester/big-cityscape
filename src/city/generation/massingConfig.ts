@@ -34,6 +34,17 @@ export type CityHeightFieldConfig = Readonly<{
 export type CityMassingConfig = Readonly<{
   seed: number;
   heightField: CityHeightFieldConfig;
+  skyline: Readonly<{
+    promotedTowerCount: number;
+    minimumParcelDimensionMetres: number;
+    heightRangeMetres: readonly [minimum: number, maximum: number];
+  }>;
+  highRise: Readonly<{
+    promotedBuildingCount: number;
+    minimumParcelDimensionMetres: number;
+    heightRangeMetres: readonly [minimum: number, maximum: number];
+    maximumHeightToParcelRatio: number;
+  }>;
   landmark: Readonly<{
     districtId: string;
     heightMetres: number;
@@ -53,15 +64,26 @@ export const CITY_MASSING_CONFIG: CityMassingConfig = {
     ],
     districtClusterWeight: 0.3,
   },
+  skyline: {
+    promotedTowerCount: 10,
+    minimumParcelDimensionMetres: 24,
+    heightRangeMetres: [130, 224],
+  },
+  highRise: {
+    promotedBuildingCount: 120,
+    minimumParcelDimensionMetres: 8,
+    heightRangeMetres: [55, 145],
+    maximumHeightToParcelRatio: 9.5,
+  },
   landmark: {
     districtId: 'east-core',
-    heightMetres: 300,
+    heightMetres: 287,
   },
   profiles: {
     'dense-central-core': {
       fabricHeightRangeMetres: [12, 42],
-      backgroundHeightRangeMetres: [28, 82],
-      anchorHeightRangeMetres: [95, 218],
+      backgroundHeightRangeMetres: [36, 132],
+      anchorHeightRangeMetres: [125, 285],
       clusterCenter: [690, -225],
       clusterRadiusMetres: 390,
       targetLotAreaSquareMetres: 360,
@@ -87,8 +109,8 @@ export const CITY_MASSING_CONFIG: CityMassingConfig = {
     },
     'commercial-transition': {
       fabricHeightRangeMetres: [10, 34],
-      backgroundHeightRangeMetres: [24, 72],
-      anchorHeightRangeMetres: [76, 148],
+      backgroundHeightRangeMetres: [28, 102],
+      anchorHeightRangeMetres: [92, 205],
       clusterCenter: [570, 120],
       clusterRadiusMetres: 520,
       targetLotAreaSquareMetres: 450,
@@ -115,7 +137,7 @@ export const CITY_MASSING_CONFIG: CityMassingConfig = {
     'dense-mixed': {
       fabricHeightRangeMetres: [8, 28],
       backgroundHeightRangeMetres: [18, 58],
-      anchorHeightRangeMetres: [62, 108],
+      anchorHeightRangeMetres: [72, 142],
       clusterCenter: [-770, -455],
       clusterRadiusMetres: 310,
       targetLotAreaSquareMetres: 320,

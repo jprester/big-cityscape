@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { MapControls } from 'three/addons/controls/MapControls.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const INITIAL_TARGET_METRES = new THREE.Vector3(0, 0, 0);
 
@@ -13,11 +13,11 @@ export type InspectionCameraFocus = Readonly<{
 
 export type InspectionCamera = Readonly<{
   camera: THREE.PerspectiveCamera;
-  controls: MapControls;
+  controls: OrbitControls;
   resize: (width: number, height: number) => void;
   reset: () => void;
   setPreset: (preset: InspectionCameraPresetId) => void;
-  update: (deltaSeconds: number) => void;
+  update: (deltaSeconds: number) => boolean;
   dispose: () => void;
 }>;
 
@@ -34,11 +34,9 @@ export function createInspectionCamera(
   camera.name = 'inspection-camera';
   camera.up.set(0, 1, 0);
 
-  const controls = new MapControls(camera, canvas);
+  const controls = new OrbitControls(camera, canvas);
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
-  controls.screenSpacePanning = false;
-  controls.zoomToCursor = true;
   controls.minDistance = 5;
   controls.maxDistance = Math.max(6_000, viewExtentMetres * 4);
   controls.maxPolarAngle = Math.PI * 0.495;
@@ -96,7 +94,7 @@ export function createInspectionCamera(
     reset,
     setPreset,
     update: (deltaSeconds) => {
-      controls.update(deltaSeconds);
+      return controls.update(deltaSeconds);
     },
     dispose: () => {
       controls.dispose();
