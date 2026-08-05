@@ -17,10 +17,21 @@ geographic data or use real-world building footprints.
 ```sh
 npm install
 npm run preprocess
+npm run catalog:build
 npm run dev
 npm test
 npm run build
 ```
+
+## Building asset catalogue
+
+Run `npm run catalog:build` after adding or changing a building GLB. The command
+regenerates deterministic geometry measurements for every exported asset.
+
+While the development server is running, open
+`http://localhost:5173/?view=assets` to inspect all assets, their reviewed city
+roles, nominal metre dimensions, scale limits, geometry cost, and audit status.
+See `docs/BUILDING_ASSETS.md` for the catalogue workflow and conventions.
 
 ## Inspection controls
 

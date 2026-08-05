@@ -10,6 +10,7 @@
     "preprocess": "npm run preprocess:structure && npm run preprocess:blocks",
     "preprocess:structure": "tsx scripts/preprocess-osm.ts",
     "preprocess:blocks": "tsx scripts/preprocess-blocks.ts",
+    "catalog:build": "tsx scripts/catalog-building-assets.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview"

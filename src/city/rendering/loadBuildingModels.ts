@@ -26,17 +26,19 @@ export type BuildingModelLibrary = Readonly<{
   }>[];
 }>;
 
-export async function loadBuildingModels(): Promise<BuildingModelLibrary> {
+export async function loadBuildingModels(
+  catalog: readonly BuildingModelCatalogEntry[] = BUILDING_MODEL_CATALOG,
+): Promise<BuildingModelLibrary> {
   const loader = new GLTFLoader();
   const results = await Promise.allSettled(
-    BUILDING_MODEL_CATALOG.map((entry) => loadBuildingModel(loader, entry)),
+    catalog.map((entry) => loadBuildingModel(loader, entry)),
   );
   const models: LoadedBuildingModel[] = [];
   const failedAssets: Array<Readonly<{ id: string; reason: string }>> = [];
 
   for (let index = 0; index < results.length; index += 1) {
     const result = results[index];
-    const entry = BUILDING_MODEL_CATALOG[index];
+    const entry = catalog[index];
 
     if (result === undefined || entry === undefined) {
       throw new Error('Building model loading lost its catalogue alignment.');

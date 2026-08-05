@@ -1,0 +1,3704 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": "public/assets/models/buildings/lowpoly-buildings-pack",
+  "assets": [
+    {
+      "id": "high-rise-1",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-1.glb",
+      "sourceDimensions": {
+        "width": 55.6576,
+        "height": 148.6712,
+        "depth": 70.1328
+      },
+      "sourceBounds": {
+        "min": [
+          -27.8288,
+          0,
+          -35.0664
+        ],
+        "max": [
+          27.8288,
+          148.6712,
+          35.0664
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.2601,
+        "slenderness": 2.1199
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 323,
+        "triangles": 309,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "5a1f6e8fe24ed61f",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-2",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-2.glb",
+      "sourceDimensions": {
+        "width": 48.0431,
+        "height": 129.635,
+        "depth": 21.6097
+      },
+      "sourceBounds": {
+        "min": [
+          -24.0216,
+          0,
+          -10.8049
+        ],
+        "max": [
+          24.0216,
+          129.635,
+          10.8049
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 2.2232,
+        "slenderness": 2.6983
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 132,
+        "triangles": 76,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "7c8c301ee66cb8cd",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-3",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-3.glb",
+      "sourceDimensions": {
+        "width": 49.2787,
+        "height": 169.6902,
+        "depth": 38.566
+      },
+      "sourceBounds": {
+        "min": [
+          -24.6394,
+          0,
+          -19.283
+        ],
+        "max": [
+          24.6394,
+          169.6902,
+          19.283
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.2778,
+        "slenderness": 3.4435
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 1220,
+        "triangles": 606,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "573003d9304b0f71",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-4",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-4.glb",
+      "sourceDimensions": {
+        "width": 51.1959,
+        "height": 166.8054,
+        "depth": 41.8875
+      },
+      "sourceBounds": {
+        "min": [
+          -25.5979,
+          0,
+          -20.9438
+        ],
+        "max": [
+          25.5979,
+          166.8054,
+          20.9438
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.2222,
+        "slenderness": 3.2582
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 1652,
+        "triangles": 850,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "8a96c6afa1fdd301",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-5",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-5.glb",
+      "sourceDimensions": {
+        "width": 55.3806,
+        "height": 190.8114,
+        "depth": 45.3114
+      },
+      "sourceBounds": {
+        "min": [
+          -27.6903,
+          0,
+          -22.6557
+        ],
+        "max": [
+          27.6903,
+          190.8114,
+          22.6557
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.2222,
+        "slenderness": 3.4455
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 1532,
+        "triangles": 762,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "3ae95fa09daa1d07",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-6",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-6.glb",
+      "sourceDimensions": {
+        "width": 46,
+        "height": 147.02,
+        "depth": 38
+      },
+      "sourceBounds": {
+        "min": [
+          -23,
+          0,
+          -19
+        ],
+        "max": [
+          23,
+          147.02,
+          19
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.2105,
+        "slenderness": 3.1961
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 932,
+        "triangles": 458,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "6c37813f3c04497e",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-7",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-7.glb",
+      "sourceDimensions": {
+        "width": 65.7837,
+        "height": 140.276,
+        "depth": 53.2535
+      },
+      "sourceBounds": {
+        "min": [
+          -32.8919,
+          0,
+          -26.6267
+        ],
+        "max": [
+          32.8919,
+          140.276,
+          26.6267
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.2353,
+        "slenderness": 2.1324
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 648,
+        "triangles": 312,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "2620b34ec5105150",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-8",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-8.glb",
+      "sourceDimensions": {
+        "width": 62.9672,
+        "height": 153.6925,
+        "depth": 47.2254
+      },
+      "sourceBounds": {
+        "min": [
+          -31.4836,
+          0,
+          -23.6127
+        ],
+        "max": [
+          31.4836,
+          153.6925,
+          23.6127
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.3333,
+        "slenderness": 2.4408
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 764,
+        "triangles": 378,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "e13a8559c763b91c",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-9",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-9.glb",
+      "sourceDimensions": {
+        "width": 58.2084,
+        "height": 168.8673,
+        "depth": 59.885
+      },
+      "sourceBounds": {
+        "min": [
+          -29.1042,
+          0,
+          -29.9425
+        ],
+        "max": [
+          29.1042,
+          168.8673,
+          29.9425
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.0288,
+        "slenderness": 2.8199
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 2439,
+        "triangles": 1444,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "2720064f9ea63edd",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-10",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-10.glb",
+      "sourceDimensions": {
+        "width": 45.9219,
+        "height": 141.6027,
+        "depth": 36.418
+      },
+      "sourceBounds": {
+        "min": [
+          -22.9609,
+          0,
+          -18.209
+        ],
+        "max": [
+          22.9609,
+          141.6027,
+          18.209
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.261,
+        "slenderness": 3.0836
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 168,
+        "triangles": 96,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "2e8c6db7d849641c",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-11",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-11.glb",
+      "sourceDimensions": {
+        "width": 62.2843,
+        "height": 141.3709,
+        "depth": 55.1132
+      },
+      "sourceBounds": {
+        "min": [
+          -31.1422,
+          0,
+          -27.5566
+        ],
+        "max": [
+          31.1421,
+          141.3709,
+          27.5566
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.1301,
+        "slenderness": 2.2698
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 2151,
+        "triangles": 1460,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "473ac7c853d2ccbb",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-12",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-12.glb",
+      "sourceDimensions": {
+        "width": 52.1509,
+        "height": 147.4322,
+        "depth": 28.395
+      },
+      "sourceBounds": {
+        "min": [
+          -26.0754,
+          0,
+          -14.1975
+        ],
+        "max": [
+          26.0754,
+          147.4322,
+          14.1975
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.8366,
+        "slenderness": 2.827
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 2970,
+        "triangles": 1878,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "737a49455c5c832e",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-13",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-13.glb",
+      "sourceDimensions": {
+        "width": 43.0807,
+        "height": 145.7934,
+        "depth": 43.0807
+      },
+      "sourceBounds": {
+        "min": [
+          -21.5403,
+          0,
+          -21.5403
+        ],
+        "max": [
+          21.5403,
+          145.7934,
+          21.5403
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1,
+        "slenderness": 3.3842
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 856,
+        "triangles": 1160,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "0b6f8de84a62f00c",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-14",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-14.glb",
+      "sourceDimensions": {
+        "width": 66.1505,
+        "height": 132.4322,
+        "depth": 50.2498
+      },
+      "sourceBounds": {
+        "min": [
+          -33.0753,
+          0,
+          -25.1249
+        ],
+        "max": [
+          33.0753,
+          132.4322,
+          25.1249
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.3164,
+        "slenderness": 2.002
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 254,
+        "triangles": 164,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "30873dc2a171436c",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-15",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-15.glb",
+      "sourceDimensions": {
+        "width": 63.756,
+        "height": 123.7266,
+        "depth": 25.5448
+      },
+      "sourceBounds": {
+        "min": [
+          -31.878,
+          0,
+          -12.7724
+        ],
+        "max": [
+          31.878,
+          123.7266,
+          12.7724
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 2.4958,
+        "slenderness": 1.9406
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 550,
+        "triangles": 270,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "5faf8e590a38e5fb",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-16",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-16.glb",
+      "sourceDimensions": {
+        "width": 36.565,
+        "height": 163.2518,
+        "depth": 27.3964
+      },
+      "sourceBounds": {
+        "min": [
+          -18.2826,
+          0,
+          -13.6982
+        ],
+        "max": [
+          18.2824,
+          163.2518,
+          13.6982
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.3347,
+        "slenderness": 4.4647
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 294,
+        "triangles": 182,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "bd08f831403b7975",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-17",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-17.glb",
+      "sourceDimensions": {
+        "width": 78.0397,
+        "height": 66.33,
+        "depth": 38.0112
+      },
+      "sourceBounds": {
+        "min": [
+          -39.0198,
+          0,
+          -19.0056
+        ],
+        "max": [
+          39.0198,
+          66.33,
+          19.0056
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 2.0531,
+        "slenderness": 0.85
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 441,
+        "triangles": 258,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "47cedc31eb14ad8a",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-18",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-18.glb",
+      "sourceDimensions": {
+        "width": 38.6552,
+        "height": 75.9237,
+        "depth": 20.7127
+      },
+      "sourceBounds": {
+        "min": [
+          -19.3275,
+          0,
+          -10.3563
+        ],
+        "max": [
+          19.3277,
+          75.9237,
+          10.3563
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.8663,
+        "slenderness": 1.9641
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 40,
+        "triangles": 20,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "02a9277791c38d5c",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-19",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-19.glb",
+      "sourceDimensions": {
+        "width": 23.6501,
+        "height": 87.8188,
+        "depth": 23.6501
+      },
+      "sourceBounds": {
+        "min": [
+          -11.8251,
+          0,
+          -11.825
+        ],
+        "max": [
+          11.8251,
+          87.8188,
+          11.8251
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1,
+        "slenderness": 3.7132
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 92,
+        "triangles": 58,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "1d91f0d07c2d181f",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-20",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-20.glb",
+      "sourceDimensions": {
+        "width": 52.2832,
+        "height": 133.0392,
+        "depth": 36.6704
+      },
+      "sourceBounds": {
+        "min": [
+          -26.1417,
+          0,
+          -18.3351
+        ],
+        "max": [
+          26.1416,
+          133.0392,
+          18.3353
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.4258,
+        "slenderness": 2.5446
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 839,
+        "triangles": 545,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "aa3c5e8c30225ad8",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-21",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-21.glb",
+      "sourceDimensions": {
+        "width": 37.3314,
+        "height": 80.9825,
+        "depth": 20.7449
+      },
+      "sourceBounds": {
+        "min": [
+          -18.6657,
+          0,
+          -10.3724
+        ],
+        "max": [
+          18.6657,
+          80.9825,
+          10.3724
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.7996,
+        "slenderness": 2.1693
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 720,
+        "triangles": 466,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "093ce175f043b46f",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-22",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-22.glb",
+      "sourceDimensions": {
+        "width": 30.9669,
+        "height": 72.163,
+        "depth": 18.3728
+      },
+      "sourceBounds": {
+        "min": [
+          -15.4836,
+          0,
+          -9.1864
+        ],
+        "max": [
+          15.4833,
+          72.163,
+          9.1864
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.6855,
+        "slenderness": 2.3303
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 636,
+        "triangles": 384,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "bd31b6e7944a2c03",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-23",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-23.glb",
+      "sourceDimensions": {
+        "width": 28.1893,
+        "height": 71.5705,
+        "depth": 28.1893
+      },
+      "sourceBounds": {
+        "min": [
+          -14.0946,
+          0,
+          -14.0946
+        ],
+        "max": [
+          14.0946,
+          71.5705,
+          14.0946
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1,
+        "slenderness": 2.5389
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 460,
+        "triangles": 280,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "551e1e5fa0748db4",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-24",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-24.glb",
+      "sourceDimensions": {
+        "width": 38.2034,
+        "height": 84.2111,
+        "depth": 24.2201
+      },
+      "sourceBounds": {
+        "min": [
+          -19.1019,
+          0,
+          -12.11
+        ],
+        "max": [
+          19.1016,
+          84.2111,
+          12.1101
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.5773,
+        "slenderness": 2.2043
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 560,
+        "triangles": 310,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "db964b751afcdaec",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-25",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-25.glb",
+      "sourceDimensions": {
+        "width": 31.3821,
+        "height": 101.4008,
+        "depth": 31.3821
+      },
+      "sourceBounds": {
+        "min": [
+          -15.6911,
+          0,
+          -15.6911
+        ],
+        "max": [
+          15.6911,
+          101.4008,
+          15.6911
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1,
+        "slenderness": 3.2312
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 392,
+        "triangles": 224,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "16b0fb93b0e0be31",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-26",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-26.glb",
+      "sourceDimensions": {
+        "width": 52.1038,
+        "height": 135.8668,
+        "depth": 52.1039
+      },
+      "sourceBounds": {
+        "min": [
+          -26.052,
+          0,
+          -26.0519
+        ],
+        "max": [
+          26.0518,
+          135.8668,
+          26.052
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1,
+        "slenderness": 2.6076
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 188,
+        "triangles": 102,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "5b54536779927b32",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-27",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-27.glb",
+      "sourceDimensions": {
+        "width": 36.8151,
+        "height": 119.3704,
+        "depth": 48.5236
+      },
+      "sourceBounds": {
+        "min": [
+          -18.4077,
+          0,
+          -24.2618
+        ],
+        "max": [
+          18.4074,
+          119.3704,
+          24.2618
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.318,
+        "slenderness": 2.4601
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 4293,
+        "triangles": 2702,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "95d62702e101c64e",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-28",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-28.glb",
+      "sourceDimensions": {
+        "width": 76.7858,
+        "height": 69.9973,
+        "depth": 76.7447
+      },
+      "sourceBounds": {
+        "min": [
+          -38.3929,
+          0,
+          -38.3723
+        ],
+        "max": [
+          38.3929,
+          69.9973,
+          38.3724
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.0005,
+        "slenderness": 0.9116
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 98,
+        "triangles": 62,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "ba2f0f66103f8107",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-29",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-29.glb",
+      "sourceDimensions": {
+        "width": 93.1108,
+        "height": 99.128,
+        "depth": 84.3198
+      },
+      "sourceBounds": {
+        "min": [
+          -46.5555,
+          0,
+          -42.1598
+        ],
+        "max": [
+          46.5553,
+          99.128,
+          42.1599
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.1043,
+        "slenderness": 1.0646
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 575,
+        "triangles": 466,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "b507ce6e4044eb13",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-30",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-30.glb",
+      "sourceDimensions": {
+        "width": 45.9191,
+        "height": 187.3519,
+        "depth": 45.919
+      },
+      "sourceBounds": {
+        "min": [
+          -22.9595,
+          0,
+          -22.9595
+        ],
+        "max": [
+          22.9595,
+          187.3519,
+          22.9595
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1,
+        "slenderness": 4.08
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 408,
+        "triangles": 302,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "3e37971164687cd4",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-31",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-31.glb",
+      "sourceDimensions": {
+        "width": 70.2786,
+        "height": 59.9738,
+        "depth": 70.2786
+      },
+      "sourceBounds": {
+        "min": [
+          -35.1393,
+          0,
+          -35.1393
+        ],
+        "max": [
+          35.1393,
+          59.9738,
+          35.1393
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1,
+        "slenderness": 0.8534
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 323,
+        "triangles": 252,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "ced1154388eacf3c",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-32",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-32.glb",
+      "sourceDimensions": {
+        "width": 36.6602,
+        "height": 157.9752,
+        "depth": 36.6602
+      },
+      "sourceBounds": {
+        "min": [
+          -18.3301,
+          0,
+          -18.3301
+        ],
+        "max": [
+          18.3301,
+          157.9752,
+          18.3301
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1,
+        "slenderness": 4.3092
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 414,
+        "triangles": 264,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "2bec294de9ca8a5e",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-33",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-33.glb",
+      "sourceDimensions": {
+        "width": 73.3107,
+        "height": 187.4533,
+        "depth": 55.8132
+      },
+      "sourceBounds": {
+        "min": [
+          -36.6553,
+          0,
+          -27.9066
+        ],
+        "max": [
+          36.6553,
+          187.4533,
+          27.9066
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.3135,
+        "slenderness": 2.557
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 653,
+        "triangles": 664,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "b4daf3c68c5ca4c8",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-34",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-34.glb",
+      "sourceDimensions": {
+        "width": 57.8782,
+        "height": 154.6373,
+        "depth": 74.8999
+      },
+      "sourceBounds": {
+        "min": [
+          -28.9391,
+          0,
+          -37.45
+        ],
+        "max": [
+          28.9391,
+          154.6373,
+          37.45
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.2941,
+        "slenderness": 2.0646
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 712,
+        "triangles": 526,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "3e56d5c61a084f13",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-35",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-35.glb",
+      "sourceDimensions": {
+        "width": 45.9191,
+        "height": 155.8467,
+        "depth": 45.919
+      },
+      "sourceBounds": {
+        "min": [
+          -22.9595,
+          0,
+          -22.9595
+        ],
+        "max": [
+          22.9595,
+          155.8467,
+          22.9595
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1,
+        "slenderness": 3.3939
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 439,
+        "triangles": 322,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "048ea60d55eee196",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-36",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-36.glb",
+      "sourceDimensions": {
+        "width": 32.6992,
+        "height": 75.7866,
+        "depth": 34.4603
+      },
+      "sourceBounds": {
+        "min": [
+          -16.3493,
+          0,
+          -17.2301
+        ],
+        "max": [
+          16.3498,
+          75.7866,
+          17.2302
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.0539,
+        "slenderness": 2.1992
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 2244,
+        "triangles": 1954,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "56e696b60c418c6b",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "high-rise-37",
+      "sourceCategory": "high-rise",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/high-rise/high-rise-lp-37.glb",
+      "sourceDimensions": {
+        "width": 44.5163,
+        "height": 70.7526,
+        "depth": 27.4224
+      },
+      "sourceBounds": {
+        "min": [
+          -22.2581,
+          0,
+          -13.7112
+        ],
+        "max": [
+          22.2582,
+          70.7526,
+          13.7112
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.6234,
+        "slenderness": 1.5894
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 1040,
+        "triangles": 960,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "1f15242352e3363e",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-1",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-1.glb",
+      "sourceDimensions": {
+        "width": 23.4757,
+        "height": 57.921,
+        "depth": 23.3121
+      },
+      "sourceBounds": {
+        "min": [
+          -11.7378,
+          0,
+          -11.656
+        ],
+        "max": [
+          11.7379,
+          57.921,
+          11.656
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.007,
+        "slenderness": 2.4673
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 490,
+        "triangles": 292,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "9630fe61d6b800cd",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-2",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-2.glb",
+      "sourceDimensions": {
+        "width": 14.2471,
+        "height": 24.2682,
+        "depth": 12.7424
+      },
+      "sourceBounds": {
+        "min": [
+          -7.1235,
+          0,
+          -6.3712
+        ],
+        "max": [
+          7.1235,
+          24.2682,
+          6.3712
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.1181,
+        "slenderness": 1.7034
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 331,
+        "triangles": 320,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "d352aa566e535a09",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-3",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-3.glb",
+      "sourceDimensions": {
+        "width": 20.8182,
+        "height": 38.3572,
+        "depth": 14.6204
+      },
+      "sourceBounds": {
+        "min": [
+          -10.4091,
+          0,
+          -7.3102
+        ],
+        "max": [
+          10.4091,
+          38.3572,
+          7.3102
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.4239,
+        "slenderness": 1.8425
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 158,
+        "triangles": 116,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "3eb7ce4ccf75ea75",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-4",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-4.glb",
+      "sourceDimensions": {
+        "width": 9.392,
+        "height": 24.7136,
+        "depth": 12.7116
+      },
+      "sourceBounds": {
+        "min": [
+          -4.6959,
+          0,
+          -6.3558
+        ],
+        "max": [
+          4.6961,
+          24.7136,
+          6.3558
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.3535,
+        "slenderness": 1.9442
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 323,
+        "triangles": 300,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "bf1b5d0408b8fa35",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-5",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-5.glb",
+      "sourceDimensions": {
+        "width": 36.2047,
+        "height": 35.391,
+        "depth": 36.2047
+      },
+      "sourceBounds": {
+        "min": [
+          -18.1023,
+          0,
+          -18.1023
+        ],
+        "max": [
+          18.1023,
+          35.391,
+          18.1023
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1,
+        "slenderness": 0.9775
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 144,
+        "triangles": 84,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "f31fba85cb3c5f3c",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-6",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-6.glb",
+      "sourceDimensions": {
+        "width": 43.2193,
+        "height": 35.8526,
+        "depth": 14.1202
+      },
+      "sourceBounds": {
+        "min": [
+          -21.6097,
+          0,
+          -7.0601
+        ],
+        "max": [
+          21.6096,
+          35.8526,
+          7.0601
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 3.0608,
+        "slenderness": 0.8296
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 152,
+        "triangles": 88,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "682fe2d52ae3bd10",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-7",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-7.glb",
+      "sourceDimensions": {
+        "width": 31.754,
+        "height": 44.8431,
+        "depth": 14.8357
+      },
+      "sourceBounds": {
+        "min": [
+          -15.877,
+          0,
+          -7.4178
+        ],
+        "max": [
+          15.877,
+          44.8431,
+          7.4178
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 2.1404,
+        "slenderness": 1.4122
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 132,
+        "triangles": 92,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "048112155bf3e34a",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-8",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-8.glb",
+      "sourceDimensions": {
+        "width": 26.2494,
+        "height": 48.2066,
+        "depth": 24.4341
+      },
+      "sourceBounds": {
+        "min": [
+          -13.1247,
+          0,
+          -12.217
+        ],
+        "max": [
+          13.1247,
+          48.2066,
+          12.217
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.0743,
+        "slenderness": 1.8365
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 220,
+        "triangles": 132,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "74cad9eaae133d0b",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-9",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-9.glb",
+      "sourceDimensions": {
+        "width": 26.8722,
+        "height": 44.7808,
+        "depth": 16.7919
+      },
+      "sourceBounds": {
+        "min": [
+          -13.4361,
+          0,
+          -8.3959
+        ],
+        "max": [
+          13.4361,
+          44.7808,
+          8.3959
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.6003,
+        "slenderness": 1.6664
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 388,
+        "triangles": 256,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "1665862c3178d7cd",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-10",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-10.glb",
+      "sourceDimensions": {
+        "width": 26.8962,
+        "height": 24.4617,
+        "depth": 27.085
+      },
+      "sourceBounds": {
+        "min": [
+          -13.4481,
+          0,
+          -13.5425
+        ],
+        "max": [
+          13.4481,
+          24.4617,
+          13.5425
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.007,
+        "slenderness": 0.9031
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 490,
+        "triangles": 292,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "8be3a3c05bb59145",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-11",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-11.glb",
+      "sourceDimensions": {
+        "width": 35.9277,
+        "height": 78.3938,
+        "depth": 30.6193
+      },
+      "sourceBounds": {
+        "min": [
+          -17.9639,
+          0,
+          -15.3096
+        ],
+        "max": [
+          17.9638,
+          78.3938,
+          15.3096
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.1734,
+        "slenderness": 2.182
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 366,
+        "triangles": 236,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "484069042768a6f2",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-12",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-12.glb",
+      "sourceDimensions": {
+        "width": 12.0725,
+        "height": 41.5317,
+        "depth": 10.011
+      },
+      "sourceBounds": {
+        "min": [
+          -6.0362,
+          0,
+          -5.0055
+        ],
+        "max": [
+          6.0363,
+          41.5317,
+          5.0055
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.2059,
+        "slenderness": 3.4402
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 840,
+        "triangles": 516,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "eefa9d1146e493f3",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-13",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-13.glb",
+      "sourceDimensions": {
+        "width": 43.3603,
+        "height": 46.1718,
+        "depth": 14.4604
+      },
+      "sourceBounds": {
+        "min": [
+          -21.6801,
+          0,
+          -7.2302
+        ],
+        "max": [
+          21.6801,
+          46.1718,
+          7.2302
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 2.9986,
+        "slenderness": 1.0648
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 1010,
+        "triangles": 590,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "30578caba9616bee",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-14",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-14.glb",
+      "sourceDimensions": {
+        "width": 15.7222,
+        "height": 35.1039,
+        "depth": 8.0391
+      },
+      "sourceBounds": {
+        "min": [
+          -7.8611,
+          0,
+          -4.0195
+        ],
+        "max": [
+          7.8611,
+          35.1039,
+          4.0195
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.9557,
+        "slenderness": 2.2328
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 1653,
+        "triangles": 1078,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "7edf00124a9e2f05",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-15",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-15.glb",
+      "sourceDimensions": {
+        "width": 18.8616,
+        "height": 29.7257,
+        "depth": 13.1729
+      },
+      "sourceBounds": {
+        "min": [
+          -9.4308,
+          0,
+          -6.5864
+        ],
+        "max": [
+          9.4308,
+          29.7257,
+          6.5865
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.4318,
+        "slenderness": 1.576
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 529,
+        "triangles": 306,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "85a9cdb2448af655",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-16",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-16.glb",
+      "sourceDimensions": {
+        "width": 18.0331,
+        "height": 88.9837,
+        "depth": 18.0765
+      },
+      "sourceBounds": {
+        "min": [
+          -9.0165,
+          0,
+          -9.0382
+        ],
+        "max": [
+          9.0166,
+          88.9837,
+          9.0382
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.0024,
+        "slenderness": 4.9226
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 820,
+        "triangles": 482,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "6f63b276871381d0",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-18",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-18.glb",
+      "sourceDimensions": {
+        "width": 23.3732,
+        "height": 43.2593,
+        "depth": 12.9778
+      },
+      "sourceBounds": {
+        "min": [
+          -11.6865,
+          0,
+          -6.4889
+        ],
+        "max": [
+          11.6867,
+          43.2593,
+          6.4889
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.801,
+        "slenderness": 1.8508
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 493,
+        "triangles": 288,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "8760b353d59251cf",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-19",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-19.glb",
+      "sourceDimensions": {
+        "width": 34.6288,
+        "height": 43.9957,
+        "depth": 21.4262
+      },
+      "sourceBounds": {
+        "min": [
+          -17.3144,
+          0,
+          -10.7131
+        ],
+        "max": [
+          17.3144,
+          43.9957,
+          10.7131
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.6162,
+        "slenderness": 1.2705
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 481,
+        "triangles": 312,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "241f8a4b3ecdc9b9",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-20",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-20.glb",
+      "sourceDimensions": {
+        "width": 31.107,
+        "height": 61.0982,
+        "depth": 16.6682
+      },
+      "sourceBounds": {
+        "min": [
+          -15.5534,
+          0,
+          -8.3341
+        ],
+        "max": [
+          15.5536,
+          61.0982,
+          8.3341
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.8663,
+        "slenderness": 1.9641
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 40,
+        "triangles": 20,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "02a9277791c38d5c",
+        "duplicateShapeOf": "high-rise-18",
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-21",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-21.glb",
+      "sourceDimensions": {
+        "width": 21.9149,
+        "height": 72.484,
+        "depth": 23.7951
+      },
+      "sourceBounds": {
+        "min": [
+          -10.9574,
+          0,
+          -11.8976
+        ],
+        "max": [
+          10.9575,
+          72.484,
+          11.8976
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.0858,
+        "slenderness": 3.0462
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 218,
+        "triangles": 110,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "d55419b2654e151f",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-22",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-22.glb",
+      "sourceDimensions": {
+        "width": 25.8867,
+        "height": 59.9382,
+        "depth": 16.949
+      },
+      "sourceBounds": {
+        "min": [
+          -12.9433,
+          0,
+          -8.4745
+        ],
+        "max": [
+          12.9433,
+          59.9382,
+          8.4745
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.5273,
+        "slenderness": 2.3154
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 192,
+        "triangles": 106,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "c348c84c8cc259ce",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-23",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-23.glb",
+      "sourceDimensions": {
+        "width": 26.908,
+        "height": 61.5877,
+        "depth": 21.1307
+      },
+      "sourceBounds": {
+        "min": [
+          -13.454,
+          0,
+          -10.5653
+        ],
+        "max": [
+          13.454,
+          61.5877,
+          10.5653
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.2734,
+        "slenderness": 2.2888
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 331,
+        "triangles": 194,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "eb389e269a85ec20",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-24",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-24.glb",
+      "sourceDimensions": {
+        "width": 30.208,
+        "height": 37.9795,
+        "depth": 15.3457
+      },
+      "sourceBounds": {
+        "min": [
+          -15.1039,
+          0,
+          -7.6729
+        ],
+        "max": [
+          15.104,
+          37.9795,
+          7.6728
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.9685,
+        "slenderness": 1.2573
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 1243,
+        "triangles": 1288,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "55a0272323a08815",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-25",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-25.glb",
+      "sourceDimensions": {
+        "width": 42.7794,
+        "height": 42.1198,
+        "depth": 21.3793
+      },
+      "sourceBounds": {
+        "min": [
+          -21.3898,
+          0,
+          -10.6897
+        ],
+        "max": [
+          21.3897,
+          42.1198,
+          10.6896
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 2.001,
+        "slenderness": 0.9846
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 148,
+        "triangles": 88,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "bcf7935a7e61468c",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-26",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-26.glb",
+      "sourceDimensions": {
+        "width": 45.0427,
+        "height": 27.2819,
+        "depth": 40.5377
+      },
+      "sourceBounds": {
+        "min": [
+          -22.5213,
+          0,
+          -20.2688
+        ],
+        "max": [
+          22.5213,
+          27.2819,
+          20.2688
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.1111,
+        "slenderness": 0.6057
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 249,
+        "triangles": 170,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "96d3b6cc9672e48c",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-27",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-27.glb",
+      "sourceDimensions": {
+        "width": 31.4416,
+        "height": 48.26,
+        "depth": 35.9024
+      },
+      "sourceBounds": {
+        "min": [
+          -15.7208,
+          0,
+          -17.9512
+        ],
+        "max": [
+          15.7208,
+          48.26,
+          17.9512
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.1419,
+        "slenderness": 1.3442
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 361,
+        "triangles": 226,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "a01d1f75e1bde51d",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-28",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-28.glb",
+      "sourceDimensions": {
+        "width": 21.4492,
+        "height": 53.3417,
+        "depth": 21.47
+      },
+      "sourceBounds": {
+        "min": [
+          -10.7247,
+          0,
+          -10.735
+        ],
+        "max": [
+          10.7246,
+          53.3417,
+          10.735
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.001,
+        "slenderness": 2.4845
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 295,
+        "triangles": 204,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "e081757ef7c4e3cc",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-29",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-29.glb",
+      "sourceDimensions": {
+        "width": 23.3169,
+        "height": 44.1103,
+        "depth": 24.3483
+      },
+      "sourceBounds": {
+        "min": [
+          -11.6585,
+          0,
+          -12.1741
+        ],
+        "max": [
+          11.6585,
+          44.1103,
+          12.1741
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.0442,
+        "slenderness": 1.8116
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 650,
+        "triangles": 412,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "6e60ce9e42732621",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "residential-30",
+      "sourceCategory": "residential",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/residential/residential-lp-30.glb",
+      "sourceDimensions": {
+        "width": 30.6021,
+        "height": 30.6824,
+        "depth": 10.5086
+      },
+      "sourceBounds": {
+        "min": [
+          -15.301,
+          0,
+          -5.2543
+        ],
+        "max": [
+          15.301,
+          30.6824,
+          5.2543
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 2.9121,
+        "slenderness": 1.0026
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 458,
+        "triangles": 406,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "05be8bc8dec68a3f",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-1",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-1.glb",
+      "sourceDimensions": {
+        "width": 66.5681,
+        "height": 267.2817,
+        "depth": 65.9134
+      },
+      "sourceBounds": {
+        "min": [
+          -33.2841,
+          0,
+          -32.9567
+        ],
+        "max": [
+          33.284,
+          267.2817,
+          32.9567
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.0099,
+        "slenderness": 4.0152
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 96,
+        "triangles": 52,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "788395e637283d2e",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-2",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-2.glb",
+      "sourceDimensions": {
+        "width": 79.7401,
+        "height": 379.121,
+        "depth": 73.3559
+      },
+      "sourceBounds": {
+        "min": [
+          -39.8701,
+          0,
+          -36.678
+        ],
+        "max": [
+          39.8701,
+          379.121,
+          36.6779
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.087,
+        "slenderness": 4.7545
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 3290,
+        "triangles": 1904,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "da5a7609ef8e86c8",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-3",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-3.glb",
+      "sourceDimensions": {
+        "width": 68.6865,
+        "height": 335.5574,
+        "depth": 51.9604
+      },
+      "sourceBounds": {
+        "min": [
+          -34.3432,
+          0,
+          -25.9802
+        ],
+        "max": [
+          34.3433,
+          335.5574,
+          25.9801
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.3219,
+        "slenderness": 4.8853
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 472,
+        "triangles": 304,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "dd30acee48210f18",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-4",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-4.glb",
+      "sourceDimensions": {
+        "width": 70.4235,
+        "height": 274.692,
+        "depth": 58.7693
+      },
+      "sourceBounds": {
+        "min": [
+          -35.2117,
+          0,
+          -29.3847
+        ],
+        "max": [
+          35.2117,
+          274.692,
+          29.3847
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.1983,
+        "slenderness": 3.9006
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 448,
+        "triangles": 236,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "a7b56d460c59d394",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-5",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-5.glb",
+      "sourceDimensions": {
+        "width": 69.2433,
+        "height": 382.088,
+        "depth": 38.2779
+      },
+      "sourceBounds": {
+        "min": [
+          -34.6216,
+          0,
+          -19.1389
+        ],
+        "max": [
+          34.6216,
+          382.088,
+          19.139
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.809,
+        "slenderness": 5.5181
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 1840,
+        "triangles": 1280,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "9f267c21debe0e74",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-6",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-6.glb",
+      "sourceDimensions": {
+        "width": 70.4235,
+        "height": 274.692,
+        "depth": 58.7693
+      },
+      "sourceBounds": {
+        "min": [
+          -35.2117,
+          0,
+          -29.3847
+        ],
+        "max": [
+          35.2117,
+          274.692,
+          29.3847
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.1983,
+        "slenderness": 3.9006
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 448,
+        "triangles": 236,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "a7b56d460c59d394",
+        "duplicateShapeOf": "skyscraper-4",
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-7",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-7.glb",
+      "sourceDimensions": {
+        "width": 66.254,
+        "height": 233.5454,
+        "depth": 56.3159
+      },
+      "sourceBounds": {
+        "min": [
+          -33.127,
+          0,
+          -28.158
+        ],
+        "max": [
+          33.127,
+          233.5454,
+          28.158
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.1765,
+        "slenderness": 3.525
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 672,
+        "triangles": 336,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "a26be5673a6fd0c5",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-8",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-8.glb",
+      "sourceDimensions": {
+        "width": 81.3903,
+        "height": 280.0683,
+        "depth": 68.5392
+      },
+      "sourceBounds": {
+        "min": [
+          -40.6951,
+          0,
+          -34.2696
+        ],
+        "max": [
+          40.6951,
+          280.0683,
+          34.2696
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.1875,
+        "slenderness": 3.4411
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 648,
+        "triangles": 320,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "abf34133b2853293",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-9",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-9.glb",
+      "sourceDimensions": {
+        "width": 65.0685,
+        "height": 258.8594,
+        "depth": 48.0941
+      },
+      "sourceBounds": {
+        "min": [
+          -32.5342,
+          0,
+          -24.047
+        ],
+        "max": [
+          32.5342,
+          258.8594,
+          24.047
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.3529,
+        "slenderness": 3.9783
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 952,
+        "triangles": 472,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "cd03fbffcf056a37",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-10",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-10.glb",
+      "sourceDimensions": {
+        "width": 82.6325,
+        "height": 335.6912,
+        "depth": 68.4143
+      },
+      "sourceBounds": {
+        "min": [
+          -41.3163,
+          0,
+          -34.2072
+        ],
+        "max": [
+          41.3162,
+          335.6912,
+          34.2071
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.2078,
+        "slenderness": 4.0625
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 4306,
+        "triangles": 4108,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "96f20fa02bc64983",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-11",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-11.glb",
+      "sourceDimensions": {
+        "width": 36.5108,
+        "height": 228.3407,
+        "depth": 37.3583
+      },
+      "sourceBounds": {
+        "min": [
+          -18.2554,
+          0,
+          -18.6792
+        ],
+        "max": [
+          18.2554,
+          228.3407,
+          18.6792
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.0232,
+        "slenderness": 6.1122
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 1061,
+        "triangles": 752,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "5ae5d6b5af0aada5",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-12",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-12.glb",
+      "sourceDimensions": {
+        "width": 59.3052,
+        "height": 211.677,
+        "depth": 42.7861
+      },
+      "sourceBounds": {
+        "min": [
+          -29.6527,
+          0,
+          -21.393
+        ],
+        "max": [
+          29.6526,
+          211.677,
+          21.3931
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.3861,
+        "slenderness": 3.5693
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 815,
+        "triangles": 492,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "48987efae16a0b4a",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-13",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-13.glb",
+      "sourceDimensions": {
+        "width": 52.427,
+        "height": 200.4923,
+        "depth": 28.8195
+      },
+      "sourceBounds": {
+        "min": [
+          -26.2136,
+          0,
+          -14.4096
+        ],
+        "max": [
+          26.2134,
+          200.4923,
+          14.4098
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.8192,
+        "slenderness": 3.8242
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 906,
+        "triangles": 496,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "ba3350270e6b736f",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-14",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-14.glb",
+      "sourceDimensions": {
+        "width": 65.6195,
+        "height": 204.1133,
+        "depth": 34.9336
+      },
+      "sourceBounds": {
+        "min": [
+          -32.8097,
+          0,
+          -17.4668
+        ],
+        "max": [
+          32.8098,
+          204.1133,
+          17.4668
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.8784,
+        "slenderness": 3.1106
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 608,
+        "triangles": 340,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "acff2b00b77a9d7b",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-15",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-15.glb",
+      "sourceDimensions": {
+        "width": 54.878,
+        "height": 240.5989,
+        "depth": 31.7364
+      },
+      "sourceBounds": {
+        "min": [
+          -27.439,
+          0,
+          -15.8682
+        ],
+        "max": [
+          27.439,
+          240.5989,
+          15.8682
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.7292,
+        "slenderness": 4.3842
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 1658,
+        "triangles": 1586,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "96d47837a609e7a2",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-16",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-16.glb",
+      "sourceDimensions": {
+        "width": 90.9827,
+        "height": 324.2411,
+        "depth": 60.3613
+      },
+      "sourceBounds": {
+        "min": [
+          0,
+          0,
+          -30.1806
+        ],
+        "max": [
+          90.9827,
+          324.2411,
+          30.1806
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.5073,
+        "slenderness": 3.5638
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 616,
+        "triangles": 386,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0.5,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "671d98b79e8363c1",
+        "duplicateShapeOf": null,
+        "warnings": [
+          "off-centre-horizontal-origin"
+        ]
+      }
+    },
+    {
+      "id": "skyscraper-17",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-17.glb",
+      "sourceDimensions": {
+        "width": 56.338,
+        "height": 302.6293,
+        "depth": 56.338
+      },
+      "sourceBounds": {
+        "min": [
+          -28.169,
+          0,
+          -28.169
+        ],
+        "max": [
+          28.169,
+          302.6293,
+          28.169
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1,
+        "slenderness": 5.3717
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 584,
+        "triangles": 370,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "34083b1b2143dd5d",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-18",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-18.glb",
+      "sourceDimensions": {
+        "width": 79.6203,
+        "height": 298.9124,
+        "depth": 79.6203
+      },
+      "sourceBounds": {
+        "min": [
+          -39.8103,
+          0,
+          -39.8101
+        ],
+        "max": [
+          39.81,
+          298.9124,
+          39.8102
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1,
+        "slenderness": 3.7542
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 2808,
+        "triangles": 1872,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "034c4935c6cf4825",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-19",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-19.glb",
+      "sourceDimensions": {
+        "width": 65.3524,
+        "height": 260.6869,
+        "depth": 42.4639
+      },
+      "sourceBounds": {
+        "min": [
+          -32.6762,
+          0,
+          -21.2319
+        ],
+        "max": [
+          32.6762,
+          260.6869,
+          21.232
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.539,
+        "slenderness": 3.9889
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 235,
+        "triangles": 160,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "0975151715dd4872",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-20",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-20.glb",
+      "sourceDimensions": {
+        "width": 49.3747,
+        "height": 248.5313,
+        "depth": 49.3234
+      },
+      "sourceBounds": {
+        "min": [
+          -24.6873,
+          0,
+          -24.6617
+        ],
+        "max": [
+          24.6873,
+          248.5313,
+          24.6617
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.001,
+        "slenderness": 5.0336
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 536,
+        "triangles": 360,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "207e2e135102a504",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-21",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-21.glb",
+      "sourceDimensions": {
+        "width": 69.715,
+        "height": 240.1687,
+        "depth": 38.1852
+      },
+      "sourceBounds": {
+        "min": [
+          -34.8575,
+          0,
+          -19.0926
+        ],
+        "max": [
+          34.8575,
+          240.1687,
+          19.0926
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.8257,
+        "slenderness": 3.445
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 427,
+        "triangles": 312,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "f971a666a8eaa3c0",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    },
+    {
+      "id": "skyscraper-22",
+      "sourceCategory": "skyscraper",
+      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-22.glb",
+      "sourceDimensions": {
+        "width": 84.9504,
+        "height": 207.9931,
+        "depth": 56.4297
+      },
+      "sourceBounds": {
+        "min": [
+          -42.4752,
+          0,
+          -28.2148
+        ],
+        "max": [
+          42.4752,
+          207.9931,
+          28.2148
+        ]
+      },
+      "proportions": {
+        "footprintAspect": 1.5054,
+        "slenderness": 2.4484
+      },
+      "geometry": {
+        "meshes": 1,
+        "vertices": 4254,
+        "triangles": 2632,
+        "materials": 1,
+        "indexedMeshes": 1,
+        "meshesWithNormals": 1,
+        "meshesWithUvs": 1
+      },
+      "audit": {
+        "horizontalCenterOffsetRatio": 0,
+        "groundOffsetRatio": 0,
+        "shapeFingerprint": "8342a7f91b9f98ab",
+        "duplicateShapeOf": null,
+        "warnings": []
+      }
+    }
+  ]
+}

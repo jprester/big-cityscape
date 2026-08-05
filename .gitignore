@@ -9,6 +9,7 @@ coverage/
 
 # Raw and generated geographic data remain local unless deliberately reviewed.
 references/raw/*.geojson
+references/raw/*.blend
 references/processed/*
 references/visual/*
 !references/processed/.gitkeep
