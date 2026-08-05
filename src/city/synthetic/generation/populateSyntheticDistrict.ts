@@ -4,7 +4,10 @@ import {
 } from '../../assets/buildingAssetCatalog';
 import type { BuildingSlot } from '../model/buildingSlot';
 import type { SyntheticDistrictPopulation } from '../model/districtPopulation';
+import type { AssetUsageCounts } from '../model/assetSlotSelection';
 import { selectAssetForSlot } from './selectAssetForSlot';
+
+const EMPTY_USAGE_COUNTS: AssetUsageCounts = new Map();
 
 export type SyntheticDistrictSlotSource = Readonly<{
   id: string;
@@ -15,13 +18,14 @@ export type SyntheticDistrictSlotSource = Readonly<{
 export function populateSyntheticDistrict(
   district: SyntheticDistrictSlotSource,
   assets: readonly BuildingAssetCatalogEntry[] = BUILDING_ASSET_CATALOG,
+  initialUsageCounts: AssetUsageCounts = EMPTY_USAGE_COUNTS,
 ): SyntheticDistrictPopulation {
-  validateInputs(district, assets);
+  validateInputs(district, assets, initialUsageCounts);
 
   const orderedSlots = [...district.slots].sort((first, second) =>
     first.id.localeCompare(second.id),
   );
-  const usageCounts = new Map<string, number>();
+  const usageCounts = new Map(initialUsageCounts);
   const placements: SyntheticDistrictPopulation['placements'][number][] = [];
   const placementDiagnostics: SyntheticDistrictPopulation['placementDiagnostics'][number][] = [];
   const rejections: SyntheticDistrictPopulation['rejections'][number][] = [];
@@ -68,6 +72,7 @@ export function populateSyntheticDistrict(
 function validateInputs(
   district: SyntheticDistrictSlotSource,
   assets: readonly BuildingAssetCatalogEntry[],
+  initialUsageCounts: AssetUsageCounts,
 ): void {
   if (district.id.trim().length === 0) {
     throw new Error('A populated district must have a non-empty ID.');
@@ -79,6 +84,17 @@ function validateInputs(
 
   assertUniqueIds('building slot', district.slots.map((slot) => slot.id));
   assertUniqueIds('building asset', assets.map((asset) => asset.id));
+  const assetIds = new Set(assets.map((asset) => asset.id));
+
+  for (const [assetId, count] of initialUsageCounts) {
+    if (!assetIds.has(assetId)) {
+      throw new Error(`Initial usage references unknown building asset ${assetId}.`);
+    }
+
+    if (!Number.isSafeInteger(count) || count < 0) {
+      throw new RangeError(`Initial usage for ${assetId} must be a non-negative integer.`);
+    }
+  }
 
   for (const slot of district.slots) {
     if (slot.districtId !== district.id) {

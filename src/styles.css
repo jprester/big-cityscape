@@ -212,6 +212,35 @@ input {
   font-weight: 650;
 }
 
+.synthetic-statistics__modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin: 0 0 12px;
+}
+
+.synthetic-statistics__modes a {
+  padding: 6px 8px;
+  border: 1px solid rgb(164 197 220 / 18%);
+  border-radius: 5px;
+  color: #91a8b5;
+  background: rgb(111 166 199 / 8%);
+  font-size: 0.65rem;
+  text-align: center;
+  text-decoration: none;
+}
+
+.synthetic-statistics__modes a[aria-current="page"] {
+  border-color: rgb(128 184 216 / 45%);
+  color: #e0edf3;
+  background: rgb(111 166 199 / 20%);
+}
+
+.synthetic-statistics__modes a:hover {
+  border-color: rgb(164 197 220 / 38%);
+  color: #dbe8ee;
+}
+
 .synthetic-statistics__metrics {
   display: grid;
   grid-template-columns: auto 1fr;

@@ -1,10 +1,33 @@
 import * as THREE from 'three';
 import { createInspectionCamera } from '../app/createInspectionCamera';
 import { createPerformancePanel } from '../app/createPerformancePanel';
-import { DEFAULT_PROOF_DISTRICT_CONFIG, generateProofDistrict } from '../city/synthetic/generation/generateProofDistrict';
+import {
+  DEFAULT_PROOF_DISTRICT_CONFIG,
+  generateProofDistrict,
+} from '../city/synthetic/generation/generateProofDistrict';
+import {
+  DEFAULT_SYNTHETIC_CITY_CONFIG,
+  generateSyntheticCity,
+} from '../city/synthetic/generation/generateSyntheticCity';
+import { populateSyntheticCity } from '../city/synthetic/generation/populateSyntheticCity';
 import { populateSyntheticDistrict } from '../city/synthetic/generation/populateSyntheticDistrict';
-import { addSyntheticBuildingLayer, type SyntheticBuildingRenderStats } from '../city/synthetic/rendering/addSyntheticBuildingLayer';
-import { addSyntheticDistrictDebugLayers } from '../city/synthetic/rendering/addSyntheticDistrictDebugLayers';
+import type { SyntheticBuildingPlacement } from '../city/synthetic/model/buildingPlacement';
+import type { SyntheticCityPopulation } from '../city/synthetic/model/cityPopulation';
+import type { SyntheticDistrictPopulation } from '../city/synthetic/model/districtPopulation';
+import type { SyntheticProofDistrict } from '../city/synthetic/model/proofDistrict';
+import type { SyntheticCity } from '../city/synthetic/model/syntheticCity';
+import {
+  addSyntheticBuildingLayer,
+  type SyntheticBuildingRenderStats,
+} from '../city/synthetic/rendering/addSyntheticBuildingLayer';
+import {
+  addSyntheticCityBuildingLayer,
+  type SyntheticCityBuildingRenderLayer,
+} from '../city/synthetic/rendering/addSyntheticCityBuildingLayer';
+import { addSyntheticCityDebugLayer } from '../city/synthetic/rendering/addSyntheticCityDebugLayer';
+import {
+  addSyntheticDistrictDebugLayers,
+} from '../city/synthetic/rendering/addSyntheticDistrictDebugLayers';
 import { createDebugPanel } from '../debug/createDebugPanel';
 import { DebugLayerManager } from '../debug/DebugLayerManager';
 
@@ -12,6 +35,20 @@ const MAX_PIXEL_RATIO = 1.5;
 const MAX_ACTIVE_FRAMES_PER_SECOND = 60;
 const MIN_FRAME_INTERVAL_MILLISECONDS =
   1_000 / MAX_ACTIVE_FRAMES_PER_SECOND - 0.5;
+
+type SyntheticViewMode = 'city' | 'proof';
+
+type SyntheticViewData =
+  | Readonly<{
+      mode: 'city';
+      spatial: SyntheticCity;
+      population: SyntheticCityPopulation;
+    }>
+  | Readonly<{
+      mode: 'proof';
+      spatial: SyntheticProofDistrict;
+      population: SyntheticDistrictPopulation;
+    }>;
 
 export type SyntheticDistrictApp = Readonly<{
   start: () => void;
@@ -22,14 +59,11 @@ export type SyntheticDistrictApp = Readonly<{
 export async function createSyntheticDistrictApp(
   host: HTMLElement,
 ): Promise<SyntheticDistrictApp> {
-  const seed = readSyntheticSeed(window.location.search);
-  const district = generateProofDistrict({
-    ...DEFAULT_PROOF_DISTRICT_CONFIG,
-    seed,
-  });
-  const population = populateSyntheticDistrict(district);
+  const search = window.location.search;
+  const seed = readSyntheticSeed(search);
+  const viewData = createViewData(readSyntheticViewMode(search), seed);
   const scene = new THREE.Scene();
-  scene.name = 'synthetic-proof-district';
+  scene.name = `synthetic-${viewData.mode}`;
   scene.background = new THREE.Color(0x0a1016);
 
   const renderer = new THREE.WebGLRenderer({
@@ -41,15 +75,12 @@ export async function createSyntheticDistrictApp(
   renderer.domElement.tabIndex = 0;
   renderer.domElement.setAttribute(
     'aria-label',
-    'Interactive synthetic City Field district viewport',
+    `Interactive synthetic City Field ${viewData.mode} viewport`,
   );
 
-  const worldSizeMetres = district.bounds.maxX - district.bounds.minX;
-  const tallestPlacement = population.placements.reduce((tallest, placement) =>
-    placement.dimensionsMetres.height > tallest.dimensionsMetres.height
-      ? placement
-      : tallest,
-  );
+  const worldSizeMetres =
+    viewData.spatial.bounds.maxX - viewData.spatial.bounds.minX;
+  const tallestPlacement = findTallestPlacement(viewData.population.placements);
   const inspectionCamera = createInspectionCamera(
     renderer.domElement,
     worldSizeMetres * 1.4,
@@ -61,16 +92,35 @@ export async function createSyntheticDistrictApp(
   );
   const debugLayers = new DebugLayerManager();
   scene.add(debugLayers.root);
-  addSyntheticDistrictDebugLayers(debugLayers, district);
-  const buildingRenderStats = await addSyntheticBuildingLayer(
-    debugLayers,
-    population,
+  addSyntheticDistrictDebugLayers(debugLayers, viewData.spatial);
+
+  let cityRenderLayer: SyntheticCityBuildingRenderLayer | undefined;
+  let buildingRenderStats: SyntheticBuildingRenderStats;
+
+  if (viewData.mode === 'city') {
+    addSyntheticCityDebugLayer(debugLayers, viewData.spatial);
+    cityRenderLayer = await addSyntheticCityBuildingLayer(
+      debugLayers,
+      viewData.spatial,
+      viewData.population,
+    );
+    buildingRenderStats = cityRenderLayer.stats;
+  } else {
+    buildingRenderStats = await addSyntheticBuildingLayer(
+      debugLayers,
+      viewData.population,
+    );
+  }
+
+  const performancePanel = createPerformancePanel(
+    renderer,
+    scene,
+    cityRenderLayer?.getFrameStats,
   );
-  const performancePanel = createPerformancePanel(renderer, scene);
   const statisticsPanel = createStatisticsPanel(
-    district.metadata,
-    population.metadata,
+    viewData,
     buildingRenderStats,
+    seed,
   );
   let isRunning = false;
   let isDisposed = false;
@@ -114,6 +164,8 @@ export async function createSyntheticDistrictApp(
 
     previousTimeMilliseconds = timeMilliseconds;
     const cameraChanged = inspectionCamera.update(Math.min(deltaSeconds, 0.1));
+    cityRenderLayer?.beginFrame();
+    cityRenderLayer?.updateVisibility(inspectionCamera.camera);
     renderer.render(scene, inspectionCamera.camera);
     performancePanel.update(deltaSeconds);
 
@@ -171,10 +223,10 @@ export async function createSyntheticDistrictApp(
       {
         id: 'street',
         label: 'Street',
-        activate: () => setStreetPreset(district, inspectionCamera),
+        activate: () => setStreetPreset(viewData, inspectionCamera),
       },
     ],
-    `Synthetic proof district · seed ${seed}`,
+    `Synthetic ${viewData.mode} · seed ${seed}`,
     requestRender,
   );
 
@@ -184,7 +236,7 @@ export async function createSyntheticDistrictApp(
     statisticsPanel,
     performancePanel.element,
   );
-  document.title = 'Synthetic proof district · City Field';
+  document.title = `${viewData.mode === 'city' ? 'Synthetic city' : 'Synthetic proof district'} · City Field`;
 
   const resize = (): void => {
     const width = Math.max(1, Math.floor(host.clientWidth));
@@ -258,10 +310,70 @@ export async function createSyntheticDistrictApp(
   };
 }
 
+function createViewData(mode: SyntheticViewMode, seed: number): SyntheticViewData {
+  if (mode === 'city') {
+    const city = generateSyntheticCity({
+      ...DEFAULT_SYNTHETIC_CITY_CONFIG,
+      seed,
+    });
+    return {
+      mode,
+      spatial: city,
+      population: populateSyntheticCity(city),
+    };
+  }
+
+  const district = generateProofDistrict({
+    ...DEFAULT_PROOF_DISTRICT_CONFIG,
+    seed,
+  });
+  return {
+    mode,
+    spatial: district,
+    population: populateSyntheticDistrict(district),
+  };
+}
+
+function findTallestPlacement(
+  placements: readonly SyntheticBuildingPlacement[],
+): SyntheticBuildingPlacement {
+  const first = placements[0];
+
+  if (first === undefined) {
+    throw new Error('The synthetic view cannot frame an empty population.');
+  }
+
+  return placements.slice(1).reduce(
+    (tallest, placement) =>
+      placement.dimensionsMetres.height > tallest.dimensionsMetres.height
+        ? placement
+        : tallest,
+    first,
+  );
+}
+
 function setStreetPreset(
-  district: ReturnType<typeof generateProofDistrict>,
+  viewData: SyntheticViewData,
   inspectionCamera: ReturnType<typeof createInspectionCamera>,
 ): void {
+  const streetCenterZ =
+    viewData.mode === 'city'
+      ? 0
+      : centralProofStreetZ(viewData.spatial);
+  inspectionCamera.camera.position.set(
+    viewData.spatial.bounds.minX + 28,
+    12,
+    streetCenterZ,
+  );
+  inspectionCamera.controls.target.set(
+    viewData.spatial.bounds.maxX - 28,
+    30,
+    streetCenterZ,
+  );
+  inspectionCamera.controls.update();
+}
+
+function centralProofStreetZ(district: SyntheticProofDistrict): number {
   const rowBeforeStreet = district.blocks.find(
     (block) => block.gridRow === 1,
   );
@@ -273,26 +385,28 @@ function setStreetPreset(
     throw new Error('The proof district is missing its central street gap.');
   }
 
-  const streetCenterZ =
-    (rowBeforeStreet.bounds.maxZ + rowAfterStreet.bounds.minZ) / 2;
-  inspectionCamera.camera.position.set(
-    district.bounds.minX + 28,
-    12,
-    streetCenterZ,
-  );
-  inspectionCamera.controls.target.set(
-    district.bounds.maxX - 28,
-    30,
-    streetCenterZ,
-  );
-  inspectionCamera.controls.update();
+  return (rowBeforeStreet.bounds.maxZ + rowAfterStreet.bounds.minZ) / 2;
+}
+
+function readSyntheticViewMode(search: string): SyntheticViewMode {
+  const mode = new URLSearchParams(search).get('mode');
+
+  if (mode === null || mode === 'city') {
+    return 'city';
+  }
+
+  if (mode === 'proof') {
+    return mode;
+  }
+
+  throw new Error('The synthetic view mode must be "city" or "proof".');
 }
 
 function readSyntheticSeed(search: string): number {
   const value = new URLSearchParams(search).get('seed');
 
   if (value === null) {
-    return DEFAULT_PROOF_DISTRICT_CONFIG.seed;
+    return DEFAULT_SYNTHETIC_CITY_CONFIG.seed;
   }
 
   const seed = Number(value);
@@ -305,36 +419,115 @@ function readSyntheticSeed(search: string): number {
 }
 
 function createStatisticsPanel(
-  district: ReturnType<typeof generateProofDistrict>['metadata'],
-  population: ReturnType<typeof populateSyntheticDistrict>['metadata'],
+  viewData: SyntheticViewData,
   rendering: SyntheticBuildingRenderStats,
+  seed: number,
 ): HTMLElement {
   const panel = document.createElement('aside');
   panel.className = 'synthetic-statistics';
-  panel.setAttribute('aria-label', 'Synthetic district statistics');
+  panel.setAttribute('aria-label', 'Synthetic city statistics');
   const eyebrow = document.createElement('p');
   eyebrow.className = 'synthetic-statistics__eyebrow';
-  eyebrow.textContent = 'Declarative population';
+  eyebrow.textContent =
+    viewData.mode === 'city' ? '2 × 2 km composition' : '500 m proof district';
   const title = document.createElement('h2');
   title.className = 'synthetic-statistics__title';
-  title.textContent = `${district.blockCount} blocks · ${population.placedCount} buildings`;
+  title.textContent = statisticsTitle(viewData);
+  const modeNavigation = createModeNavigation(viewData.mode, seed);
   const metrics = document.createElement('dl');
   metrics.className = 'synthetic-statistics__metrics';
-  addStatistic(metrics, 'Profiles', `${district.profileCounts.core} core · ${district.profileCounts.transition} transition`);
-  addStatistic(metrics, 'Templates', `${district.templateCounts['fabric-grid']} fabric · ${district.templateCounts['edge-slabs']} slabs · ${district.templateCounts['anchor-and-fill']} anchors · ${district.templateCounts['landmark-plaza']} landmark`);
-  addStatistic(metrics, 'Asset variants', population.distinctAssetCount.toString());
-  addStatistic(metrics, 'Instanced batches', rendering.batches.toString());
-  addStatistic(metrics, 'Model triangles', rendering.triangles.toLocaleString('en-US'));
+  addCompositionStatistics(metrics, viewData);
+  addStatistic(
+    metrics,
+    'Asset variants',
+    viewData.population.metadata.distinctAssetCount.toString(),
+  );
+  addStatistic(metrics, 'Building batches', rendering.batches.toString());
+  addStatistic(
+    metrics,
+    'Model triangles',
+    rendering.triangles.toLocaleString('en-US'),
+  );
   addStatistic(metrics, 'Load failures', rendering.failedModels.toString());
   const legend = document.createElement('p');
   legend.className = 'synthetic-statistics__legend';
-  legend.textContent = 'Buildings: green low-rise · blue mid-rise · amber high-rise · rose skyscraper';
+  legend.textContent =
+    'Buildings: green low-rise · blue mid-rise · amber high-rise · rose skyscraper';
   const assetLink = document.createElement('a');
   assetLink.className = 'synthetic-statistics__link';
   assetLink.href = '?view=assets';
   assetLink.textContent = 'Open asset catalogue';
-  panel.append(eyebrow, title, metrics, legend, assetLink);
+  panel.append(
+    eyebrow,
+    title,
+    modeNavigation,
+    metrics,
+    legend,
+    assetLink,
+  );
   return panel;
+}
+
+function statisticsTitle(viewData: SyntheticViewData): string {
+  if (viewData.mode === 'city') {
+    return `${viewData.spatial.metadata.districtCount} districts · ${viewData.population.metadata.placedCount.toLocaleString('en-US')} buildings`;
+  }
+
+  return `${viewData.spatial.metadata.blockCount} blocks · ${viewData.population.metadata.placedCount} buildings`;
+}
+
+function addCompositionStatistics(
+  metrics: HTMLDListElement,
+  viewData: SyntheticViewData,
+): void {
+  if (viewData.mode === 'city') {
+    const { metadata } = viewData.spatial;
+    addStatistic(metrics, 'Blocks', metadata.blockCount.toLocaleString('en-US'));
+    addStatistic(
+      metrics,
+      'District profiles',
+      `${metadata.profileCounts.centre} centre · ${metadata.profileCounts.urban} urban · ${metadata.profileCounts.edge} edge`,
+    );
+    return;
+  }
+
+  const { metadata } = viewData.spatial;
+  addStatistic(
+    metrics,
+    'Profiles',
+    `${metadata.profileCounts.core} core · ${metadata.profileCounts.transition} transition`,
+  );
+  addStatistic(
+    metrics,
+    'Templates',
+    `${metadata.templateCounts['fabric-grid']} fabric · ${metadata.templateCounts['edge-slabs']} slabs · ${metadata.templateCounts['anchor-and-fill']} anchors · ${metadata.templateCounts['landmark-plaza']} landmark`,
+  );
+}
+
+function createModeNavigation(
+  currentMode: SyntheticViewMode,
+  seed: number,
+): HTMLElement {
+  const navigation = document.createElement('nav');
+  navigation.className = 'synthetic-statistics__modes';
+  navigation.setAttribute('aria-label', 'Synthetic view mode');
+
+  for (const [mode, label] of [
+    ['city', 'Full city'],
+    ['proof', 'Proof district'],
+  ] as const) {
+    const link = document.createElement('a');
+    link.href = `?view=synthetic&mode=${mode}&seed=${seed}`;
+    link.textContent = label;
+
+    if (mode === currentMode) {
+      link.setAttribute('aria-current', 'page');
+    }
+
+    navigation.append(link);
+  }
+
+  return navigation;
 }
 
 function addStatistic(

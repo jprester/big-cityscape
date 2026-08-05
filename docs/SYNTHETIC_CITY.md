@@ -6,10 +6,9 @@ The simplified successor builds a fictional city from direct synthetic blocks
 and reviewed building assets. It does not consume processed geography or derive
 blocks from road polygons.
 
-The current implementation produces a deterministic, populated 500 × 500 m
-proof district and an inspection-oriented Three.js view. It generates blocks
-and building slots, selects real catalogue assets, records placement
-diagnostics, and renders the selected models in instanced batches.
+The current implementation produces and renders a deterministic, populated
+2 × 2 km city from reusable 500 × 500 m districts. The original 500 m proof
+district remains available as a separate inspection mode.
 
 ## Proof district
 
@@ -35,6 +34,26 @@ With the default seed, this produces 25 blocks and 79 slots: 11 fabric-grid
 blocks, 5 edge-slab blocks, 8 anchor-and-fill blocks, and 1 landmark block.
 Street surfaces are intentionally still just the negative space between block
 bounds.
+
+## City composition
+
+The 2 × 2 km city is a direct 4 × 4 composition of translated 500 m districts.
+Each district remains an independent future render chunk. Its twenty-metre
+outer setback combines with its neighbour's setback to create a forty-metre
+arterial gap at district boundaries.
+
+Three composition profiles create a simple height gradient:
+
+| Profile | Districts | Composition behavior |
+| --- | ---: | --- |
+| `centre` | 4 | Dense inner anchor blocks; one district owns the landmark |
+| `urban` | 8 | Mixed anchor, slab, and fabric blocks |
+| `edge` | 4 | Low/mid-rise fabric and slabs; no tall slots |
+
+The default seed produces 16 districts, 400 blocks, and 1,242 building slots.
+There is one landmark district and one landmark slot. Mean target height falls
+from centre to urban to edge, and edge districts contain no high-rise or
+skyscraper slots.
 
 ## Asset-to-slot contract
 
@@ -75,8 +94,10 @@ height exactly. A candidate is rejected when those intervals do not intersect.
 Individual slot selection remains pure and does not mutate city state. The
 district population stage sorts slots by stable semantic ID, owns a private
 usage map, passes its current counts into each selection, and increments the
-selected asset after acceptance. This enforces reviewed `maximumPerCity`
-limits without making output depend on incoming slot order.
+selected asset after acceptance. Full-city population processes districts in
+stable semantic order and carries that usage map across district boundaries.
+This enforces reviewed `maximumPerCity` limits globally without making output
+depend on incoming district, slot, or catalogue order.
 
 The population result contains placements, compatible-candidate counts for
 accepted slots, structured rejection records, sorted asset-usage counts, and
@@ -87,11 +108,18 @@ with 29 distinct assets and no rejections. Lower and mid-rise assets without an
 explicit limit may still repeat; visual repetition should be evaluated in the
 rendered proof district before adding another selection rule.
 
+With the default full-city seed, all 1,242 slots are filled with 48 distinct
+assets and no rejections. Unlimited low/mid-rise assets can repeat heavily at
+this scale; city population exposes sorted usage totals so this can be measured
+and tuned after the chunked city becomes visible.
+
 ## Synthetic debug view
 
-Open `?view=synthetic` to inspect the proof district. An optional integer
-`seed` query parameter regenerates template choices, slot heights, and asset
-selection while leaving the direct street geometry unchanged.
+Open `?view=synthetic` to inspect the complete city. Use `mode=proof` to return
+to the original 500 m district, or the on-screen Full city / Proof district
+switch. An optional integer `seed` query parameter regenerates template
+choices, slot heights, and asset selection while leaving the direct street
+geometry unchanged.
 
 The view exposes independent layers for street negative space, block-template
 surfaces, core/transition buildable outlines, placement slots, selected GLBs,
@@ -99,10 +127,18 @@ inspection lighting, and a 25 m metric grid. Overview, rooftop, and street
 camera presets provide reproducible comparisons. The street preset is derived
 from the central generated street gap rather than placed inside a block.
 
-Only the 29 selected asset files are loaded for the default seed. Placements
-sharing an asset use one `InstancedMesh`, producing 29 building batches rather
-than one scene object per building. The live statistics panel reports district,
-population, model-batch, triangle, and load-failure totals.
+Proof mode loads only its 29 selected asset files and uses one `InstancedMesh`
+per asset. Full-city mode loads its 48 selected assets once and packs all models
+for each 500 m district into one `BatchedMesh`. This produces 16 independently
+cullable building batches rather than approximately 460 per-asset district
+batches or 1,242 separate building objects.
+
+Low cameras hide district batches farther than the configured visibility range;
+the range expands with altitude so the overview retains all sixteen chunks.
+Normal Three.js frustum culling still applies to each district batch. The live
+statistics panel reports composition, population, batch, triangle, and
+load-failure totals, while the performance panel reports chunks and instances
+actually drawn in the last frame.
 
 ## Current files
 
@@ -112,13 +148,20 @@ population, model-batch, triangle, and load-failure totals.
 | Placement definition | `src/city/synthetic/model/buildingPlacement.ts` |
 | Selection result definition | `src/city/synthetic/model/assetSlotSelection.ts` |
 | Population result definition | `src/city/synthetic/model/districtPopulation.ts` |
+| City composition definition | `src/city/synthetic/model/syntheticCity.ts` |
+| City population definition | `src/city/synthetic/model/cityPopulation.ts` |
 | Proof-district definitions | `src/city/synthetic/model/proofDistrict.ts` |
 | Block-template slot generation | `src/city/synthetic/generation/createBlockSlots.ts` |
 | Proof-district generation | `src/city/synthetic/generation/generateProofDistrict.ts` |
+| 2 km city composition | `src/city/synthetic/generation/generateSyntheticCity.ts` |
 | Deterministic matcher | `src/city/synthetic/generation/selectAssetForSlot.ts` |
 | Stable district population | `src/city/synthetic/generation/populateSyntheticDistrict.ts` |
+| Stable full-city population | `src/city/synthetic/generation/populateSyntheticCity.ts` |
 | Synthetic debug geometry | `src/city/synthetic/rendering/addSyntheticDistrictDebugLayers.ts` |
+| City chunk outlines | `src/city/synthetic/rendering/addSyntheticCityDebugLayer.ts` |
 | Instanced selected models | `src/city/synthetic/rendering/addSyntheticBuildingLayer.ts` |
+| Batched city chunks | `src/city/synthetic/rendering/addSyntheticCityBuildingLayer.ts` |
+| District visibility rule | `src/city/synthetic/rendering/syntheticDistrictVisibility.ts` |
 | Synthetic app lifecycle | `src/synthetic/createSyntheticDistrictApp.ts` |
 | Focused tests | `src/city/synthetic/generation/*.test.ts` |
 
@@ -131,6 +174,11 @@ slot has at least one compatible enabled asset in the real catalogue. Population
 tests also verify order independence, city-limit enforcement, usage accounting,
 and preservation of structured rejection diagnostics.
 
+Full-city tests additionally verify the 2 km bounds, non-overlapping district
+chunks, 4/8/4 profile distribution, single landmark ownership, centre-to-edge
+height gradient, absence of tall edge slots, and repetition-cap enforcement
+across district boundaries.
+
 For the current catalogue and default seed, every slot has between 3 and 14
 compatible candidates before city-wide repetition caps are applied. The
 landmark is deliberately the narrowest category, with three candidates.
@@ -139,9 +187,16 @@ The default overview measured 35 draw calls, 42,131 rendered triangles, 47
 scene objects, and 41 visible objects in the local browser. Rendering is
 on-demand while the camera is idle. No active-frame-rate claim is made yet.
 
+The default full-city overview measured 23 draw calls, 523,732 rendered
+triangles, 35 scene objects, 29 visible objects, 16 rendered district batches,
+and 1,242 rendered model instances. The street preset reduced that to 16 draw
+calls, 291,485 triangles, 9 rendered districts, and 666 rendered buildings.
+These are local-browser inspection measurements, not active-frame-rate claims.
+
 ## Next slice
 
-Review the proof district visually before scaling outward. The next code slice
-should address only concrete composition issues found in that review—most
-likely template density, repeated low/mid-rise assets, or deliberate open-space
-blocks—then preserve the accepted 500 m district as the first city chunk.
+Use the complete view for a focused composition pass. The first candidate is a
+soft deterministic reuse penalty for unlimited low/mid-rise assets, because the
+most common model currently appears 129 times. After that, add a small number
+of deliberate park/open-space blocks and one controlled curved or offset band;
+do not add general road meshes or decorative detail yet.

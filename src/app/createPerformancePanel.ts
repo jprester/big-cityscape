@@ -41,7 +41,7 @@ export function createPerformancePanel(
 
   if (getMassingStats !== undefined) {
     addMetric(element, outputs, 'chunks', 'Rendered chunks', '0 / 0');
-    addMetric(element, outputs, 'batches', 'Massing batches', '0 / 0');
+    addMetric(element, outputs, 'batches', 'Rendered batches', '0 / 0');
     addMetric(element, outputs, 'instances', 'Model instances', '0 / 0');
   }
 

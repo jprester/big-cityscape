@@ -3,9 +3,17 @@ import type { DebugLayerManager } from '../../../debug/DebugLayerManager';
 import type { BuildingHeightClass } from '../../assets/buildingAssetCatalog';
 import type {
   SyntheticBlockTemplateId,
+  SyntheticBlockDefinition,
+  SyntheticBounds2,
   SyntheticDistrictProfileId,
-  SyntheticProofDistrict,
 } from '../model/proofDistrict';
+import type { BuildingSlot } from '../model/buildingSlot';
+
+export type SyntheticDebugSpatialDefinition = Readonly<{
+  bounds: SyntheticBounds2;
+  blocks: readonly SyntheticBlockDefinition[];
+  slots: readonly BuildingSlot[];
+}>;
 
 const TEMPLATE_COLORS: Readonly<Record<SyntheticBlockTemplateId, number>> = {
   'fabric-grid': 0x34594d,
@@ -28,21 +36,21 @@ const SLOT_COLORS: Readonly<Record<BuildingHeightClass, number>> = {
 
 export function addSyntheticDistrictDebugLayers(
   layers: DebugLayerManager,
-  district: SyntheticProofDistrict,
+  spatial: SyntheticDebugSpatialDefinition,
 ): void {
-  addStreetGroundLayer(layers, district);
-  addMetricGridLayer(layers, district);
-  addBlockTemplateLayer(layers, district);
-  addProfileOutlineLayer(layers, district);
-  addSlotLayer(layers, district);
+  addStreetGroundLayer(layers, spatial);
+  addMetricGridLayer(layers, spatial);
+  addBlockTemplateLayer(layers, spatial);
+  addProfileOutlineLayer(layers, spatial);
+  addSlotLayer(layers, spatial);
 }
 
 function addStreetGroundLayer(
   layers: DebugLayerManager,
-  district: SyntheticProofDistrict,
+  spatial: SyntheticDebugSpatialDefinition,
 ): void {
-  const width = district.bounds.maxX - district.bounds.minX;
-  const depth = district.bounds.maxZ - district.bounds.minZ;
+  const width = spatial.bounds.maxX - spatial.bounds.minX;
+  const depth = spatial.bounds.maxZ - spatial.bounds.minZ;
   const geometry = new THREE.PlaneGeometry(width, depth);
   const material = new THREE.MeshBasicMaterial({
     color: 0x10171d,
@@ -52,9 +60,9 @@ function addStreetGroundLayer(
   ground.name = 'synthetic:street-negative-space';
   ground.rotation.x = -Math.PI / 2;
   ground.position.set(
-    (district.bounds.minX + district.bounds.maxX) / 2,
+    (spatial.bounds.minX + spatial.bounds.maxX) / 2,
     -0.05,
-    (district.bounds.minZ + district.bounds.maxZ) / 2,
+    (spatial.bounds.minZ + spatial.bounds.maxZ) / 2,
   );
 
   layers.add({
@@ -70,11 +78,11 @@ function addStreetGroundLayer(
 
 function addMetricGridLayer(
   layers: DebugLayerManager,
-  district: SyntheticProofDistrict,
+  spatial: SyntheticDebugSpatialDefinition,
 ): void {
   const size = Math.max(
-    district.bounds.maxX - district.bounds.minX,
-    district.bounds.maxZ - district.bounds.minZ,
+    spatial.bounds.maxX - spatial.bounds.minX,
+    spatial.bounds.maxZ - spatial.bounds.minZ,
   );
   const grid = new THREE.GridHelper(size, size / 25, 0x6e9bb5, 0x283a46);
   grid.position.y = 0.7;
@@ -94,7 +102,7 @@ function addMetricGridLayer(
 
 function addBlockTemplateLayer(
   layers: DebugLayerManager,
-  district: SyntheticProofDistrict,
+  spatial: SyntheticDebugSpatialDefinition,
 ): void {
   const group = new THREE.Group();
   group.name = 'synthetic:block-templates';
@@ -112,7 +120,7 @@ function addBlockTemplateLayer(
     'anchor-and-fill',
     'landmark-plaza',
   ] as const) {
-    const blocks = district.blocks.filter(
+    const blocks = spatial.blocks.filter(
       (block) => block.templateId === templateId,
     );
 
@@ -163,13 +171,13 @@ function addBlockTemplateLayer(
 
 function addProfileOutlineLayer(
   layers: DebugLayerManager,
-  district: SyntheticProofDistrict,
+  spatial: SyntheticDebugSpatialDefinition,
 ): void {
   const positions: number[] = [];
   const colors: number[] = [];
   const color = new THREE.Color();
 
-  for (const block of district.blocks) {
+  for (const block of spatial.blocks) {
     const { minX, maxX, minZ, maxZ } = block.buildableBounds;
     color.setHex(PROFILE_COLORS[block.profileId]);
     addSegment(positions, colors, color, minX, minZ, maxX, minZ);
@@ -201,7 +209,7 @@ function addProfileOutlineLayer(
 
 function addSlotLayer(
   layers: DebugLayerManager,
-  district: SyntheticProofDistrict,
+  spatial: SyntheticDebugSpatialDefinition,
 ): void {
   const group = new THREE.Group();
   group.name = 'synthetic:building-slots';
@@ -220,7 +228,7 @@ function addSlotLayer(
     'high-rise',
     'skyscraper',
   ] as const) {
-    const slots = district.slots.filter(
+    const slots = spatial.slots.filter(
       (slot) => slot.heightClass === heightClass,
     );
 

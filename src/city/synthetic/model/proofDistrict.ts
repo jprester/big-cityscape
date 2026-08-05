@@ -12,6 +12,15 @@ export const SYNTHETIC_DISTRICT_PROFILE_IDS = ['core', 'transition'] as const;
 export type SyntheticDistrictProfileId =
   (typeof SYNTHETIC_DISTRICT_PROFILE_IDS)[number];
 
+export const SYNTHETIC_DISTRICT_COMPOSITION_PROFILE_IDS = [
+  'centre',
+  'urban',
+  'edge',
+] as const;
+
+export type SyntheticDistrictCompositionProfileId =
+  (typeof SYNTHETIC_DISTRICT_COMPOSITION_PROFILE_IDS)[number];
+
 export const SYNTHETIC_BLOCK_TEMPLATE_IDS = [
   'fabric-grid',
   'edge-slabs',
@@ -38,6 +47,9 @@ export type SyntheticBlockDefinition = Readonly<{
 export type SyntheticProofDistrict = Readonly<{
   id: string;
   seed: number;
+  center: readonly [xMetres: number, zMetres: number];
+  compositionProfileId: SyntheticDistrictCompositionProfileId;
+  hasLandmark: boolean;
   bounds: SyntheticBounds2;
   blocks: readonly SyntheticBlockDefinition[];
   slots: readonly BuildingSlot[];

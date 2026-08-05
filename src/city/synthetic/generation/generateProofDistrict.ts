@@ -4,6 +4,7 @@ import type {
   SyntheticBlockDefinition,
   SyntheticBlockTemplateId,
   SyntheticBounds2,
+  SyntheticDistrictCompositionProfileId,
   SyntheticDistrictProfileId,
   SyntheticProofDistrict,
 } from '../model/proofDistrict';
@@ -11,6 +12,9 @@ import type {
 export type ProofDistrictConfig = Readonly<{
   id: string;
   seed: number;
+  center: readonly [xMetres: number, zMetres: number];
+  compositionProfileId: SyntheticDistrictCompositionProfileId;
+  hasLandmark: boolean;
   sizeMetres: number;
   outerMarginMetres: number;
   blockInsetMetres: number;
@@ -23,6 +27,9 @@ export type ProofDistrictConfig = Readonly<{
 export const DEFAULT_PROOF_DISTRICT_CONFIG: ProofDistrictConfig = {
   id: 'proof-district',
   seed: 20_260_805,
+  center: [0, 0],
+  compositionProfileId: 'centre',
+  hasLandmark: true,
   sizeMetres: 500,
   outerMarginMetres: 20,
   blockInsetMetres: 5,
@@ -38,10 +45,10 @@ export function generateProofDistrict(
   validateConfig(config);
 
   const districtBounds: SyntheticBounds2 = {
-    minX: -config.sizeMetres / 2,
-    maxX: config.sizeMetres / 2,
-    minZ: -config.sizeMetres / 2,
-    maxZ: config.sizeMetres / 2,
+    minX: config.center[0] - config.sizeMetres / 2,
+    maxX: config.center[0] + config.sizeMetres / 2,
+    minZ: config.center[1] - config.sizeMetres / 2,
+    maxZ: config.center[1] + config.sizeMetres / 2,
   };
   const columnBounds = createAxisBounds(
     districtBounds.minX + config.outerMarginMetres,
@@ -66,8 +73,19 @@ export function generateProofDistrict(
 
       const blockId = `${config.id}/block-r${row}-c${column}`;
       const blockSeed = deriveSeed(config.seed, blockId);
-      const profileId = profileForCell(column, row);
-      const templateId = templateForCell(column, row, profileId, blockSeed);
+      const profileId = profileForCell(
+        column,
+        row,
+        config.compositionProfileId,
+      );
+      const templateId = templateForCell(
+        column,
+        row,
+        profileId,
+        blockSeed,
+        config.compositionProfileId,
+        config.hasLandmark,
+      );
       const bounds: SyntheticBounds2 = {
         minX: xBounds[0],
         maxX: xBounds[1],
@@ -103,6 +121,9 @@ export function generateProofDistrict(
   return {
     id: config.id,
     seed: config.seed,
+    center: config.center,
+    compositionProfileId: config.compositionProfileId,
+    hasLandmark: config.hasLandmark,
     bounds: districtBounds,
     blocks,
     slots,
@@ -118,7 +139,12 @@ export function generateProofDistrict(
 function profileForCell(
   column: number,
   row: number,
+  compositionProfileId: SyntheticDistrictCompositionProfileId,
 ): SyntheticDistrictProfileId {
+  if (compositionProfileId === 'edge') {
+    return 'transition';
+  }
+
   return column >= 1 && column <= 3 && row >= 1 && row <= 3
     ? 'core'
     : 'transition';
@@ -129,17 +155,32 @@ function templateForCell(
   row: number,
   profileId: SyntheticDistrictProfileId,
   blockSeed: number,
+  compositionProfileId: SyntheticDistrictCompositionProfileId,
+  hasLandmark: boolean,
 ): SyntheticBlockTemplateId {
-  if (column === 2 && row === 2) {
+  if (hasLandmark && column === 2 && row === 2) {
     return 'landmark-plaza';
   }
 
-  if (profileId === 'core') {
+  if (compositionProfileId === 'centre' && profileId === 'core') {
     return 'anchor-and-fill';
   }
 
   const random = createSeededRandom(deriveSeed(blockSeed, 'template-choice'));
-  return random.next() < 0.35 ? 'edge-slabs' : 'fabric-grid';
+
+  if (compositionProfileId === 'urban' && profileId === 'core') {
+    return random.next() < 0.48 ? 'anchor-and-fill' : 'edge-slabs';
+  }
+
+  const edgeSlabProbability =
+    compositionProfileId === 'edge'
+      ? 0.22
+      : compositionProfileId === 'urban'
+        ? 0.38
+        : 0.35;
+  return random.next() < edgeSlabProbability
+    ? 'edge-slabs'
+    : 'fabric-grid';
 }
 
 function createAxisBounds(
@@ -201,6 +242,14 @@ function validateConfig(config: ProofDistrictConfig): void {
 
   if (!Number.isSafeInteger(config.seed)) {
     throw new RangeError('The proof district seed must be a safe integer.');
+  }
+
+  if (!Number.isFinite(config.center[0]) || !Number.isFinite(config.center[1])) {
+    throw new RangeError('The proof district centre must use finite coordinates.');
+  }
+
+  if (config.hasLandmark && config.compositionProfileId !== 'centre') {
+    throw new Error('Only a centre-profile district may contain a landmark.');
   }
 
   assertPositiveFinite('district size', config.sizeMetres);
