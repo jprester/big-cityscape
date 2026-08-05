@@ -11,6 +11,7 @@
     "preprocess:structure": "tsx scripts/preprocess-osm.ts",
     "preprocess:blocks": "tsx scripts/preprocess-blocks.ts",
     "catalog:build": "tsx scripts/catalog-building-assets.ts",
+    "catalog:watch": "tsx scripts/catalog-building-assets.ts --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview"

@@ -27,6 +27,8 @@ npm run build
 
 Run `npm run catalog:build` after adding or changing a building GLB. The command
 regenerates deterministic geometry measurements for every exported asset.
+During an asset-authoring session, `npm run catalog:watch` keeps the generated
+measurements current as GLBs are added, replaced, or removed.
 
 While the development server is running, open
 `http://localhost:5173/?view=assets` to inspect all assets, their reviewed city

@@ -101,10 +101,7 @@ export const BUILDING_ASSET_OVERRIDES: Readonly<
   'skyscraper-14': { form: 'slab' },
   'skyscraper-15': { form: 'spire' },
   'skyscraper-16': {
-    form: 'complex',
-    placementRoles: ['anchor', 'landmark'],
-    maximumPerCity: 1,
-    notes: 'Source origin is offset; runtime geometry normalization recentres it.',
+    form: 'spire',
   },
   'skyscraper-17': {
     form: 'complex',
@@ -122,5 +119,4 @@ export const BUILDING_ASSET_OVERRIDES: Readonly<
     maximumPerCity: 1,
   },
   'skyscraper-21': { form: 'complex' },
-  'skyscraper-22': { form: 'podium-tower' },
 };

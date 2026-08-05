@@ -1,4 +1,4 @@
-import { promises as fs } from 'node:fs';
+import { promises as fs, watch } from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import * as THREE from 'three';
@@ -49,7 +49,7 @@ type CatalogAsset = Readonly<{
   }>;
 }>;
 
-async function main(): Promise<void> {
+async function buildCatalog(): Promise<void> {
   const assetFiles = await findAssetFiles();
   const loader = new GLTFLoader();
   const inspectedAssets: CatalogAsset[] = [];
@@ -81,6 +81,56 @@ async function main(): Promise<void> {
   console.log(`Source categories: ${JSON.stringify(counts)}`);
   console.log(`Assets with audit warnings: ${warningCount}`);
   console.log(`Wrote ${path.relative(process.cwd(), OUTPUT_PATH)}.`);
+}
+
+function watchCatalog(): void {
+  let rebuildTimer: NodeJS.Timeout | undefined;
+  let buildInProgress = false;
+  let rebuildRequested = false;
+
+  const rebuild = async (): Promise<void> => {
+    if (buildInProgress) {
+      rebuildRequested = true;
+      return;
+    }
+
+    buildInProgress = true;
+
+    try {
+      await buildCatalog();
+    } catch (error) {
+      console.error('Building asset catalogue regeneration failed.', error);
+    } finally {
+      buildInProgress = false;
+
+      if (rebuildRequested) {
+        rebuildRequested = false;
+        void rebuild();
+      }
+    }
+  };
+
+  const watcher = watch(
+    MODEL_ROOT,
+    { recursive: true },
+    (_eventType, filename) => {
+      if (filename === null || !filename.endsWith('.glb')) {
+        return;
+      }
+
+      if (rebuildTimer !== undefined) {
+        clearTimeout(rebuildTimer);
+      }
+
+      rebuildTimer = setTimeout(() => void rebuild(), 200);
+    },
+  );
+  watcher.on('error', (error) => {
+    console.error('Building asset catalogue watcher failed.', error);
+  });
+  process.once('SIGINT', () => watcher.close());
+  process.once('SIGTERM', () => watcher.close());
+  console.log(`Watching ${path.relative(process.cwd(), MODEL_ROOT)} for GLB changes.`);
 }
 
 async function findAssetFiles(): Promise<readonly string[]> {
@@ -359,4 +409,8 @@ function disposeScene(scene: THREE.Object3D): void {
   materials.forEach((material) => material.dispose());
 }
 
-await main();
+await buildCatalog();
+
+if (process.argv.includes('--watch')) {
+  watchCatalog();
+}

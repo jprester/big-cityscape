@@ -3241,30 +3241,30 @@
       "sourceCategory": "skyscraper",
       "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-12.glb",
       "sourceDimensions": {
-        "width": 59.3052,
-        "height": 211.677,
-        "depth": 42.7861
+        "width": 84.9504,
+        "height": 207.9931,
+        "depth": 56.4297
       },
       "sourceBounds": {
         "min": [
-          -29.6527,
+          -42.4752,
           0,
-          -21.393
+          -28.2148
         ],
         "max": [
-          29.6526,
-          211.677,
-          21.3931
+          42.4752,
+          207.9931,
+          28.2148
         ]
       },
       "proportions": {
-        "footprintAspect": 1.3861,
-        "slenderness": 3.5693
+        "footprintAspect": 1.5054,
+        "slenderness": 2.4484
       },
       "geometry": {
         "meshes": 1,
-        "vertices": 815,
-        "triangles": 492,
+        "vertices": 4254,
+        "triangles": 2632,
         "materials": 1,
         "indexedMeshes": 1,
         "meshesWithNormals": 1,
@@ -3273,7 +3273,7 @@
       "audit": {
         "horizontalCenterOffsetRatio": 0,
         "groundOffsetRatio": 0,
-        "shapeFingerprint": "48987efae16a0b4a",
+        "shapeFingerprint": "8342a7f91b9f98ab",
         "duplicateShapeOf": null,
         "warnings": []
       }
@@ -3409,43 +3409,41 @@
       "sourceCategory": "skyscraper",
       "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-16.glb",
       "sourceDimensions": {
-        "width": 90.9827,
-        "height": 324.2411,
-        "depth": 60.3613
+        "width": 57.3188,
+        "height": 204.5871,
+        "depth": 41.353
       },
       "sourceBounds": {
         "min": [
+          -28.6595,
           0,
-          0,
-          -30.1806
+          -20.6765
         ],
         "max": [
-          90.9827,
-          324.2411,
-          30.1806
+          28.6594,
+          204.5871,
+          20.6765
         ]
       },
       "proportions": {
-        "footprintAspect": 1.5073,
-        "slenderness": 3.5638
+        "footprintAspect": 1.3861,
+        "slenderness": 3.5693
       },
       "geometry": {
         "meshes": 1,
-        "vertices": 616,
-        "triangles": 386,
+        "vertices": 815,
+        "triangles": 492,
         "materials": 1,
         "indexedMeshes": 1,
         "meshesWithNormals": 1,
         "meshesWithUvs": 1
       },
       "audit": {
-        "horizontalCenterOffsetRatio": 0.5,
+        "horizontalCenterOffsetRatio": 0,
         "groundOffsetRatio": 0,
-        "shapeFingerprint": "671d98b79e8363c1",
+        "shapeFingerprint": "48987efae16a0b4a",
         "duplicateShapeOf": null,
-        "warnings": [
-          "off-centre-horizontal-origin"
-        ]
+        "warnings": []
       }
     },
     {
@@ -3654,48 +3652,6 @@
         "horizontalCenterOffsetRatio": 0,
         "groundOffsetRatio": 0,
         "shapeFingerprint": "f971a666a8eaa3c0",
-        "duplicateShapeOf": null,
-        "warnings": []
-      }
-    },
-    {
-      "id": "skyscraper-22",
-      "sourceCategory": "skyscraper",
-      "assetPath": "assets/models/buildings/lowpoly-buildings-pack/skyscraper/skyscraper-lp-22.glb",
-      "sourceDimensions": {
-        "width": 84.9504,
-        "height": 207.9931,
-        "depth": 56.4297
-      },
-      "sourceBounds": {
-        "min": [
-          -42.4752,
-          0,
-          -28.2148
-        ],
-        "max": [
-          42.4752,
-          207.9931,
-          28.2148
-        ]
-      },
-      "proportions": {
-        "footprintAspect": 1.5054,
-        "slenderness": 2.4484
-      },
-      "geometry": {
-        "meshes": 1,
-        "vertices": 4254,
-        "triangles": 2632,
-        "materials": 1,
-        "indexedMeshes": 1,
-        "meshesWithNormals": 1,
-        "meshesWithUvs": 1
-      },
-      "audit": {
-        "horizontalCenterOffsetRatio": 0,
-        "groundOffsetRatio": 0,
-        "shapeFingerprint": "8342a7f91b9f98ab",
         "duplicateShapeOf": null,
         "warnings": []
       }

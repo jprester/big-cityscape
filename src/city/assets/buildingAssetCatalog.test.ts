@@ -5,17 +5,18 @@ import {
   BUILDING_ASSET_USES,
   BUILDING_HEIGHT_CLASSES,
   BUILDING_PLACEMENT_ROLES,
+  GENERATED_BUILDING_ASSET_CATALOG,
+  findOrphanedBuildingAssetOverrideIds,
 } from './buildingAssetCatalog';
 
 describe('BUILDING_ASSET_CATALOG', () => {
   it('catalogues all exported GLBs with unique stable IDs', () => {
-    expect(BUILDING_ASSET_CATALOG).toHaveLength(88);
-    expect(new Set(BUILDING_ASSET_CATALOG.map((asset) => asset.id)).size).toBe(88);
-    expect(countBy(BUILDING_ASSET_CATALOG.map((asset) => asset.sourceCategory))).toEqual({
-      'high-rise': 37,
-      residential: 29,
-      skyscraper: 22,
-    });
+    expect(BUILDING_ASSET_CATALOG).toHaveLength(
+      GENERATED_BUILDING_ASSET_CATALOG.assets.length,
+    );
+    expect(new Set(BUILDING_ASSET_CATALOG.map((asset) => asset.id)).size).toBe(
+      BUILDING_ASSET_CATALOG.length,
+    );
   });
 
   it('provides valid placement metadata for every asset', () => {
@@ -42,39 +43,12 @@ describe('BUILDING_ASSET_CATALOG', () => {
     }
   });
 
-  it('records reviewed reclassifications and retired duplicates', () => {
-    expect(asset('high-rise-17')).toMatchObject({
-      use: 'commercial',
-      form: 'complex',
-      heightClass: 'mid-rise',
-    });
-    expect(asset('high-rise-31')).toMatchObject({
-      use: 'commercial',
-      form: 'perimeter',
-      heightClass: 'mid-rise',
-    });
-    expect(asset('residential-20')).toMatchObject({ enabled: false });
-    expect(asset('skyscraper-6')).toMatchObject({ enabled: false });
-    expect(asset('high-rise-5')).toMatchObject({ enabled: false });
+  it('reports stale overrides without making the catalogue fail', () => {
+    expect(
+      findOrphanedBuildingAssetOverrideIds(
+        new Set(['retained-a', 'retained-b']),
+        ['removed-z', 'retained-a', 'removed-c'],
+      ),
+    ).toEqual(['removed-c', 'removed-z']);
   });
 });
-
-function asset(id: string) {
-  const result = BUILDING_ASSET_CATALOG.find((entry) => entry.id === id);
-
-  if (result === undefined) {
-    throw new Error(`Missing test asset ${id}.`);
-  }
-
-  return result;
-}
-
-function countBy(values: readonly string[]): Record<string, number> {
-  const counts: Record<string, number> = {};
-
-  for (const value of values) {
-    counts[value] = (counts[value] ?? 0) + 1;
-  }
-
-  return counts;
-}

@@ -113,25 +113,41 @@ type GeneratedCatalogFile = Readonly<{
 export const GENERATED_BUILDING_ASSET_CATALOG =
   generatedCatalog as unknown as GeneratedCatalogFile;
 
+const GENERATED_BUILDING_ASSET_IDS = new Set(
+  GENERATED_BUILDING_ASSET_CATALOG.assets.map((asset) => asset.id),
+);
+
+export const ORPHANED_BUILDING_ASSET_OVERRIDE_IDS =
+  findOrphanedBuildingAssetOverrideIds(
+    GENERATED_BUILDING_ASSET_IDS,
+    Object.keys(BUILDING_ASSET_OVERRIDES),
+  );
+
+if (ORPHANED_BUILDING_ASSET_OVERRIDE_IDS.length > 0) {
+  console.warn(
+    'Ignoring building asset overrides whose GLBs are no longer present.',
+    ORPHANED_BUILDING_ASSET_OVERRIDE_IDS,
+  );
+}
+
 export const BUILDING_ASSET_CATALOG: readonly BuildingAssetCatalogEntry[] =
   createBuildingAssetCatalog();
 
 function createBuildingAssetCatalog(): readonly BuildingAssetCatalogEntry[] {
-  const generatedIds = new Set(
-    GENERATED_BUILDING_ASSET_CATALOG.assets.map((asset) => asset.id),
-  );
-
-  for (const overrideId of Object.keys(BUILDING_ASSET_OVERRIDES)) {
-    if (!generatedIds.has(overrideId)) {
-      throw new Error(`Building asset override references unknown asset "${overrideId}".`);
-    }
-  }
-
   return GENERATED_BUILDING_ASSET_CATALOG.assets.map((asset) => ({
     ...asset,
     ...defaultMetadata(asset),
     ...BUILDING_ASSET_OVERRIDES[asset.id],
   }));
+}
+
+export function findOrphanedBuildingAssetOverrideIds(
+  generatedAssetIds: ReadonlySet<string>,
+  overrideIds: readonly string[],
+): readonly string[] {
+  return overrideIds
+    .filter((overrideId) => !generatedAssetIds.has(overrideId))
+    .sort((first, second) => first.localeCompare(second));
 }
 
 function defaultMetadata(asset: GeneratedBuildingAsset): BuildingAssetMetadata {

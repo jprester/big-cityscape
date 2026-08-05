@@ -1,5 +1,8 @@
 import * as THREE from 'three';
-import { BUILDING_ASSET_CATALOG } from '../city/assets/buildingAssetCatalog';
+import {
+  BUILDING_ASSET_CATALOG,
+  ORPHANED_BUILDING_ASSET_OVERRIDE_IDS,
+} from '../city/assets/buildingAssetCatalog';
 import type { BuildingModelCatalogEntry } from '../city/rendering/buildingModelCatalog';
 import {
   loadBuildingModels,
@@ -22,7 +25,7 @@ export async function createBuildingAssetCatalogApp(
     (asset) => ({
       id: asset.id,
       category: asset.sourceCategory,
-      assetPath: asset.assetPath,
+      assetPath: `${asset.assetPath}?revision=${asset.audit.shapeFingerprint}`,
     }),
   );
   const library = await loadBuildingModels(catalogEntries);
@@ -33,6 +36,7 @@ export async function createBuildingAssetCatalogApp(
     catalogAssets.length,
     catalogAssets.filter((asset) => asset.enabled).length,
     library.failedAssets.length,
+    ORPHANED_BUILDING_ASSET_OVERRIDE_IDS.length,
   );
   const controls = createControls();
   const grid = document.createElement('section');
@@ -94,6 +98,13 @@ export async function createBuildingAssetCatalogApp(
       warning.className = 'asset-card__warning';
       warning.textContent = asset.audit.warnings.join(', ');
       body.append(warning);
+    }
+
+    if (asset.audit.duplicateShapeOf !== null) {
+      const duplicate = document.createElement('p');
+      duplicate.className = 'asset-card__warning';
+      duplicate.textContent = `Exact scaled shape duplicate of ${asset.audit.duplicateShapeOf}`;
+      body.append(duplicate);
     }
 
     if (asset.notes !== undefined) {
@@ -171,6 +182,7 @@ function createHeader(
   assetCount: number,
   enabledCount: number,
   failureCount: number,
+  orphanedOverrideCount: number,
 ): HTMLElement {
   const header = document.createElement('header');
   header.className = 'asset-catalog__header';
@@ -182,7 +194,11 @@ function createHeader(
   title.textContent = 'Building asset catalogue';
   const summary = document.createElement('p');
   summary.className = 'asset-catalog__summary';
-  summary.textContent = `${assetCount} exported GLBs · ${enabledCount} enabled · ${failureCount} load failures · nominal dimensions use the reviewed metre scale`;
+  const orphanedOverrideSummary =
+    orphanedOverrideCount === 0
+      ? ''
+      : ` · ${orphanedOverrideCount} stale overrides ignored`;
+  summary.textContent = `${assetCount} exported GLBs · ${enabledCount} enabled · ${failureCount} load failures${orphanedOverrideSummary} · nominal dimensions use the reviewed metre scale`;
   header.append(eyebrow, title, summary);
   return header;
 }
