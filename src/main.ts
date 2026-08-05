@@ -14,11 +14,16 @@ if (host === null) {
 let app: AppLifecycle | undefined;
 
 try {
-  if (shouldShowAssetCatalog(window.location.search)) {
+  if (requestedView(window.location.search) === 'assets') {
     const { createBuildingAssetCatalogApp } = await import(
       './catalog/createBuildingAssetCatalogApp'
     );
     app = await createBuildingAssetCatalogApp(host);
+  } else if (requestedView(window.location.search) === 'synthetic') {
+    const { createSyntheticDistrictApp } = await import(
+      './synthetic/createSyntheticDistrictApp'
+    );
+    app = await createSyntheticDistrictApp(host);
   } else {
     const { createApp } = await import('./app/createApp');
     app = await createApp(host);
@@ -33,8 +38,8 @@ try {
   console.error(error);
 }
 
-function shouldShowAssetCatalog(search: string): boolean {
-  return new URLSearchParams(search).get('view') === 'assets';
+function requestedView(search: string): string | null {
+  return new URLSearchParams(search).get('view');
 }
 
 if (import.meta.hot !== undefined) {

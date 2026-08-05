@@ -46,7 +46,7 @@ export function createInspectionCamera(
       case 'aerial':
         camera.position.set(
           viewExtentMetres * 0.62,
-          viewExtentMetres * 0.54,
+          Math.max(viewExtentMetres * 0.54, focus.heightMetres * 1.45),
           viewExtentMetres * 0.62,
         );
         controls.target.copy(INITIAL_TARGET_METRES);

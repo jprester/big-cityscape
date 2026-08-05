@@ -8,6 +8,39 @@ The project begins with realistic urban organization at kilometre scale and deli
 
 This project is intentionally independent from the existing detail-first cyberpunk city project (https://github.com/jprester/future-cityscape and locally in ../future-cityscape folder). It should explore a novel, code-driven workflow rather than inherit a Blender-heavy asset pipeline.
 
+### Simplified synthetic-city branch scope
+
+The `simplified-city-generation` branch intentionally replaces the original
+geodata-driven horizontal-structure experiment with a smaller synthetic-city
+successor. For this branch, the following scope overrides the OSM, road-mesh,
+waterway, railway, and polygon-derived block requirements later in this plan:
+
+- target a synthetic 2 × 2 km city, beginning with one populated 500 × 500 m
+  proof district;
+- generate rectangular blocks directly and treat configurable gaps between
+  them as streets;
+- use only a few explicit offsets, rotations, or curved block bands for
+  variation;
+- select reviewed GLB buildings through the generated asset catalogue;
+- preserve deterministic semantic data, debug inspection, chunked rendering,
+  camera presets, and measured performance; and
+- avoid real geography, GIS preprocessing, road topology repair, waterways,
+  railways, and arbitrary polygon subdivision.
+
+The successor flow is:
+
+```text
+synthetic city composition
+→ district-aware blocks
+→ block-template placement slots
+→ deterministic compatible asset selection
+→ declarative building placements
+→ chunked rendering
+```
+
+See `docs/BUILDING_ASSETS.md` for the asset catalogue and
+`docs/SYNTHETIC_CITY.md` for the current implementation contract.
+
 ## 2. Core hypothesis
 
 A convincing city can be produced more efficiently by starting with:
