@@ -1,4 +1,9 @@
 import * as THREE from 'three';
+import {
+  createFirstPersonController,
+  type FirstPersonController,
+} from '../app/createFirstPersonController';
+import { createFirstPersonHud } from '../app/createFirstPersonHud';
 import { createInspectionCamera } from '../app/createInspectionCamera';
 import { createPerformancePanel } from '../app/createPerformancePanel';
 import {
@@ -38,6 +43,10 @@ const MAX_PIXEL_RATIO = 1.5;
 const MAX_ACTIVE_FRAMES_PER_SECOND = 60;
 const MIN_FRAME_INTERVAL_MILLISECONDS =
   1_000 / MAX_ACTIVE_FRAMES_PER_SECOND - 0.5;
+const FIRST_PERSON_EYE_HEIGHT_METRES = 1.8;
+const FIRST_PERSON_WALK_SPEED_METRES_PER_SECOND = 7;
+const FIRST_PERSON_FAST_MULTIPLIER = 3.5;
+const FIRST_PERSON_BOUNDARY_INSET_METRES = 2;
 
 type SyntheticViewMode = 'city' | 'proof';
 
@@ -130,6 +139,7 @@ export async function createSyntheticDistrictApp(
   let cameraInteractionActive = false;
   let animationFrameId: number | undefined;
   let previousTimeMilliseconds: number | undefined;
+  let firstPersonController: FirstPersonController | undefined;
 
   const requestRender = (): void => {
     if (
@@ -166,13 +176,21 @@ export async function createSyntheticDistrictApp(
         : Math.max(0, (timeMilliseconds - previousTimeMilliseconds) / 1_000);
 
     previousTimeMilliseconds = timeMilliseconds;
-    const cameraChanged = inspectionCamera.update(Math.min(deltaSeconds, 0.1));
+    const limitedDeltaSeconds = Math.min(deltaSeconds, 0.1);
+    const firstPersonActive = firstPersonController?.isActive() ?? false;
+    // OrbitControls.update() writes the camera transform even when input is
+    // disabled, so it must not run while first-person look owns the camera.
+    const cameraChanged = firstPersonActive
+      ? false
+      : inspectionCamera.update(limitedDeltaSeconds);
+    const firstPersonChanged =
+      firstPersonController?.update(limitedDeltaSeconds) ?? false;
     cityRenderLayer?.beginFrame();
     cityRenderLayer?.updateVisibility(inspectionCamera.camera);
     renderer.render(scene, inspectionCamera.camera);
     performancePanel.update(deltaSeconds);
 
-    if (cameraInteractionActive || cameraChanged) {
+    if (cameraInteractionActive || cameraChanged || firstPersonChanged) {
       requestRender();
     } else {
       previousTimeMilliseconds = undefined;
@@ -191,6 +209,8 @@ export async function createSyntheticDistrictApp(
   const onCameraChange = (): void => requestRender();
   const onVisibilityChange = (): void => {
     if (document.hidden) {
+      firstPersonController?.exit();
+
       if (animationFrameId !== undefined) {
         window.cancelAnimationFrame(animationFrameId);
         animationFrameId = undefined;
@@ -210,9 +230,35 @@ export async function createSyntheticDistrictApp(
   inspectionCamera.controls.addEventListener('change', onCameraChange);
   document.addEventListener('visibilitychange', onVisibilityChange);
 
+  const firstPersonHud = createFirstPersonHud();
+  const firstPersonSpawn = createFirstPersonSpawn(viewData);
+  firstPersonController = createFirstPersonController({
+    camera: inspectionCamera.camera,
+    canvas: renderer.domElement,
+    orbitControls: inspectionCamera.controls,
+    bounds: viewData.spatial.bounds,
+    spawnPosition: firstPersonSpawn.position,
+    spawnTarget: firstPersonSpawn.target,
+    eyeHeightMetres: FIRST_PERSON_EYE_HEIGHT_METRES,
+    walkSpeedMetresPerSecond: FIRST_PERSON_WALK_SPEED_METRES_PER_SECOND,
+    fastMultiplier: FIRST_PERSON_FAST_MULTIPLIER,
+    boundaryInsetMetres: FIRST_PERSON_BOUNDARY_INSET_METRES,
+    onActiveChange: (active) => {
+      cameraInteractionActive = active;
+      firstPersonHud.setActive(active);
+      host.classList.toggle('first-person-active', active);
+      requestRender();
+    },
+    onChange: requestRender,
+  });
+
   const debugPanel = createDebugPanel(
     debugLayers,
-    createCameraPresets(viewData, inspectionCamera),
+    createCameraPresets(
+      viewData,
+      inspectionCamera,
+      () => firstPersonController?.enter(),
+    ),
     `Synthetic ${viewData.mode} · seed ${seed}`,
     requestRender,
   );
@@ -222,6 +268,7 @@ export async function createSyntheticDistrictApp(
     debugPanel.element,
     statisticsPanel,
     performancePanel.element,
+    firstPersonHud.element,
   );
   document.title = `${viewData.mode === 'city' ? 'Synthetic city' : 'Synthetic proof district'} · City Field`;
 
@@ -242,6 +289,8 @@ export async function createSyntheticDistrictApp(
     if (!isRunning) {
       return;
     }
+
+    firstPersonController?.exit();
 
     if (animationFrameId !== undefined) {
       window.cancelAnimationFrame(animationFrameId);
@@ -285,6 +334,10 @@ export async function createSyntheticDistrictApp(
       inspectionCamera.controls.removeEventListener('change', onCameraChange);
       document.removeEventListener('visibilitychange', onVisibilityChange);
       debugPanel.dispose();
+      firstPersonController?.dispose();
+      firstPersonController = undefined;
+      firstPersonHud.dispose();
+      host.classList.remove('first-person-active');
       statisticsPanel.remove();
       performancePanel.dispose();
       inspectionCamera.dispose();
@@ -300,6 +353,7 @@ export async function createSyntheticDistrictApp(
 function createCameraPresets(
   viewData: SyntheticViewData,
   inspectionCamera: ReturnType<typeof createInspectionCamera>,
+  enterFirstPerson: () => void,
 ): readonly CameraPresetAction[] {
   const presets: CameraPresetAction[] = [
     {
@@ -327,7 +381,36 @@ function createCameraPresets(
     });
   }
 
+  presets.push({
+    id: 'first-person',
+    label: 'Walk',
+    activate: enterFirstPerson,
+  });
+
   return presets;
+}
+
+function createFirstPersonSpawn(
+  viewData: SyntheticViewData,
+): Readonly<{
+  position: readonly [xMetres: number, yMetres: number, zMetres: number];
+  target: readonly [xMetres: number, yMetres: number, zMetres: number];
+}> {
+  const streetCenterZ =
+    viewData.mode === 'city' ? 0 : centralProofStreetZ(viewData.spatial);
+
+  return {
+    position: [
+      viewData.spatial.bounds.minX + 28,
+      FIRST_PERSON_EYE_HEIGHT_METRES,
+      streetCenterZ,
+    ],
+    target: [
+      viewData.spatial.bounds.maxX - 28,
+      FIRST_PERSON_EYE_HEIGHT_METRES,
+      streetCenterZ,
+    ],
+  };
 }
 
 function createViewData(mode: SyntheticViewMode, seed: number): SyntheticViewData {

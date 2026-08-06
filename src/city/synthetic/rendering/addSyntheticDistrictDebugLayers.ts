@@ -16,6 +16,8 @@ export type SyntheticDebugSpatialDefinition = Readonly<{
   slots: readonly BuildingSlot[];
 }>;
 
+const BLOCK_SURFACE_HEIGHT_METRES = 0.15;
+
 const TEMPLATE_COLORS: Readonly<Record<SyntheticBlockTemplateId, number>> = {
   'fabric-grid': 0x34594d,
   'edge-slabs': 0x3b5268,
@@ -136,12 +138,12 @@ function addBlockTemplateLayer(
     blocks.forEach((block, index) => {
       position.set(
         (block.bounds.minX + block.bounds.maxX) / 2,
-        0.25,
+        BLOCK_SURFACE_HEIGHT_METRES / 2,
         (block.bounds.minZ + block.bounds.maxZ) / 2,
       );
       scale.set(
         block.bounds.maxX - block.bounds.minX,
-        0.5,
+        BLOCK_SURFACE_HEIGHT_METRES,
         block.bounds.maxZ - block.bounds.minZ,
       );
       transform.compose(position, rotation, scale);
@@ -217,16 +219,16 @@ function addOpenSpaceLayer(
       (park.buildableBounds.minZ + park.buildableBounds.maxZ) / 2;
     const pathWidth = Math.min(5, Math.min(width, depth) * 0.08);
 
-    position.set(centerX, 0.61, centerZ);
-    scale.set(width, 0.18, depth);
+    position.set(centerX, 0.19, centerZ);
+    scale.set(width, 0.08, depth);
     transform.compose(position, rotation, scale);
     lawns.setMatrixAt(index, transform);
 
-    position.y = 0.74;
-    scale.set(width * 0.82, 0.08, pathWidth);
+    position.y = 0.25;
+    scale.set(width * 0.82, 0.04, pathWidth);
     transform.compose(position, rotation, scale);
     paths.setMatrixAt(index * 2, transform);
-    scale.set(pathWidth, 0.08, depth * 0.82);
+    scale.set(pathWidth, 0.04, depth * 0.82);
     transform.compose(position, rotation, scale);
     paths.setMatrixAt(index * 2 + 1, transform);
   });
@@ -329,9 +331,9 @@ function addSlotLayer(
     mesh.name = `synthetic:slots:${heightClass}`;
 
     slots.forEach((slot, index) => {
-      position.set(slot.center[0], 0.8, slot.center[1]);
+      position.set(slot.center[0], 0.28, slot.center[1]);
       rotation.setFromAxisAngle(yAxis, slot.rotationRadians);
-      scale.set(slot.widthMetres, 0.5, slot.depthMetres);
+      scale.set(slot.widthMetres, 0.08, slot.depthMetres);
       transform.compose(position, rotation, scale);
       mesh.setMatrixAt(index, transform);
     });
@@ -365,7 +367,7 @@ function addSegment(
   endX: number,
   endZ: number,
 ): void {
-  positions.push(startX, 0.82, startZ, endX, 0.82, endZ);
+  positions.push(startX, 0.3, startZ, endX, 0.3, endZ);
   colors.push(color.r, color.g, color.b, color.r, color.g, color.b);
 }
 

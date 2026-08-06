@@ -157,6 +157,23 @@ preset is derived from the central generated street gap rather than placed
 inside a block. Full-city mode also provides a `Spine` street preset aligned
 with the narrow side of the offset band.
 
+### First-person walk mode
+
+The `Walk` control enters a pointer-locked first-person view at 1.8-metre eye
+height on the central east-west arterial. Mouse movement controls yaw and pitch;
+`WASD` or the arrow keys move at seven metres per second; holding `Shift`
+multiplies speed by 3.5; and `Escape` returns to orbit inspection. A minimal
+crosshair and control reminder replace the composition panels while walking.
+
+The rendered block platforms use a 0.15 m curb-scale height, leaving the camera
+approximately 1.65 m above their surface. Walk mode clamps the camera to a
+two-metre inset inside the generated city
+bounds and restores eye height every frame. It deliberately does not implement
+gravity, terrain following, or collision against buildings yet, so it is an
+inspection/navigation tool rather than a game-character controller. Leaving
+the page, hiding it, or disposing the view exits walk mode and releases its
+keyboard, mouse, and pointer-lock listeners.
+
 Proof mode loads only its 36 selected asset files and uses one `InstancedMesh`
 per asset. Full-city mode loads its 55 selected assets once and packs all models
 for each 500 m district into one `BatchedMesh`. This produces 16 independently
@@ -192,6 +209,8 @@ actually drawn in the last frame.
 | Instanced selected models | `src/city/synthetic/rendering/addSyntheticBuildingLayer.ts` |
 | Batched city chunks | `src/city/synthetic/rendering/addSyntheticCityBuildingLayer.ts` |
 | District visibility rule | `src/city/synthetic/rendering/syntheticDistrictVisibility.ts` |
+| First-person controller | `src/app/createFirstPersonController.ts` |
+| First-person movement rules | `src/app/firstPersonMovement.ts` |
 | Synthetic app lifecycle | `src/synthetic/createSyntheticDistrictApp.ts` |
 | Focused tests | `src/city/synthetic/generation/*.test.ts` |
 
@@ -211,6 +230,9 @@ across district boundaries. Offset-band tests verify its 20-block continuity,
 four-district span, smooth bounded change, minimum street gap, block
 non-overlap, and slot containment.
 
+First-person movement tests verify speed-normalized diagonal travel, partial
+input, fixed eye height, city-bound clamping, and invalid-bound rejection.
+
 For the current catalogue and default seed, every slot has between 3 and 14
 compatible candidates before city-wide repetition caps are applied. The
 landmark is deliberately the narrowest category, with three candidates.
@@ -225,6 +247,9 @@ and 1,188 rendered model instances. The street preset reduced that to 19 draw
 calls, 275,638 triangles, 9 rendered districts, and 650 rendered buildings.
 The dedicated spine preset measured 18 draw calls, 282,256 triangles, 9
 rendered districts, and 647 rendered buildings.
+The first-person spawn measured 19 draw calls, 275,638 triangles, 9 rendered
+districts, and 650 rendered buildings. Unlike the orbit views, walk mode renders
+continuously while active; no frame-rate claim is made yet.
 The 477,519 model triangles exclude the debug layers. These are local-browser
 inspection measurements, not active-frame-rate claims.
 

@@ -68,7 +68,7 @@ function addOffsetBandLayer(
 
   const positions = blocks.flatMap((block) => {
     const [x, z] = blockCenter(block.bounds);
-    return [x, 1.35, z];
+    return [x, 0.38, z];
   });
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute(
@@ -118,6 +118,6 @@ function addSegment(
   endX: number,
   endZ: number,
 ): void {
-  positions.push(startX, 1.05, startZ, endX, 1.05, endZ);
+  positions.push(startX, 0.32, startZ, endX, 0.32, endZ);
   colors.push(color.r, color.g, color.b, color.r, color.g, color.b);
 }
