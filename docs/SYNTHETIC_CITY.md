@@ -21,7 +21,8 @@ The inner 3 × 3 blocks use the `core` profile. The sixteen perimeter blocks use
 the `transition` profile. The centre block is reserved for the landmark, while
 the other core blocks combine one high-rise anchor with two mid-rise fillers.
 
-Four explicit block templates emit slots:
+Five explicit block templates define block use and, where applicable, emit
+building slots:
 
 | Template | Purpose | Slots per block |
 | --- | --- | ---: |
@@ -29,6 +30,7 @@ Four explicit block templates emit slots:
 | `edge-slabs` | Two larger mid-rise street-edge buildings | 2 |
 | `anchor-and-fill` | One high-rise anchor plus two mid-rise fillers | 3 |
 | `landmark-plaza` | One skyscraper with open space around its slot | 1 |
+| `open-space` | A buildable-block reservation for a simple public park | 0 |
 
 With the default seed, this produces 25 blocks and 79 slots: 11 fabric-grid
 blocks, 5 edge-slab blocks, 8 anchor-and-fill blocks, and 1 landmark block.
@@ -50,10 +52,31 @@ Three composition profiles create a simple height gradient:
 | `urban` | 8 | Mixed anchor, slab, and fabric blocks |
 | `edge` | 4 | Low/mid-rise fabric and slabs; no tall slots |
 
-The default seed produces 16 districts, 400 blocks, and 1,242 building slots.
+Open space follows an explicit district policy rather than a city-wide random
+probability: centre districts contain no parks, each urban district contains
+one park on its transition ring, and each edge district contains two separated
+parks. The choice of eligible cells is derived from the district seed. The
+default city therefore contains 16 open-space blocks, or 4% of its 400 blocks.
+Parks emit no building slots.
+
+The default seed produces 16 districts, 400 blocks, and 1,188 building slots.
 There is one landmark district and one landmark slot. Mean target height falls
 from centre to urban to edge, and edge districts contain no high-rise or
 skyscraper slots.
+
+### Controlled offset spine
+
+One north-south block column in the eastern half of the city uses a controlled
+layout variation. Its 20 rectangular blocks follow one smooth sine cycle across
+four districts, with a maximum lateral offset of eight metres. The surrounding
+street gap is never allowed below six metres. This creates a legible stepped
+street edge without rotated polygons, curved road meshes, or a general street
+network.
+
+Each block records a `layoutVariationId` and explicit metre-based layout offset.
+The variation is configured at city level and distributed into five row offsets
+per district. It is deliberately independent of the content seed, so changing
+building and template choices does not move the underlying street geometry.
 
 ## Asset-to-slot contract
 
@@ -72,8 +95,10 @@ Selection proceeds in fixed stages:
 6. intersect footprint, uniform-scale, target-height, and height-scale limits;
 7. score footprint utilization, aspect balance, transform strength, and ordered
    form preference;
-8. perform a deterministic weighted choice from compatible candidates; and
-9. return a declarative placement containing only semantic IDs and transforms.
+8. multiply compatible weight by `(prior uses + 1)^-1.35` to softly favour
+   less-used assets;
+9. perform a deterministic weighted choice from compatible candidates; and
+10. return a declarative placement containing only semantic IDs and transforms.
 
 Candidate order cannot influence the result. The selection seed is derived from
 the slot seed and its district, block, and slot IDs.
@@ -104,14 +129,14 @@ accepted slots, structured rejection records, sorted asset-usage counts, and
 summary totals. Incoming catalogue order also cannot change the result.
 
 With the current catalogue and default district seed, all 79 slots are filled
-with 29 distinct assets and no rejections. Lower and mid-rise assets without an
-explicit limit may still repeat; visual repetition should be evaluated in the
-rendered proof district before adding another selection rule.
+with 36 distinct assets and no rejections. Its most repeated asset appears eight
+times.
 
-With the default full-city seed, all 1,242 slots are filled with 48 distinct
-assets and no rejections. Unlimited low/mid-rise assets can repeat heavily at
-this scale; city population exposes sorted usage totals so this can be measured
-and tuned after the chunked city becomes visible.
+With the default full-city seed, all 1,188 slots are filled with 55 distinct
+assets and no rejections. The most common asset appears 79 times. The soft reuse
+multiplier preserves fit scoring and still allows repetition when an asset is
+the only compatible candidate; the statistics panel exposes the current maximum
+directly.
 
 ## Synthetic debug view
 
@@ -122,16 +147,21 @@ choices, slot heights, and asset selection while leaving the direct street
 geometry unchanged.
 
 The view exposes independent layers for street negative space, block-template
-surfaces, core/transition buildable outlines, placement slots, selected GLBs,
-inspection lighting, and a 25 m metric grid. Overview, rooftop, and street
-camera presets provide reproducible comparisons. The street preset is derived
-from the central generated street gap rather than placed inside a block.
+surfaces, park lawns and crossing paths, core/transition buildable outlines,
+placement slots, the optional offset-spine trace, selected GLBs, inspection
+lighting, and a 25 m metric grid.
+The park layer uses only two shared instanced draws, regardless of park count;
+it deliberately contains no trees, props, or decorative scatter. Overview,
+rooftop, and street camera presets provide reproducible comparisons. The street
+preset is derived from the central generated street gap rather than placed
+inside a block. Full-city mode also provides a `Spine` street preset aligned
+with the narrow side of the offset band.
 
-Proof mode loads only its 29 selected asset files and uses one `InstancedMesh`
-per asset. Full-city mode loads its 48 selected assets once and packs all models
+Proof mode loads only its 36 selected asset files and uses one `InstancedMesh`
+per asset. Full-city mode loads its 55 selected assets once and packs all models
 for each 500 m district into one `BatchedMesh`. This produces 16 independently
 cullable building batches rather than approximately 460 per-asset district
-batches or 1,242 separate building objects.
+batches or 1,188 separate building objects.
 
 Low cameras hide district batches farther than the configured visibility range;
 the range expands with altitude so the overview retains all sixteen chunks.
@@ -177,26 +207,29 @@ and preservation of structured rejection diagnostics.
 Full-city tests additionally verify the 2 km bounds, non-overlapping district
 chunks, 4/8/4 profile distribution, single landmark ownership, centre-to-edge
 height gradient, absence of tall edge slots, and repetition-cap enforcement
-across district boundaries.
+across district boundaries. Offset-band tests verify its 20-block continuity,
+four-district span, smooth bounded change, minimum street gap, block
+non-overlap, and slot containment.
 
 For the current catalogue and default seed, every slot has between 3 and 14
 compatible candidates before city-wide repetition caps are applied. The
 landmark is deliberately the narrowest category, with three candidates.
 
-The default overview measured 35 draw calls, 42,131 rendered triangles, 47
-scene objects, and 41 visible objects in the local browser. Rendering is
+The default proof overview measured 42 draw calls, 43,437 rendered triangles,
+54 scene objects, and 48 visible objects in the local browser. Rendering is
 on-demand while the camera is idle. No active-frame-rate claim is made yet.
 
-The default full-city overview measured 23 draw calls, 523,732 rendered
-triangles, 35 scene objects, 29 visible objects, 16 rendered district batches,
-and 1,242 rendered model instances. The street preset reduced that to 16 draw
-calls, 291,485 triangles, 9 rendered districts, and 666 rendered buildings.
-These are local-browser inspection measurements, not active-frame-rate claims.
+The default full-city overview measured 26 draw calls, 482,897 rendered
+triangles, 40 scene objects, 33 visible objects, 16 rendered district batches,
+and 1,188 rendered model instances. The street preset reduced that to 19 draw
+calls, 275,638 triangles, 9 rendered districts, and 650 rendered buildings.
+The dedicated spine preset measured 18 draw calls, 282,256 triangles, 9
+rendered districts, and 647 rendered buildings.
+The 477,519 model triangles exclude the debug layers. These are local-browser
+inspection measurements, not active-frame-rate claims.
 
 ## Next slice
 
-Use the complete view for a focused composition pass. The first candidate is a
-soft deterministic reuse penalty for unlimited low/mid-rise assets, because the
-most common model currently appears 129 times. After that, add a small number
-of deliberate park/open-space blocks and one controlled curved or offset band;
-do not add general road meshes or decorative detail yet.
+Introduce two or three deterministic district-grid variants by mirroring the
+existing unequal block widths and street gaps. This should reduce the repeated
+5 × 5 rhythm without adding arbitrary polygons or another geometry system.

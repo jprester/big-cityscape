@@ -25,6 +25,7 @@ describe('generateProofDistrict', () => {
     });
     expect(district.metadata.templateCounts['anchor-and-fill']).toBe(8);
     expect(district.metadata.templateCounts['landmark-plaza']).toBe(1);
+    expect(district.metadata.templateCounts['open-space']).toBe(0);
     expect(district.metadata.templateCounts['fabric-grid']).toBeGreaterThan(0);
     expect(district.metadata.templateCounts['edge-slabs']).toBeGreaterThan(0);
     expect(district.metadata.slotCount).toBe(district.slots.length);
@@ -32,6 +33,56 @@ describe('generateProofDistrict', () => {
     expect(new Set(district.slots.map((slot) => slot.id)).size).toBe(
       district.slots.length,
     );
+  });
+
+  it('uses open-space as a zero-slot template outside centre districts', () => {
+    const district = generateProofDistrict({
+      ...DEFAULT_PROOF_DISTRICT_CONFIG,
+      id: 'urban-proof',
+      compositionProfileId: 'urban',
+      hasLandmark: false,
+    });
+    const parks = district.blocks.filter(
+      (block) => block.templateId === 'open-space',
+    );
+
+    expect(parks).toHaveLength(1);
+    expect(parks[0]?.profileId).toBe('transition');
+    expect(parks[0]?.slots).toEqual([]);
+    expect(district.metadata.templateCounts['open-space']).toBe(1);
+  });
+
+  it('offsets one rectangular block column without moving the other blocks', () => {
+    const rowOffsetsMetres = [-8, -4, 0, 4, 8] as const;
+    const district = generateProofDistrict({
+      ...DEFAULT_PROOF_DISTRICT_CONFIG,
+      offsetBand: {
+        column: 2,
+        rowOffsetsMetres,
+      },
+    });
+    const offsetBlocks = district.blocks.filter(
+      (block) => block.layoutVariationId === 'offset-band',
+    );
+
+    expect(offsetBlocks).toHaveLength(5);
+    expect(offsetBlocks.map((block) => block.gridColumn)).toEqual([
+      2, 2, 2, 2, 2,
+    ]);
+    expect(offsetBlocks.map((block) => block.layoutOffsetMetres[0])).toEqual(
+      rowOffsetsMetres,
+    );
+    expect(
+      district.blocks
+        .filter((block) => block.layoutVariationId === 'standard')
+        .every((block) => block.layoutOffsetMetres[0] === 0),
+    ).toBe(true);
+
+    for (const block of offsetBlocks) {
+      for (const slot of block.slots) {
+        expect(contains(block.buildableBounds, slotBounds(slot))).toBe(true);
+      }
+    }
   });
 
   it('is repeatable for one seed and varies semantic output for another', () => {
@@ -90,6 +141,18 @@ describe('generateProofDistrict', () => {
         columnWidthsMetres: [70, 85, 90, 75, 71],
       }),
     ).toThrow('occupy 501 m, not 500 m');
+  });
+
+  it('rejects an offset that collapses an adjacent street gap', () => {
+    expect(() =>
+      generateProofDistrict({
+        ...DEFAULT_PROOF_DISTRICT_CONFIG,
+        offsetBand: {
+          column: 2,
+          rowOffsetsMetres: [-9, 0, 0, 0, 0],
+        },
+      }),
+    ).toThrow('preserve at least 6 m of street gap');
   });
 });
 

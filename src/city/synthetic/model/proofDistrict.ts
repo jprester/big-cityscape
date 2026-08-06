@@ -26,10 +26,19 @@ export const SYNTHETIC_BLOCK_TEMPLATE_IDS = [
   'edge-slabs',
   'anchor-and-fill',
   'landmark-plaza',
+  'open-space',
 ] as const;
 
 export type SyntheticBlockTemplateId =
   (typeof SYNTHETIC_BLOCK_TEMPLATE_IDS)[number];
+
+export const SYNTHETIC_BLOCK_LAYOUT_VARIATION_IDS = [
+  'standard',
+  'offset-band',
+] as const;
+
+export type SyntheticBlockLayoutVariationId =
+  (typeof SYNTHETIC_BLOCK_LAYOUT_VARIATION_IDS)[number];
 
 export type SyntheticBlockDefinition = Readonly<{
   id: string;
@@ -39,6 +48,8 @@ export type SyntheticBlockDefinition = Readonly<{
   gridRow: number;
   profileId: SyntheticDistrictProfileId;
   templateId: SyntheticBlockTemplateId;
+  layoutVariationId: SyntheticBlockLayoutVariationId;
+  layoutOffsetMetres: readonly [xMetres: number, zMetres: number];
   bounds: SyntheticBounds2;
   buildableBounds: SyntheticBounds2;
   slots: readonly BuildingSlot[];

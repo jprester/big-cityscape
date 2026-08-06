@@ -28,7 +28,10 @@ import { addSyntheticCityDebugLayer } from '../city/synthetic/rendering/addSynth
 import {
   addSyntheticDistrictDebugLayers,
 } from '../city/synthetic/rendering/addSyntheticDistrictDebugLayers';
-import { createDebugPanel } from '../debug/createDebugPanel';
+import {
+  createDebugPanel,
+  type CameraPresetAction,
+} from '../debug/createDebugPanel';
 import { DebugLayerManager } from '../debug/DebugLayerManager';
 
 const MAX_PIXEL_RATIO = 1.5;
@@ -209,23 +212,7 @@ export async function createSyntheticDistrictApp(
 
   const debugPanel = createDebugPanel(
     debugLayers,
-    [
-      {
-        id: 'aerial',
-        label: 'Overview',
-        activate: () => inspectionCamera.setPreset('aerial'),
-      },
-      {
-        id: 'rooftop',
-        label: 'Rooftop',
-        activate: () => inspectionCamera.setPreset('rooftop'),
-      },
-      {
-        id: 'street',
-        label: 'Street',
-        activate: () => setStreetPreset(viewData, inspectionCamera),
-      },
-    ],
+    createCameraPresets(viewData, inspectionCamera),
     `Synthetic ${viewData.mode} · seed ${seed}`,
     requestRender,
   );
@@ -310,6 +297,39 @@ export async function createSyntheticDistrictApp(
   };
 }
 
+function createCameraPresets(
+  viewData: SyntheticViewData,
+  inspectionCamera: ReturnType<typeof createInspectionCamera>,
+): readonly CameraPresetAction[] {
+  const presets: CameraPresetAction[] = [
+    {
+      id: 'aerial',
+      label: 'Overview',
+      activate: () => inspectionCamera.setPreset('aerial'),
+    },
+    {
+      id: 'rooftop',
+      label: 'Rooftop',
+      activate: () => inspectionCamera.setPreset('rooftop'),
+    },
+    {
+      id: 'street',
+      label: 'Street',
+      activate: () => setStreetPreset(viewData, inspectionCamera),
+    },
+  ];
+
+  if (viewData.mode === 'city') {
+    presets.push({
+      id: 'offset-spine',
+      label: 'Spine',
+      activate: () => setOffsetSpinePreset(viewData, inspectionCamera),
+    });
+  }
+
+  return presets;
+}
+
 function createViewData(mode: SyntheticViewMode, seed: number): SyntheticViewData {
   if (mode === 'city') {
     const city = generateSyntheticCity({
@@ -369,6 +389,48 @@ function setStreetPreset(
     viewData.spatial.bounds.maxX - 28,
     30,
     streetCenterZ,
+  );
+  inspectionCamera.controls.update();
+}
+
+function setOffsetSpinePreset(
+  viewData: Extract<SyntheticViewData, Readonly<{ mode: 'city' }>>,
+  inspectionCamera: ReturnType<typeof createInspectionCamera>,
+): void {
+  const nearestBandBlock = viewData.spatial.blocks
+    .filter((block) => block.layoutVariationId === 'offset-band')
+    .reduce((nearest, block) =>
+      nearest === undefined || block.bounds.minX < nearest.bounds.minX
+        ? block
+        : nearest,
+    undefined as SyntheticCity['blocks'][number] | undefined);
+
+  if (nearestBandBlock === undefined) {
+    throw new Error('The synthetic city has no offset spine to inspect.');
+  }
+
+  const leftNeighbor = viewData.spatial.blocks.find(
+    (block) =>
+      block.districtId === nearestBandBlock.districtId &&
+      block.gridRow === nearestBandBlock.gridRow &&
+      block.gridColumn === nearestBandBlock.gridColumn - 1,
+  );
+
+  if (leftNeighbor === undefined) {
+    throw new Error('The offset spine has no left-hand street edge.');
+  }
+
+  const streetX =
+    (leftNeighbor.bounds.maxX + nearestBandBlock.bounds.minX) / 2;
+  inspectionCamera.camera.position.set(
+    streetX,
+    12,
+    viewData.spatial.bounds.minZ + 28,
+  );
+  inspectionCamera.controls.target.set(
+    streetX,
+    28,
+    viewData.spatial.bounds.maxZ - 28,
   );
   inspectionCamera.controls.update();
 }
@@ -442,6 +504,12 @@ function createStatisticsPanel(
     'Asset variants',
     viewData.population.metadata.distinctAssetCount.toString(),
   );
+  const mostRepeated = mostRepeatedAsset(viewData.population.assetUsage);
+  addStatistic(
+    metrics,
+    'Most repeated',
+    `${mostRepeated.assetId} · ${mostRepeated.count}×`,
+  );
   addStatistic(metrics, 'Building batches', rendering.batches.toString());
   addStatistic(
     metrics,
@@ -468,6 +536,22 @@ function createStatisticsPanel(
   return panel;
 }
 
+function mostRepeatedAsset(
+  usage: readonly Readonly<{ assetId: string; count: number }>[],
+): Readonly<{ assetId: string; count: number }> {
+  const first = usage[0];
+
+  if (first === undefined) {
+    throw new Error('Synthetic statistics require at least one used asset.');
+  }
+
+  return usage.slice(1).reduce(
+    (mostRepeated, candidate) =>
+      candidate.count > mostRepeated.count ? candidate : mostRepeated,
+    first,
+  );
+}
+
 function statisticsTitle(viewData: SyntheticViewData): string {
   if (viewData.mode === 'city') {
     return `${viewData.spatial.metadata.districtCount} districts · ${viewData.population.metadata.placedCount.toLocaleString('en-US')} buildings`;
@@ -488,6 +572,27 @@ function addCompositionStatistics(
       'District profiles',
       `${metadata.profileCounts.centre} centre · ${metadata.profileCounts.urban} urban · ${metadata.profileCounts.edge} edge`,
     );
+    addStatistic(
+      metrics,
+      'Open-space blocks',
+      viewData.spatial.blocks
+        .filter((block) => block.templateId === 'open-space')
+        .length.toString(),
+    );
+    const offsetBlocks = viewData.spatial.blocks.filter(
+      (block) => block.layoutVariationId === 'offset-band',
+    );
+
+    if (offsetBlocks.length > 0) {
+      const maximumOffset = Math.max(
+        ...offsetBlocks.map((block) => Math.abs(block.layoutOffsetMetres[0])),
+      );
+      addStatistic(
+        metrics,
+        'Offset spine',
+        `${offsetBlocks.length} blocks · ±${maximumOffset.toFixed(0)} m`,
+      );
+    }
     return;
   }
 
@@ -500,7 +605,7 @@ function addCompositionStatistics(
   addStatistic(
     metrics,
     'Templates',
-    `${metadata.templateCounts['fabric-grid']} fabric · ${metadata.templateCounts['edge-slabs']} slabs · ${metadata.templateCounts['anchor-and-fill']} anchors · ${metadata.templateCounts['landmark-plaza']} landmark`,
+    `${metadata.templateCounts['fabric-grid']} fabric · ${metadata.templateCounts['edge-slabs']} slabs · ${metadata.templateCounts['anchor-and-fill']} anchors · ${metadata.templateCounts['landmark-plaza']} landmark · ${metadata.templateCounts['open-space']} parks`,
   );
 }
 

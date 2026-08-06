@@ -19,17 +19,18 @@ describe('populateSyntheticCity', () => {
 
     expect(population.metadata).toEqual({
       districtCount: 16,
-      slotCount: 1_242,
-      placedCount: 1_242,
+      slotCount: 1_188,
+      placedCount: 1_188,
       rejectedCount: 0,
       distinctAssetCount: population.assetUsage.length,
     });
-    expect(population.metadata.distinctAssetCount).toBeGreaterThan(40);
+    expect(population.metadata.distinctAssetCount).toBeGreaterThan(50);
     expect(population.rejections).toEqual([]);
     expect(population.districts).toHaveLength(16);
     expect(
       population.assetUsage.reduce((total, usage) => total + usage.count, 0),
-    ).toBe(1_242);
+    ).toBe(1_188);
+    expect(Math.max(...population.assetUsage.map((usage) => usage.count))).toBeLessThan(90);
 
     for (const usage of population.assetUsage) {
       const asset = catalogById.get(usage.assetId);

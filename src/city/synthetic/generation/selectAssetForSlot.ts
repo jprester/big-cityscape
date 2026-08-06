@@ -31,6 +31,7 @@ type CompatibleCandidate = Readonly<{
 
 const EMPTY_USAGE_COUNTS: AssetUsageCounts = new Map();
 const SCALE_EPSILON = 1e-9;
+const REUSE_BALANCE_EXPONENT = 1.35;
 
 export function selectAssetForSlot(
   slot: BuildingSlot,
@@ -42,7 +43,8 @@ export function selectAssetForSlot(
   const candidates: CompatibleCandidate[] = [];
 
   for (const asset of assets) {
-    const rejectionReason = catalogRejectionReason(slot, asset, usageCounts);
+    const priorUses = assetUsageCount(usageCounts, asset.id);
+    const rejectionReason = catalogRejectionReason(slot, asset, priorUses);
 
     if (rejectionReason !== undefined) {
       rejectedByReason[rejectionReason] += 1;
@@ -56,7 +58,11 @@ export function selectAssetForSlot(
     const best = bestOrientation(direct, rotated);
 
     if (best.candidate !== undefined) {
-      candidates.push(best.candidate);
+      candidates.push({
+        ...best.candidate,
+        selectionWeight:
+          best.candidate.selectionWeight * reuseWeightMultiplier(priorUses),
+      });
     } else {
       rejectedByReason[best.rejectionReason] += 1;
     }
@@ -113,7 +119,7 @@ export function selectAssetForSlot(
 function catalogRejectionReason(
   slot: BuildingSlot,
   asset: BuildingAssetCatalogEntry,
-  usageCounts: AssetUsageCounts,
+  priorUses: number,
 ): AssetSlotRejectionReason | undefined {
   if (!asset.enabled) {
     return 'disabled';
@@ -137,12 +143,35 @@ function catalogRejectionReason(
 
   if (
     asset.maximumPerCity !== null &&
-    (usageCounts.get(asset.id) ?? 0) >= asset.maximumPerCity
+    priorUses >= asset.maximumPerCity
   ) {
     return 'city-limit-reached';
   }
 
   return undefined;
+}
+
+/**
+ * Softly favours less-used compatible assets without turning variety into a
+ * hard constraint. Fit score and reviewed catalogue weight still participate.
+ */
+function reuseWeightMultiplier(priorUses: number): number {
+  return Math.pow(priorUses + 1, -REUSE_BALANCE_EXPONENT);
+}
+
+function assetUsageCount(
+  usageCounts: AssetUsageCounts,
+  assetId: string,
+): number {
+  const count = usageCounts.get(assetId) ?? 0;
+
+  if (!Number.isSafeInteger(count) || count < 0) {
+    throw new RangeError(
+      `Building asset usage for ${assetId} must be a non-negative integer.`,
+    );
+  }
+
+  return count;
 }
 
 function fitCandidate(

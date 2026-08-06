@@ -22,7 +22,13 @@ export type ProofDistrictConfig = Readonly<{
   rowDepthsMetres: readonly number[];
   columnStreetWidthsMetres: readonly number[];
   rowStreetWidthsMetres: readonly number[];
+  offsetBand: Readonly<{
+    column: number;
+    rowOffsetsMetres: readonly number[];
+  }> | null;
 }>;
+
+export const MINIMUM_OFFSET_BAND_STREET_GAP_METRES = 6;
 
 export const DEFAULT_PROOF_DISTRICT_CONFIG: ProofDistrictConfig = {
   id: 'proof-district',
@@ -37,6 +43,7 @@ export const DEFAULT_PROOF_DISTRICT_CONFIG: ProofDistrictConfig = {
   rowDepthsMetres: [68, 82, 96, 74, 70],
   columnStreetWidthsMetres: [18, 14, 24, 14],
   rowStreetWidthsMetres: [16, 22, 14, 18],
+  offsetBand: null,
 };
 
 export function generateProofDistrict(
@@ -61,6 +68,7 @@ export function generateProofDistrict(
     config.rowStreetWidthsMetres,
   );
   const blocks: SyntheticBlockDefinition[] = [];
+  const openSpaceCells = selectOpenSpaceCells(config);
 
   for (let row = 0; row < rowBounds.length; row += 1) {
     for (let column = 0; column < columnBounds.length; column += 1) {
@@ -73,6 +81,10 @@ export function generateProofDistrict(
 
       const blockId = `${config.id}/block-r${row}-c${column}`;
       const blockSeed = deriveSeed(config.seed, blockId);
+      const xOffsetMetres =
+        config.offsetBand?.column === column
+          ? requireOffset(config.offsetBand.rowOffsetsMetres, row)
+          : 0;
       const profileId = profileForCell(
         column,
         row,
@@ -85,10 +97,11 @@ export function generateProofDistrict(
         blockSeed,
         config.compositionProfileId,
         config.hasLandmark,
+        openSpaceCells.has(cellKey(column, row)),
       );
       const bounds: SyntheticBounds2 = {
-        minX: xBounds[0],
-        maxX: xBounds[1],
+        minX: xBounds[0] + xOffsetMetres,
+        maxX: xBounds[1] + xOffsetMetres,
         minZ: zBounds[0],
         maxZ: zBounds[1],
       };
@@ -109,6 +122,9 @@ export function generateProofDistrict(
         gridRow: row,
         profileId,
         templateId,
+        layoutVariationId:
+          config.offsetBand?.column === column ? 'offset-band' : 'standard',
+        layoutOffsetMetres: [xOffsetMetres, 0],
         bounds,
         buildableBounds,
         slots,
@@ -136,6 +152,16 @@ export function generateProofDistrict(
   };
 }
 
+function requireOffset(offsets: readonly number[], row: number): number {
+  const offset = offsets[row];
+
+  if (offset === undefined) {
+    throw new Error(`The offset band is missing its row ${row} offset.`);
+  }
+
+  return offset;
+}
+
 function profileForCell(
   column: number,
   row: number,
@@ -157,7 +183,12 @@ function templateForCell(
   blockSeed: number,
   compositionProfileId: SyntheticDistrictCompositionProfileId,
   hasLandmark: boolean,
+  isOpenSpace: boolean,
 ): SyntheticBlockTemplateId {
+  if (isOpenSpace) {
+    return 'open-space';
+  }
+
   if (hasLandmark && column === 2 && row === 2) {
     return 'landmark-plaza';
   }
@@ -181,6 +212,84 @@ function templateForCell(
   return random.next() < edgeSlabProbability
     ? 'edge-slabs'
     : 'fabric-grid';
+}
+
+function selectOpenSpaceCells(
+  config: ProofDistrictConfig,
+): ReadonlySet<string> {
+  const targetCount =
+    config.compositionProfileId === 'centre'
+      ? 0
+      : config.compositionProfileId === 'urban'
+        ? 1
+        : 2;
+
+  if (targetCount === 0) {
+    return new Set();
+  }
+
+  const candidates = Array.from({ length: 5 }, (_, row) =>
+    Array.from({ length: 5 }, (_, column) => ({
+      column,
+      row,
+      score: deriveSeed(
+        config.seed,
+        'open-space-cell',
+        cellKey(column, row),
+      ),
+    })),
+  )
+    .flat()
+    .filter(
+      ({ column, row }) =>
+        config.compositionProfileId === 'edge' ||
+        profileForCell(column, row, config.compositionProfileId) ===
+          'transition',
+    )
+    .sort(
+      (first, second) =>
+        first.score - second.score ||
+        first.row - second.row ||
+        first.column - second.column,
+    );
+  const first = candidates[0];
+
+  if (first === undefined) {
+    throw new Error('The district has no eligible open-space block.');
+  }
+
+  const selected = [first];
+
+  if (targetCount === 2) {
+    const separated = candidates.find(
+      (candidate) =>
+        candidate !== first &&
+        manhattanDistance(candidate, first) >= 4,
+    );
+    const second =
+      separated ?? candidates.find((candidate) => candidate !== first);
+
+    if (second === undefined) {
+      throw new Error('The district cannot place its second open-space block.');
+    }
+
+    selected.push(second);
+  }
+
+  return new Set(selected.map(({ column, row }) => cellKey(column, row)));
+}
+
+function cellKey(column: number, row: number): string {
+  return `r${row}-c${column}`;
+}
+
+function manhattanDistance(
+  first: Readonly<{ column: number; row: number }>,
+  second: Readonly<{ column: number; row: number }>,
+): number {
+  return (
+    Math.abs(first.column - second.column) + Math.abs(first.row - second.row)
+  );
 }
 
 function createAxisBounds(
@@ -232,6 +341,8 @@ function countTemplates(
     'landmark-plaza': blocks.filter(
       (block) => block.templateId === 'landmark-plaza',
     ).length,
+    'open-space': blocks.filter((block) => block.templateId === 'open-space')
+      .length,
   };
 }
 
@@ -287,6 +398,48 @@ function validateConfig(config: ProofDistrictConfig): void {
 
   if (config.blockInsetMetres * 2 >= smallestBlockDimension) {
     throw new RangeError('The block inset leaves no buildable area.');
+  }
+
+  validateOffsetBand(config);
+}
+
+function validateOffsetBand(config: ProofDistrictConfig): void {
+  const band = config.offsetBand;
+
+  if (band === null) {
+    return;
+  }
+
+  if (!Number.isSafeInteger(band.column) || band.column < 1 || band.column > 3) {
+    throw new RangeError('The offset band column must be an inner block column.');
+  }
+
+  if (band.rowOffsetsMetres.length !== config.rowDepthsMetres.length) {
+    throw new RangeError('The offset band needs one offset per block row.');
+  }
+
+  const leftStreetWidth = config.columnStreetWidthsMetres[band.column - 1];
+  const rightStreetWidth = config.columnStreetWidthsMetres[band.column];
+
+  if (leftStreetWidth === undefined || rightStreetWidth === undefined) {
+    throw new Error('The offset band is missing an adjacent street gap.');
+  }
+
+  for (const offset of band.rowOffsetsMetres) {
+    if (!Number.isFinite(offset)) {
+      throw new RangeError('Offset-band values must be finite metres.');
+    }
+
+    if (
+      offset < -(
+        leftStreetWidth - MINIMUM_OFFSET_BAND_STREET_GAP_METRES
+      ) ||
+      offset > rightStreetWidth - MINIMUM_OFFSET_BAND_STREET_GAP_METRES
+    ) {
+      throw new RangeError(
+        `Offset-band values must preserve at least ${MINIMUM_OFFSET_BAND_STREET_GAP_METRES} m of street gap.`,
+      );
+    }
   }
 }
 

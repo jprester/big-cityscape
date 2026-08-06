@@ -78,6 +78,8 @@ function createTemplateRequests(
       return createAnchorAndFill(context.buildableBounds, random);
     case 'landmark-plaza':
       return createLandmarkPlaza(context.buildableBounds, random);
+    case 'open-space':
+      return [];
   }
 }
 

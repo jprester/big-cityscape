@@ -18,6 +18,34 @@ describe('selectAssetForSlot', () => {
     expect(first.status).toBe('selected');
   });
 
+  it('softly favours a less-used compatible asset without rejecting reuse', () => {
+    const slot = createSlot();
+    const frequent = createAsset('z-frequent');
+    const fresh = createAsset('a-fresh');
+    const balanced = selectAssetForSlot(
+      slot,
+      [frequent, fresh],
+      new Map([[frequent.id, 1_000]]),
+    );
+    const onlyFrequent = selectAssetForSlot(
+      slot,
+      [frequent],
+      new Map([[frequent.id, 1_000]]),
+    );
+
+    expect(balanced.status).toBe('selected');
+    expect(onlyFrequent.status).toBe('selected');
+
+    if (balanced.status === 'selected') {
+      expect(balanced.placement.assetId).toBe(fresh.id);
+      expect(balanced.compatibleCandidates).toBe(2);
+    }
+
+    if (onlyFrequent.status === 'selected') {
+      expect(onlyFrequent.placement.assetId).toBe(frequent.id);
+    }
+  });
+
   it('rotates an elongated asset when only the quarter-turned footprint fits', () => {
     const result = selectAssetForSlot(
       createSlot({
@@ -126,6 +154,13 @@ describe('selectAssetForSlot', () => {
     expect(() =>
       selectAssetForSlot(createSlot({ allowedForms: [] }), [createAsset('a')]),
     ).toThrow('at least one use and form');
+    expect(() =>
+      selectAssetForSlot(
+        createSlot(),
+        [createAsset('a')],
+        new Map([['a', -1]]),
+      ),
+    ).toThrow('non-negative integer');
   });
 });
 

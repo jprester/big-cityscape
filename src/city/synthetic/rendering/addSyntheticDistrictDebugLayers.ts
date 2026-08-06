@@ -7,6 +7,7 @@ import type {
   SyntheticBounds2,
   SyntheticDistrictProfileId,
 } from '../model/proofDistrict';
+import { SYNTHETIC_BLOCK_TEMPLATE_IDS } from '../model/proofDistrict';
 import type { BuildingSlot } from '../model/buildingSlot';
 
 export type SyntheticDebugSpatialDefinition = Readonly<{
@@ -20,6 +21,7 @@ const TEMPLATE_COLORS: Readonly<Record<SyntheticBlockTemplateId, number>> = {
   'edge-slabs': 0x3b5268,
   'anchor-and-fill': 0x66563c,
   'landmark-plaza': 0x684457,
+  'open-space': 0x386844,
 };
 
 const PROFILE_COLORS: Readonly<Record<SyntheticDistrictProfileId, number>> = {
@@ -41,6 +43,7 @@ export function addSyntheticDistrictDebugLayers(
   addStreetGroundLayer(layers, spatial);
   addMetricGridLayer(layers, spatial);
   addBlockTemplateLayer(layers, spatial);
+  addOpenSpaceLayer(layers, spatial);
   addProfileOutlineLayer(layers, spatial);
   addSlotLayer(layers, spatial);
 }
@@ -114,12 +117,7 @@ function addBlockTemplateLayer(
   const scale = new THREE.Vector3();
   const rotation = new THREE.Quaternion();
 
-  for (const templateId of [
-    'fabric-grid',
-    'edge-slabs',
-    'anchor-and-fill',
-    'landmark-plaza',
-  ] as const) {
+  for (const templateId of SYNTHETIC_BLOCK_TEMPLATE_IDS) {
     const blocks = spatial.blocks.filter(
       (block) => block.templateId === templateId,
     );
@@ -159,12 +157,96 @@ function addBlockTemplateLayer(
 
   layers.add({
     id: 'block-templates',
-    label: 'Block templates · green fabric · blue slabs · amber anchors · rose landmark',
+    label: 'Block templates · green fabric/parks · blue slabs · amber anchors · rose landmark',
     object: group,
     dispose: () => {
       meshes.forEach((mesh) => mesh.dispose());
       geometry.dispose();
       materials.forEach((material) => material.dispose());
+    },
+  });
+}
+
+function addOpenSpaceLayer(
+  layers: DebugLayerManager,
+  spatial: SyntheticDebugSpatialDefinition,
+): void {
+  const parks = spatial.blocks.filter(
+    (block) => block.templateId === 'open-space',
+  );
+
+  if (parks.length === 0) {
+    return;
+  }
+
+  const group = new THREE.Group();
+  group.name = 'synthetic:open-spaces';
+  const geometry = new THREE.BoxGeometry(1, 1, 1);
+  const lawnMaterial = new THREE.MeshLambertMaterial({
+    color: 0x4d8c59,
+    emissive: 0x101b12,
+  });
+  const pathMaterial = new THREE.MeshLambertMaterial({
+    color: 0xb0a88d,
+    emissive: 0x1c1a15,
+  });
+  const lawns = new THREE.InstancedMesh(
+    geometry,
+    lawnMaterial,
+    parks.length,
+  );
+  const paths = new THREE.InstancedMesh(
+    geometry,
+    pathMaterial,
+    parks.length * 2,
+  );
+  const transform = new THREE.Matrix4();
+  const position = new THREE.Vector3();
+  const scale = new THREE.Vector3();
+  const rotation = new THREE.Quaternion();
+
+  lawns.name = 'synthetic:open-space-lawns';
+  paths.name = 'synthetic:open-space-paths';
+
+  parks.forEach((park, index) => {
+    const width = park.buildableBounds.maxX - park.buildableBounds.minX;
+    const depth = park.buildableBounds.maxZ - park.buildableBounds.minZ;
+    const centerX =
+      (park.buildableBounds.minX + park.buildableBounds.maxX) / 2;
+    const centerZ =
+      (park.buildableBounds.minZ + park.buildableBounds.maxZ) / 2;
+    const pathWidth = Math.min(5, Math.min(width, depth) * 0.08);
+
+    position.set(centerX, 0.61, centerZ);
+    scale.set(width, 0.18, depth);
+    transform.compose(position, rotation, scale);
+    lawns.setMatrixAt(index, transform);
+
+    position.y = 0.74;
+    scale.set(width * 0.82, 0.08, pathWidth);
+    transform.compose(position, rotation, scale);
+    paths.setMatrixAt(index * 2, transform);
+    scale.set(pathWidth, 0.08, depth * 0.82);
+    transform.compose(position, rotation, scale);
+    paths.setMatrixAt(index * 2 + 1, transform);
+  });
+
+  lawns.computeBoundingBox();
+  lawns.computeBoundingSphere();
+  paths.computeBoundingBox();
+  paths.computeBoundingSphere();
+  group.add(lawns, paths);
+
+  layers.add({
+    id: 'open-spaces',
+    label: `${parks.length} open-space blocks · lawns + paths`,
+    object: group,
+    dispose: () => {
+      lawns.dispose();
+      paths.dispose();
+      geometry.dispose();
+      lawnMaterial.dispose();
+      pathMaterial.dispose();
     },
   });
 }

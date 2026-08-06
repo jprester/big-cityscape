@@ -47,6 +47,66 @@ export function addSyntheticCityDebugLayer(
       material.dispose();
     },
   });
+
+  addOffsetBandLayer(layers, city);
+}
+
+function addOffsetBandLayer(
+  layers: DebugLayerManager,
+  city: SyntheticCity,
+): void {
+  const blocks = city.blocks
+    .filter((block) => block.layoutVariationId === 'offset-band')
+    .toSorted(
+      (first, second) =>
+        blockCenter(first.bounds)[1] - blockCenter(second.bounds)[1],
+    );
+
+  if (blocks.length === 0) {
+    return;
+  }
+
+  const positions = blocks.flatMap((block) => {
+    const [x, z] = blockCenter(block.bounds);
+    return [x, 1.35, z];
+  });
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    'position',
+    new THREE.Float32BufferAttribute(positions, 3),
+  );
+  const material = new THREE.LineBasicMaterial({
+    color: 0x70e2dc,
+    depthTest: false,
+    transparent: true,
+    opacity: 0.88,
+  });
+  const trace = new THREE.Line(geometry, material);
+  const maximumOffset = Math.max(
+    ...blocks.map((block) => Math.abs(block.layoutOffsetMetres[0])),
+  );
+  trace.name = 'synthetic:offset-band-trace';
+  trace.renderOrder = 10;
+
+  layers.add({
+    id: 'offset-band-trace',
+    label: `${blocks.length}-block offset spine · ±${maximumOffset.toFixed(0)} m trace`,
+    object: trace,
+    visible: false,
+    dispose: () => {
+      geometry.dispose();
+      material.dispose();
+    },
+  });
+}
+
+function blockCenter(
+  bounds: Readonly<{ minX: number; maxX: number; minZ: number; maxZ: number }>,
+): readonly [x: number, z: number] {
+  return [
+    (bounds.minX + bounds.maxX) / 2,
+    (bounds.minZ + bounds.maxZ) / 2,
+  ];
 }
 
 function addSegment(
