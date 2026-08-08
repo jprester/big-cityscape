@@ -32,8 +32,8 @@ import {
 } from '../city/synthetic/rendering/addSyntheticCityBuildingLayer';
 import {
   addSyntheticAtmosphereLayer,
-  createSyntheticAtmosphereConfig,
 } from '../city/synthetic/rendering/addSyntheticAtmosphereLayer';
+import { addSyntheticInspectionLighting } from '../city/synthetic/rendering/addSyntheticInspectionLighting';
 import { addSyntheticCityDebugLayer } from '../city/synthetic/rendering/addSyntheticCityDebugLayer';
 import { addSyntheticRoadMarkingLayer } from '../city/synthetic/rendering/addSyntheticRoadMarkingLayer';
 import {
@@ -44,6 +44,13 @@ import {
   type CameraPresetAction,
 } from '../debug/createDebugPanel';
 import { DebugLayerManager } from '../debug/DebugLayerManager';
+import {
+  createSyntheticEnvironmentPreset,
+  readSyntheticEnvironmentPreset,
+  setSyntheticEnvironmentPresetInUrl,
+  SYNTHETIC_ENVIRONMENT_PRESET_IDS,
+  type SyntheticEnvironmentPresetId,
+} from './syntheticEnvironmentPresets';
 
 const MAX_PIXEL_RATIO = 1.5;
 const MAX_ACTIVE_FRAMES_PER_SECOND = 60;
@@ -79,6 +86,7 @@ export async function createSyntheticDistrictApp(
 ): Promise<SyntheticDistrictApp> {
   const search = window.location.search;
   const seed = readSyntheticSeed(search);
+  let activeEnvironmentPresetId = readSyntheticEnvironmentPreset(search);
   const viewData = createViewData(readSyntheticViewMode(search), seed);
   const scene = new THREE.Scene();
   scene.name = `synthetic-${viewData.mode}`;
@@ -98,6 +106,10 @@ export async function createSyntheticDistrictApp(
 
   const worldSizeMetres =
     viewData.spatial.bounds.maxX - viewData.spatial.bounds.minX;
+  const initialEnvironment = createSyntheticEnvironmentPreset(
+    activeEnvironmentPresetId,
+    worldSizeMetres,
+  );
   const tallestPlacement = findTallestPlacement(viewData.population.placements);
   const inspectionCamera = createInspectionCamera(
     renderer.domElement,
@@ -110,11 +122,12 @@ export async function createSyntheticDistrictApp(
   );
   const debugLayers = new DebugLayerManager();
   scene.add(debugLayers.root);
-  addSyntheticAtmosphereLayer(
+  const atmosphereLayer = addSyntheticAtmosphereLayer(
     debugLayers,
     scene,
-    createSyntheticAtmosphereConfig(worldSizeMetres),
+    initialEnvironment.atmosphere,
   );
+  atmosphereLayer.update(inspectionCamera.camera);
   addSyntheticDistrictDebugLayers(debugLayers, viewData.spatial);
 
   let cityRenderLayer: SyntheticCityBuildingRenderLayer | undefined;
@@ -136,9 +149,14 @@ export async function createSyntheticDistrictApp(
     buildingRenderStats = await addSyntheticBuildingLayer(
       debugLayers,
       viewData.population,
-      worldSizeMetres,
     );
   }
+
+  const lightingLayer = addSyntheticInspectionLighting(
+    debugLayers,
+    worldSizeMetres,
+    initialEnvironment.lighting,
+  );
 
   const performancePanel = createPerformancePanel(
     renderer,
@@ -149,6 +167,7 @@ export async function createSyntheticDistrictApp(
     viewData,
     buildingRenderStats,
     seed,
+    activeEnvironmentPresetId,
   );
   let isRunning = false;
   let isDisposed = false;
@@ -203,6 +222,7 @@ export async function createSyntheticDistrictApp(
       firstPersonController?.update(limitedDeltaSeconds) ?? false;
     cityRenderLayer?.beginFrame();
     cityRenderLayer?.updateVisibility(inspectionCamera.camera);
+    atmosphereLayer.update(inspectionCamera.camera);
     renderer.render(scene, inspectionCamera.camera);
     performancePanel.update(deltaSeconds);
 
@@ -277,6 +297,31 @@ export async function createSyntheticDistrictApp(
     ),
     `Synthetic ${viewData.mode} · seed ${seed}`,
     requestRender,
+    SYNTHETIC_ENVIRONMENT_PRESET_IDS.map((id) => {
+      const environment = createSyntheticEnvironmentPreset(id, worldSizeMetres);
+
+      return {
+        id,
+        label: environment.label,
+        selected: id === activeEnvironmentPresetId,
+        activate: () => {
+          activeEnvironmentPresetId = id;
+          atmosphereLayer.setConfig(environment.atmosphere);
+          lightingLayer.setConfig(environment.lighting);
+          window.history.replaceState(
+            window.history.state,
+            '',
+            setSyntheticEnvironmentPresetInUrl(window.location.href, id),
+          );
+          updateModeNavigationEnvironment(statisticsPanel, id);
+        },
+      } satisfies Readonly<{
+        id: SyntheticEnvironmentPresetId;
+        label: string;
+        selected: boolean;
+        activate: () => void;
+      }>;
+    }),
   );
 
   host.replaceChildren(
@@ -671,6 +716,7 @@ function createStatisticsPanel(
   viewData: SyntheticViewData,
   rendering: SyntheticBuildingRenderStats,
   seed: number,
+  environmentPresetId: SyntheticEnvironmentPresetId,
 ): HTMLElement {
   const panel = document.createElement('aside');
   panel.className = 'synthetic-statistics';
@@ -682,7 +728,11 @@ function createStatisticsPanel(
   const title = document.createElement('h2');
   title.className = 'synthetic-statistics__title';
   title.textContent = statisticsTitle(viewData);
-  const modeNavigation = createModeNavigation(viewData.mode, seed);
+  const modeNavigation = createModeNavigation(
+    viewData.mode,
+    seed,
+    environmentPresetId,
+  );
   const metrics = document.createElement('dl');
   metrics.className = 'synthetic-statistics__metrics';
   addCompositionStatistics(metrics, viewData);
@@ -823,6 +873,7 @@ function addCompositionStatistics(
 function createModeNavigation(
   currentMode: SyntheticViewMode,
   seed: number,
+  environmentPresetId: SyntheticEnvironmentPresetId,
 ): HTMLElement {
   const navigation = document.createElement('nav');
   navigation.className = 'synthetic-statistics__modes';
@@ -833,7 +884,8 @@ function createModeNavigation(
     ['proof', 'Proof district'],
   ] as const) {
     const link = document.createElement('a');
-    link.href = `?view=synthetic&mode=${mode}&seed=${seed}`;
+    link.href = `?view=synthetic&mode=${mode}&seed=${seed}&time=${environmentPresetId}`;
+    link.dataset.syntheticMode = mode;
     link.textContent = label;
 
     if (mode === currentMode) {
@@ -844,6 +896,19 @@ function createModeNavigation(
   }
 
   return navigation;
+}
+
+function updateModeNavigationEnvironment(
+  panel: HTMLElement,
+  environmentPresetId: SyntheticEnvironmentPresetId,
+): void {
+  for (const link of panel.querySelectorAll<HTMLAnchorElement>(
+    'a[data-synthetic-mode]',
+  )) {
+    const url = new URL(link.href);
+    url.searchParams.set('time', environmentPresetId);
+    link.href = url.toString();
+  }
 }
 
 function addStatistic(

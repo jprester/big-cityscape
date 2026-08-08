@@ -224,7 +224,9 @@ Open `?view=synthetic` to inspect the complete city. Use `mode=proof` to return
 to the original 500 m district, or the on-screen Full city / Proof district
 switch. An optional integer `seed` query parameter regenerates template
 choices, slot heights, and asset selection while leaving the direct street
-geometry unchanged.
+geometry unchanged. The optional `time=day|dusk|night` query parameter selects
+an environment preset; Dusk remains the default when the parameter is absent.
+The mode switch preserves the selected environment.
 
 The view exposes independent layers for atmosphere, street negative space,
 sidewalks, arterial markings, block-template surfaces, park lawns and crossing
@@ -237,20 +239,40 @@ preset is derived from the central generated street gap rather than placed
 inside a block. Full-city mode also provides a `Spine` street preset aligned
 with the narrow side of the offset band.
 
-### Atmosphere and inspection lighting
+### Environment presets, atmosphere, and inspection lighting
 
-A scale-aware linear `THREE.Fog` pass adds depth without introducing a render
-pass, shader, texture, or sky mesh. Full-city fog begins at 1.0 km and reaches
-the shared blue-grey background at 5.0 km. Proof mode scales the same rule to
-250 m–1.25 km. One checked `Atmosphere` control owns both fog and background;
-turning it off restores the original dark background and fog-free geometry
-inspection view exactly.
+The inspection panel exposes deterministic Day, Dusk, and Night presets. Each
+preset owns the background, three-stop sky gradient, fog distances and colors,
+hemisphere light, and directional key light. Switching updates the existing sky,
+fog, and light objects in place, then updates the URL with `history.replaceState`.
+It does not regenerate blocks, reselect assets, reload GLBs, or rebuild building
+batches.
+
+Day uses a pale blue sky, warm horizon, distant fog, and the strongest neutral
+light. Dusk preserves the original warm, blue-grey inspection palette. Night
+uses a navy gradient, closer dark-blue fog, and restrained cool moonlight. Night
+is deliberately a readable massing view rather than a fully illuminated city:
+the catalogue does not yet provide semantic window materials, and this slice
+does not add point lights or emissive-window proxies.
+
+A scale-aware linear `THREE.Fog` pass adds depth without introducing a
+post-processing pass or custom shader. Dusk full-city fog begins at 1.0 km and
+reaches the shared blue-grey background at 5.0 km. Proof mode scales the same
+rule to 250 m–1.25 km; Day and Night apply their own proportional ranges.
+
+A camera-centred inverted hemisphere now provides the horizon. Vertex colors
+form three continuous stops: the exact fog color at the seam, a muted blue band
+around ten degrees elevation, and a dark navy zenith. Following the active
+camera prevents parallax while walking and avoids cube-map seams. The gradient
+is code-native, so it requires no bitmap asset or network request. One checked
+`Atmosphere` control owns sky, fog, and background; turning it off restores the
+original dark, fog-free geometry inspection view exactly.
 
 Proof and city rendering now reuse one scale-aware hemisphere and directional
 light rig. Orbit and walk modes therefore see the same palette and lighting.
-The atmosphere adds no draw calls or triangles; its empty debug-layer proxy
-adds one scene object. Fog still adds fragment-shader work, so unchanged draw
-counts are not presented as a frame-rate improvement.
+The sky adds one draw call, one scene object, and 736 triangles. Fog still adds
+fragment-shader work, so this is treated as a small visual cost rather than a
+performance improvement.
 
 ### First-person walk mode
 
@@ -308,14 +330,15 @@ actually drawn in the last frame.
 | Synthetic debug geometry | `src/city/synthetic/rendering/addSyntheticDistrictDebugLayers.ts` |
 | Instanced roads and sidewalks | `src/city/synthetic/rendering/addSyntheticStreetLayers.ts` |
 | Instanced arterial markings | `src/city/synthetic/rendering/addSyntheticRoadMarkingLayer.ts` |
-| Toggleable distance atmosphere | `src/city/synthetic/rendering/addSyntheticAtmosphereLayer.ts` |
-| Shared inspection lighting | `src/city/synthetic/rendering/addSyntheticInspectionLighting.ts` |
+| Reconfigurable distance atmosphere | `src/city/synthetic/rendering/addSyntheticAtmosphereLayer.ts` |
+| Reconfigurable inspection lighting | `src/city/synthetic/rendering/addSyntheticInspectionLighting.ts` |
 | City chunk outlines | `src/city/synthetic/rendering/addSyntheticCityDebugLayer.ts` |
 | Instanced selected models | `src/city/synthetic/rendering/addSyntheticBuildingLayer.ts` |
 | Batched city chunks | `src/city/synthetic/rendering/addSyntheticCityBuildingLayer.ts` |
 | District visibility rule | `src/city/synthetic/rendering/syntheticDistrictVisibility.ts` |
 | First-person controller | `src/app/createFirstPersonController.ts` |
 | First-person movement rules | `src/app/firstPersonMovement.ts` |
+| Environment preset definitions and URL contract | `src/synthetic/syntheticEnvironmentPresets.ts` |
 | Synthetic app lifecycle | `src/synthetic/createSyntheticDistrictApp.ts` |
 | Focused tests | `src/city/synthetic/**/*.test.ts` |
 
@@ -354,32 +377,35 @@ at all nine crossings, and four six-bar crosswalks per marked intersection.
 First-person movement tests verify speed-normalized diagonal travel, partial
 input, fixed eye height, city-bound clamping, and invalid-bound rejection.
 
-Atmosphere tests verify extent-scaled fog distances, configuration rejection,
-visibility toggling, restoration on disposal, and the shared light rig's
-scale-aware placement.
+Atmosphere tests verify extent-scaled fog and sky dimensions, vertex-color sky
+geometry, camera following, configuration rejection, visibility toggling,
+restoration on disposal, in-place color and scale changes, and the shared light
+rig's scale-aware placement. Environment tests verify the three distinct
+presets, proportional fog ranges, default and explicit URL parsing, invalid
+value rejection, and preservation of unrelated query parameters.
 
 For the current catalogue and default seed, every slot has between 3 and 14
 compatible candidates before city-wide repetition caps are applied. The
 landmark is deliberately the narrowest category, with three candidates.
 
-The default proof overview measured 45 draw calls, 43,749 rendered triangles,
-59 scene objects, and 53 visible objects in the local browser. Rendering is
+The default proof overview measured 46 draw calls, 44,485 rendered triangles,
+60 scene objects, and 54 visible objects in the local browser. Rendering is
 on-demand while the camera is idle. No active-frame-rate claim is made yet.
 
-The default full-city overview measured 33 draw calls, 481,365 rendered
-triangles, 50 scene objects, 43 visible objects, 16 rendered district batches,
-and 1,188 rendered model instances. The street preset reduced that to 28 draw
-calls, 343,623 triangles, 11 rendered districts, and 807 rendered buildings.
-The dedicated spine preset measured 28 draw calls, 337,536 triangles, 11
+The default full-city overview measured 34 draw calls, 482,101 rendered
+triangles, 51 scene objects, 44 visible objects, 16 rendered district batches,
+and 1,188 rendered model instances. The street preset reduced that to 29 draw
+calls, 344,359 triangles, 11 rendered districts, and 807 rendered buildings.
+The dedicated spine preset measured 29 draw calls, 338,272 triangles, 11
 rendered districts, and 805 rendered buildings. The dedicated crossing preset
-measured 24 draw calls, 253,959 triangles, 8 rendered districts, and 607
-rendered buildings. The revised rooftop preset measured 32 draw calls, 452,635
+measured 25 draw calls, 254,695 triangles, 8 rendered districts, and 607
+rendered buildings. The revised rooftop preset measured 33 draw calls, 453,371
 triangles, 15 rendered districts, and 1,110 rendered buildings.
-The first-person spawn measured 28 draw calls, 343,623 triangles, 11 rendered
-districts, 807 rendered buildings, 50 scene objects, and 39 visible objects.
-Unlike the orbit views, walk mode renders
-continuously while active; no frame-rate claim is made yet. Compared with the
-previous street-and-sidewalk slice, the marking layer adds exactly two draw
+The first-person spawn measured 29 draw calls, 344,359 triangles, 11 rendered
+districts, 807 rendered buildings, 51 scene objects, and 40 visible objects.
+Unlike the orbit views, walk mode renders continuously while active; no
+frame-rate claim is made yet. Compared with the previous street-and-sidewalk
+slice, the marking layer adds exactly two draw
 calls and 1,632 triangles; model triangle count and chunk visibility are
 unchanged.
 The skyline template adds one debug draw while the selected asset mix changes
@@ -387,6 +413,12 @@ the model total from 470,422 to 469,343 triangles and increases used variants
 from 55 to 58; this is a selection outcome, not an optimization claim. Model
 triangles exclude the debug layers. These are local-browser inspection
 measurements, not active-frame-rate claims.
+
+Day, Dusk, and Night retain the same rendering topology for a given camera:
+the overview remains 34 draw calls, 482,101 triangles, 51 scene objects, and 44
+visible objects. Preset switching therefore adds no meshes, materials, model
+instances, or draw calls. It only changes existing fog, vertex-color, and light
+state.
 
 ## Next slice
 

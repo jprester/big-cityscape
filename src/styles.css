@@ -224,6 +224,32 @@ input {
     border-color 120ms ease;
 }
 
+.debug-panel__display-presets {
+  margin-top: 12px;
+}
+
+.debug-panel__display-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #8fa4b2;
+  font-size: 0.65rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.debug-panel__display-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.debug-panel__display-buttons .debug-panel__button[aria-pressed="true"] {
+  border-color: rgb(132 196 230 / 70%);
+  background: rgb(74 139 176 / 42%);
+  color: #f3f8fb;
+}
+
 .debug-panel__camera-controls {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

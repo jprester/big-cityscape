@@ -7,7 +7,7 @@ describe('addSyntheticInspectionLighting', () => {
   it('creates one scale-aware shared light rig', () => {
     const layers = new DebugLayerManager();
 
-    addSyntheticInspectionLighting(layers, 2_000);
+    const lighting = addSyntheticInspectionLighting(layers, 2_000);
 
     const group = layers.root.getObjectByName('synthetic:inspection-lighting');
     const hemisphere = group?.children.find(
@@ -29,6 +29,21 @@ describe('addSyntheticInspectionLighting', () => {
         visible: true,
       },
     ]);
+
+    lighting.setConfig({
+      hemisphereSkyColor: 0x5d7892,
+      hemisphereGroundColor: 0x080b10,
+      hemisphereIntensity: 0.72,
+      keyColor: 0x9abce5,
+      keyIntensity: 0.92,
+      keyPositionScale: [0.45, 0.82, -0.35],
+    });
+    expect(hemisphere?.color.getHex()).toBe(0x5d7892);
+    expect(hemisphere?.groundColor.getHex()).toBe(0x080b10);
+    expect(hemisphere?.intensity).toBe(0.72);
+    expect(key?.color.getHex()).toBe(0x9abce5);
+    expect(key?.intensity).toBe(0.92);
+    expect(key?.position.toArray()).toEqual([900, 1_640, -700]);
 
     layers.dispose();
   });

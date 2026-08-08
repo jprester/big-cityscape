@@ -11,11 +11,19 @@ export type CameraPresetAction = Readonly<{
   activate: () => void;
 }>;
 
+export type DisplayPresetAction = Readonly<{
+  id: string;
+  label: string;
+  selected: boolean;
+  activate: () => void;
+}>;
+
 export function createDebugPanel(
   layers: DebugLayerManager,
   cameraPresets: readonly CameraPresetAction[],
   milestoneLabel = 'Milestone 0',
   invalidate: () => void = () => {},
+  displayPresets: readonly DisplayPresetAction[] = [],
 ): DebugPanel {
   const element = document.createElement('aside');
   element.className = 'debug-panel';
@@ -72,11 +80,53 @@ export function createDebugPanel(
     cameraControls.append(button);
   }
 
+  const displayControls = document.createElement('div');
+  displayControls.className = 'debug-panel__display-presets';
+  displayControls.setAttribute('role', 'group');
+  displayControls.setAttribute('aria-label', 'Environment time');
+  const displayLabel = document.createElement('span');
+  displayLabel.className = 'debug-panel__display-label';
+  displayLabel.textContent = 'Environment';
+  const displayButtons = document.createElement('div');
+  displayButtons.className = 'debug-panel__display-buttons';
+  const presetButtons = new Map<string, HTMLButtonElement>();
+
+  for (const preset of displayPresets) {
+    const button = document.createElement('button');
+    button.className = 'debug-panel__button';
+    button.type = 'button';
+    button.dataset.displayPreset = preset.id;
+    button.textContent = preset.label;
+    button.setAttribute('aria-pressed', preset.selected.toString());
+    const activatePreset = (): void => {
+      preset.activate();
+
+      for (const [id, presetButton] of presetButtons) {
+        presetButton.setAttribute('aria-pressed', (id === preset.id).toString());
+      }
+
+      invalidate();
+    };
+
+    button.addEventListener('click', activatePreset);
+    disposers.push(() => button.removeEventListener('click', activatePreset));
+    presetButtons.set(preset.id, button);
+    displayButtons.append(button);
+  }
+
+  displayControls.append(displayLabel, displayButtons);
+
   const help = document.createElement('p');
   help.className = 'debug-panel__help';
   help.textContent = 'Left drag: orbit · Right drag: pan · Wheel: zoom';
 
-  element.append(eyebrow, title, controls, cameraControls, help);
+  element.append(eyebrow, title);
+
+  if (displayPresets.length > 0) {
+    element.append(displayControls);
+  }
+
+  element.append(controls, cameraControls, help);
 
   return {
     element,

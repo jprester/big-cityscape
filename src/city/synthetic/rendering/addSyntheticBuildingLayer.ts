@@ -13,7 +13,6 @@ import {
 } from '../../rendering/loadBuildingModels';
 import type { SyntheticBuildingPlacement } from '../model/buildingPlacement';
 import type { SyntheticDistrictPopulation } from '../model/districtPopulation';
-import { addSyntheticInspectionLighting } from './addSyntheticInspectionLighting';
 
 const BUILDING_COLORS: Readonly<Record<BuildingHeightClass, number>> = {
   'low-rise': 0xb6c9bd,
@@ -33,7 +32,6 @@ export type SyntheticBuildingRenderStats = Readonly<{
 export async function addSyntheticBuildingLayer(
   layers: DebugLayerManager,
   population: SyntheticDistrictPopulation,
-  worldSizeMetres: number,
 ): Promise<SyntheticBuildingRenderStats> {
   const assetsById = new Map(
     BUILDING_ASSET_CATALOG.map((asset) => [asset.id, asset]),
@@ -92,8 +90,6 @@ export async function addSyntheticBuildingLayer(
       fallback?.material.dispose();
     },
   });
-
-  addSyntheticInspectionLighting(layers, worldSizeMetres);
 
   return {
     instances: population.metadata.placedCount,

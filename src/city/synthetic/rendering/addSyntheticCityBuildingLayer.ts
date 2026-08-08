@@ -17,7 +17,6 @@ import type { SyntheticCityPopulation } from '../model/cityPopulation';
 import type { SyntheticProofDistrict } from '../model/proofDistrict';
 import type { SyntheticCity } from '../model/syntheticCity';
 import { isSyntheticDistrictWithinVisibilityRange } from './syntheticDistrictVisibility';
-import { addSyntheticInspectionLighting } from './addSyntheticInspectionLighting';
 
 const BUILDING_COLORS: Readonly<Record<BuildingHeightClass, number>> = {
   'low-rise': 0xb6c9bd,
@@ -125,11 +124,6 @@ export async function addSyntheticCityBuildingLayer(
       material.dispose();
     },
   });
-
-  addSyntheticInspectionLighting(
-    layers,
-    city.bounds.maxX - city.bounds.minX,
-  );
 
   const stats: SyntheticCityBuildingRenderStats = {
     instances: population.metadata.placedCount,
