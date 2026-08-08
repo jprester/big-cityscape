@@ -21,6 +21,7 @@ import type { SyntheticCityPopulation } from '../city/synthetic/model/cityPopula
 import type { SyntheticDistrictPopulation } from '../city/synthetic/model/districtPopulation';
 import type { SyntheticProofDistrict } from '../city/synthetic/model/proofDistrict';
 import type { SyntheticCity } from '../city/synthetic/model/syntheticCity';
+import { countStreetHierarchies } from '../city/synthetic/model/streetCorridor';
 import {
   addSyntheticBuildingLayer,
   type SyntheticBuildingRenderStats,
@@ -29,7 +30,12 @@ import {
   addSyntheticCityBuildingLayer,
   type SyntheticCityBuildingRenderLayer,
 } from '../city/synthetic/rendering/addSyntheticCityBuildingLayer';
+import {
+  addSyntheticAtmosphereLayer,
+  createSyntheticAtmosphereConfig,
+} from '../city/synthetic/rendering/addSyntheticAtmosphereLayer';
 import { addSyntheticCityDebugLayer } from '../city/synthetic/rendering/addSyntheticCityDebugLayer';
+import { addSyntheticRoadMarkingLayer } from '../city/synthetic/rendering/addSyntheticRoadMarkingLayer';
 import {
   addSyntheticDistrictDebugLayers,
 } from '../city/synthetic/rendering/addSyntheticDistrictDebugLayers';
@@ -104,6 +110,11 @@ export async function createSyntheticDistrictApp(
   );
   const debugLayers = new DebugLayerManager();
   scene.add(debugLayers.root);
+  addSyntheticAtmosphereLayer(
+    debugLayers,
+    scene,
+    createSyntheticAtmosphereConfig(worldSizeMetres),
+  );
   addSyntheticDistrictDebugLayers(debugLayers, viewData.spatial);
 
   let cityRenderLayer: SyntheticCityBuildingRenderLayer | undefined;
@@ -111,6 +122,10 @@ export async function createSyntheticDistrictApp(
 
   if (viewData.mode === 'city') {
     addSyntheticCityDebugLayer(debugLayers, viewData.spatial);
+    addSyntheticRoadMarkingLayer(
+      debugLayers,
+      viewData.spatial.roadMarkings,
+    );
     cityRenderLayer = await addSyntheticCityBuildingLayer(
       debugLayers,
       viewData.spatial,
@@ -121,6 +136,7 @@ export async function createSyntheticDistrictApp(
     buildingRenderStats = await addSyntheticBuildingLayer(
       debugLayers,
       viewData.population,
+      worldSizeMetres,
     );
   }
 
@@ -364,7 +380,10 @@ function createCameraPresets(
     {
       id: 'rooftop',
       label: 'Rooftop',
-      activate: () => inspectionCamera.setPreset('rooftop'),
+      activate: () =>
+        viewData.mode === 'city'
+          ? setCityRooftopPreset(viewData, inspectionCamera)
+          : inspectionCamera.setPreset('rooftop'),
     },
     {
       id: 'street',
@@ -374,11 +393,18 @@ function createCameraPresets(
   ];
 
   if (viewData.mode === 'city') {
-    presets.push({
-      id: 'offset-spine',
-      label: 'Spine',
-      activate: () => setOffsetSpinePreset(viewData, inspectionCamera),
-    });
+    presets.push(
+      {
+        id: 'marked-crossing',
+        label: 'Crossing',
+        activate: () => setMarkedCrossingPreset(viewData, inspectionCamera),
+      },
+      {
+        id: 'offset-spine',
+        label: 'Spine',
+        activate: () => setOffsetSpinePreset(viewData, inspectionCamera),
+      },
+    );
   }
 
   presets.push({
@@ -388,6 +414,84 @@ function createCameraPresets(
   });
 
   return presets;
+}
+
+function setCityRooftopPreset(
+  viewData: Extract<SyntheticViewData, Readonly<{ mode: 'city' }>>,
+  inspectionCamera: ReturnType<typeof createInspectionCamera>,
+): void {
+  const landmark = viewData.spatial.slots.find(
+    (slot) => slot.role === 'landmark',
+  );
+
+  if (landmark === undefined) {
+    throw new Error('The synthetic city has no landmark for its rooftop view.');
+  }
+
+  const bounds = viewData.spatial.bounds;
+  const viewpointX =
+    (bounds.minX + bounds.maxX) / 2 + (bounds.maxX - bounds.minX) * 0.25;
+  const viewpointZ =
+    (bounds.minZ + bounds.maxZ) / 2 + (bounds.maxZ - bounds.minZ) * 0.25;
+  const height = Math.max(170, landmark.targetHeightMetres * 0.58);
+  inspectionCamera.camera.position.set(viewpointX, height, viewpointZ);
+  inspectionCamera.controls.target.set(
+    landmark.center[0],
+    Math.min(125, landmark.targetHeightMetres * 0.38),
+    landmark.center[1],
+  );
+  inspectionCamera.controls.update();
+}
+
+function setMarkedCrossingPreset(
+  viewData: Extract<SyntheticViewData, Readonly<{ mode: 'city' }>>,
+  inspectionCamera: ReturnType<typeof createInspectionCamera>,
+): void {
+  const verticalArterials = viewData.spatial.streetCorridors
+    .filter(
+      (street) =>
+        street.context === 'district-boundary' &&
+        street.axis === 'north-south',
+    )
+    .toSorted(
+      (first, second) =>
+        streetCenterX(first.bounds) - streetCenterX(second.bounds),
+    );
+  const horizontalArterials = viewData.spatial.streetCorridors
+    .filter(
+      (street) =>
+        street.context === 'district-boundary' &&
+        street.axis === 'east-west',
+    )
+    .toSorted(
+      (first, second) =>
+        streetCenterZ(first.bounds) - streetCenterZ(second.bounds),
+    );
+  const vertical = verticalArterials[Math.floor(verticalArterials.length / 2)];
+  const horizontal =
+    horizontalArterials[Math.floor(horizontalArterials.length / 2)];
+
+  if (vertical === undefined || horizontal === undefined) {
+    throw new Error('The synthetic city has no marked arterial crossing.');
+  }
+
+  const x = streetCenterX(vertical.bounds);
+  const z = streetCenterZ(horizontal.bounds);
+  inspectionCamera.camera.position.set(x, 7, z - 58);
+  inspectionCamera.controls.target.set(x, 0.35, z);
+  inspectionCamera.controls.update();
+}
+
+function streetCenterX(
+  bounds: Readonly<{ minX: number; maxX: number }>,
+): number {
+  return (bounds.minX + bounds.maxX) / 2;
+}
+
+function streetCenterZ(
+  bounds: Readonly<{ minZ: number; maxZ: number }>,
+): number {
+  return (bounds.minZ + bounds.maxZ) / 2;
 }
 
 function createFirstPersonSpawn(
@@ -647,13 +751,37 @@ function addCompositionStatistics(
   metrics: HTMLDListElement,
   viewData: SyntheticViewData,
 ): void {
+  const streetCounts = countStreetHierarchies(
+    viewData.spatial.streetCorridors,
+  );
+  addStatistic(
+    metrics,
+    'Street hierarchy',
+    `${streetCounts.arterial} arterial · ${streetCounts.secondary} secondary · ${streetCounts.local} local`,
+  );
+
   if (viewData.mode === 'city') {
     const { metadata } = viewData.spatial;
+    addStatistic(
+      metrics,
+      'Road markings',
+      `${viewData.spatial.roadMarkings.metadata.centreLineDashCount} dashes · ${viewData.spatial.roadMarkings.metadata.markedIntersectionCount} crossings`,
+    );
+    addStatistic(
+      metrics,
+      'Skyline anchors',
+      `1 primary · ${metadata.secondarySkylineAnchorCount} secondary`,
+    );
     addStatistic(metrics, 'Blocks', metadata.blockCount.toLocaleString('en-US'));
     addStatistic(
       metrics,
       'District profiles',
       `${metadata.profileCounts.centre} centre · ${metadata.profileCounts.urban} urban · ${metadata.profileCounts.edge} edge`,
+    );
+    addStatistic(
+      metrics,
+      'Grid rhythms',
+      `${metadata.gridVariantCounts.balanced} balanced · ${metadata.gridVariantCounts['fine-grain']} fine · ${metadata.gridVariantCounts['large-block']} large`,
     );
     addStatistic(
       metrics,
@@ -688,7 +816,7 @@ function addCompositionStatistics(
   addStatistic(
     metrics,
     'Templates',
-    `${metadata.templateCounts['fabric-grid']} fabric · ${metadata.templateCounts['edge-slabs']} slabs · ${metadata.templateCounts['anchor-and-fill']} anchors · ${metadata.templateCounts['landmark-plaza']} landmark · ${metadata.templateCounts['open-space']} parks`,
+    `${metadata.templateCounts['fabric-grid']} fabric · ${metadata.templateCounts['edge-slabs']} slabs · ${metadata.templateCounts['anchor-and-fill']} anchors · ${metadata.templateCounts['skyline-anchor']} skyline · ${metadata.templateCounts['landmark-plaza']} landmark · ${metadata.templateCounts['open-space']} parks`,
   );
 }
 

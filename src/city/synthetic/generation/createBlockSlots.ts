@@ -76,6 +76,8 @@ function createTemplateRequests(
       return createEdgeSlabs(context.buildableBounds, random);
     case 'anchor-and-fill':
       return createAnchorAndFill(context.buildableBounds, random);
+    case 'skyline-anchor':
+      return createSkylineAnchor(context.buildableBounds, random);
     case 'landmark-plaza':
       return createLandmarkPlaza(context.buildableBounds, random);
     case 'open-space':
@@ -200,6 +202,24 @@ function createAnchorAndFill(
       role: 'fabric',
     },
   ];
+}
+
+function createSkylineAnchor(
+  bounds: SyntheticBounds2,
+  random: ReturnType<typeof createSeededRandom>,
+): readonly SlotRequest[] {
+  const requests = createAnchorAndFill(bounds, random);
+
+  return requests.map((request) =>
+    request.name === 'slot-anchor'
+      ? {
+          ...request,
+          targetHeightMetres: random.float(205, 255),
+          allowedForms: ['tower', 'podium-tower', 'complex', 'spire'],
+          heightClass: 'skyscraper',
+        }
+      : request,
+  );
 }
 
 function createLandmarkPlaza(

@@ -18,12 +18,15 @@ describe('generateProofDistrict', () => {
       minZ: -250,
       maxZ: 250,
     });
+    expect(district.gridVariantId).toBe('balanced');
+    expect(district.gridOrientationId).toBe('identity');
     expect(district.metadata.blockCount).toBe(25);
     expect(district.metadata.profileCounts).toEqual({
       core: 9,
       transition: 16,
     });
     expect(district.metadata.templateCounts['anchor-and-fill']).toBe(8);
+    expect(district.metadata.templateCounts['skyline-anchor']).toBe(0);
     expect(district.metadata.templateCounts['landmark-plaza']).toBe(1);
     expect(district.metadata.templateCounts['open-space']).toBe(0);
     expect(district.metadata.templateCounts['fabric-grid']).toBeGreaterThan(0);

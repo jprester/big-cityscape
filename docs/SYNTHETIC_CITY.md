@@ -21,7 +21,7 @@ The inner 3 × 3 blocks use the `core` profile. The sixteen perimeter blocks use
 the `transition` profile. The centre block is reserved for the landmark, while
 the other core blocks combine one high-rise anchor with two mid-rise fillers.
 
-Five explicit block templates define block use and, where applicable, emit
+Six explicit block templates define block use and, where applicable, emit
 building slots:
 
 | Template | Purpose | Slots per block |
@@ -29,6 +29,7 @@ building slots:
 | `fabric-grid` | Fine-grained low-rise transition fabric | 4 |
 | `edge-slabs` | Two larger mid-rise street-edge buildings | 2 |
 | `anchor-and-fill` | One high-rise anchor plus two mid-rise fillers | 3 |
+| `skyline-anchor` | One secondary skyscraper plus two mid-rise fillers | 3 |
 | `landmark-plaza` | One skyscraper with open space around its slot | 1 |
 | `open-space` | A buildable-block reservation for a simple public park | 0 |
 
@@ -60,9 +61,48 @@ default city therefore contains 16 open-space blocks, or 4% of its 400 blocks.
 Parks emit no building slots.
 
 The default seed produces 16 districts, 400 blocks, and 1,188 building slots.
-There is one landmark district and one landmark slot. Mean target height falls
-from centre to urban to edge, and edge districts contain no high-rise or
-skyscraper slots.
+There is one landmark district, one primary landmark slot, and five restrained
+secondary skyline slots. Mean target height falls from centre to urban to edge,
+and edge districts contain no high-rise or skyscraper slots.
+
+### Secondary skyline
+
+After the sixteen districts are generated, a deterministic city-level pass
+promotes five `anchor-and-fill` blocks to the `skyline-anchor` template. Only
+the three non-landmark centre districts are eligible. Every eligible district
+receives at least one anchor and no district receives more than two. The chosen
+tower centres remain at least 220 metres from each other and from the primary
+landmark.
+
+Each promoted block preserves the existing three-slot footprint: its anchor
+becomes a 205–255 m skyscraper while its two mid-rise fillers remain in place.
+The primary landmark stays in its 290–325 m range, so it remains the tallest
+tier. The skyline count can be configured from four to six without introducing
+city-wide random tower scatter. Selection uses stable block IDs and the content
+seed.
+
+### District grid rhythms
+
+The city no longer repeats one identical block grid in every district. Three
+explicit 5 × 5 rhythms vary block widths, block depths, and the four internal
+street gaps while preserving the exact 500 × 500 m district footprint:
+
+| Rhythm | Default districts | Character |
+| --- | ---: | --- |
+| `balanced` | 6 | The original mixed block and street proportions |
+| `fine-grain` | 5 | Narrower blocks and more varied local-street gaps |
+| `large-block` | 5 | Broader inner blocks with tighter secondary gaps |
+
+Each selected rhythm can be used directly or mirrored on either axis. The
+mirror operation reverses block sizes and their intervening gaps together, so
+the layout remains valid rather than merely moving individual blocks. Inner
+rows remain deep enough for the reviewed high-rise catalogue envelope; all
+1,188 slots still populate without relaxing asset-fit rules.
+
+Grid selection uses a dedicated `layoutSeed`. The content seed in the URL still
+changes templates, target heights, and asset selection without moving streets.
+Changing `layoutSeed` at the city configuration level provides a separately
+reproducible horizontal layout.
 
 ### Controlled offset spine
 
@@ -77,6 +117,46 @@ Each block records a `layoutVariationId` and explicit metre-based layout offset.
 The variation is configured at city level and distributed into five row offsets
 per district. It is deliberately independent of the content seed, so changing
 building and template choices does not move the underlying street geometry.
+
+### Street hierarchy and sidewalks
+
+Street negative space now has an explicit semantic representation rather than
+being only the uncovered ground between blocks. Each district derives road
+rectangles from the actual bounds of neighboring blocks: five segments per
+internal gap plus separate intersection rectangles. This means the road
+surfaces follow the offset spine and cannot enter a block. Stable IDs record the
+district, direction, row or column, and gap.
+
+Internal gaps at least 22 metres wide are classified as `secondary`; narrower
+gaps are `local`. The six 40-metre corridors between district rows and columns,
+plus four 20-metre perimeter strips, are explicit city-level `arterial`
+corridors. The default city contains 906 surface rectangles: 10 arterial, 272
+secondary, and 624 local. These counts describe renderable corridor pieces, not
+906 separate road networks.
+
+Rendering uses one instanced plane draw per populated hierarchy and one further
+instanced draw for 1,600 sidewalk strips. Sidewalks are derived from the
+five-metre ring between each block boundary and its buildable boundary, so no
+additional parcel or pavement data is required. The four new draws add exactly
+5,012 rendered triangles to the full overview. Road and sidewalk layers remain
+independently toggleable inspection layers.
+
+### Arterial road markings
+
+The six interior district-boundary arterials carry restrained semantic road
+markings. Their centrelines contain 600 nine-metre amber dashes, with explicit
+clearance around every arterial crossing. The three north-south and three
+east-west arterials form nine marked intersections. Each receives four
+six-bar zebra crossings, for 216 off-white crosswalk bars in total. Perimeter
+arterials remain unmarked so the treatment reads as an urban hierarchy rather
+than a texture spread over every road.
+
+Markings are declarative metre-based rectangles with stable IDs; they are not
+lane meshes or a navigation graph. Rendering packs all centre-line dashes into
+one instanced plane draw and all crosswalk bars into a second. The complete
+layer therefore adds two draw calls and 1,632 triangles. A city-only `Crossing`
+camera preset provides a reproducible close view of the middle marked
+intersection.
 
 ## Asset-to-slot contract
 
@@ -132,7 +212,7 @@ With the current catalogue and default district seed, all 79 slots are filled
 with 36 distinct assets and no rejections. Its most repeated asset appears eight
 times.
 
-With the default full-city seed, all 1,188 slots are filled with 55 distinct
+With the default full-city seed, all 1,188 slots are filled with 58 distinct
 assets and no rejections. The most common asset appears 79 times. The soft reuse
 multiplier preserves fit scoring and still allows repetition when an asset is
 the only compatible candidate; the statistics panel exposes the current maximum
@@ -146,16 +226,31 @@ switch. An optional integer `seed` query parameter regenerates template
 choices, slot heights, and asset selection while leaving the direct street
 geometry unchanged.
 
-The view exposes independent layers for street negative space, block-template
-surfaces, park lawns and crossing paths, core/transition buildable outlines,
-placement slots, the optional offset-spine trace, selected GLBs, inspection
-lighting, and a 25 m metric grid.
+The view exposes independent layers for atmosphere, street negative space,
+sidewalks, arterial markings, block-template surfaces, park lawns and crossing
+paths, core/transition buildable outlines, placement slots, the optional
+offset-spine trace, selected GLBs, inspection lighting, and a 25 m metric grid.
 The park layer uses only two shared instanced draws, regardless of park count;
 it deliberately contains no trees, props, or decorative scatter. Overview,
 rooftop, and street camera presets provide reproducible comparisons. The street
 preset is derived from the central generated street gap rather than placed
 inside a block. Full-city mode also provides a `Spine` street preset aligned
 with the narrow side of the offset band.
+
+### Atmosphere and inspection lighting
+
+A scale-aware linear `THREE.Fog` pass adds depth without introducing a render
+pass, shader, texture, or sky mesh. Full-city fog begins at 1.0 km and reaches
+the shared blue-grey background at 5.0 km. Proof mode scales the same rule to
+250 m–1.25 km. One checked `Atmosphere` control owns both fog and background;
+turning it off restores the original dark background and fog-free geometry
+inspection view exactly.
+
+Proof and city rendering now reuse one scale-aware hemisphere and directional
+light rig. Orbit and walk modes therefore see the same palette and lighting.
+The atmosphere adds no draw calls or triangles; its empty debug-layer proxy
+adds one scene object. Fog still adds fragment-shader work, so unchanged draw
+counts are not presented as a frame-rate improvement.
 
 ### First-person walk mode
 
@@ -175,7 +270,7 @@ the page, hiding it, or disposing the view exits walk mode and releases its
 keyboard, mouse, and pointer-lock listeners.
 
 Proof mode loads only its 36 selected asset files and uses one `InstancedMesh`
-per asset. Full-city mode loads its 55 selected assets once and packs all models
+per asset. Full-city mode loads its 58 selected assets once and packs all models
 for each 500 m district into one `BatchedMesh`. This produces 16 independently
 cullable building batches rather than approximately 460 per-asset district
 batches or 1,188 separate building objects.
@@ -198,13 +293,23 @@ actually drawn in the last frame.
 | City composition definition | `src/city/synthetic/model/syntheticCity.ts` |
 | City population definition | `src/city/synthetic/model/cityPopulation.ts` |
 | Proof-district definitions | `src/city/synthetic/model/proofDistrict.ts` |
+| Street-corridor definition | `src/city/synthetic/model/streetCorridor.ts` |
+| Road-marking definition | `src/city/synthetic/model/roadMarking.ts` |
 | Block-template slot generation | `src/city/synthetic/generation/createBlockSlots.ts` |
 | Proof-district generation | `src/city/synthetic/generation/generateProofDistrict.ts` |
+| District-grid rhythms | `src/city/synthetic/generation/districtGridVariants.ts` |
+| Street-corridor derivation | `src/city/synthetic/generation/deriveSyntheticStreetCorridors.ts` |
+| Road-marking derivation | `src/city/synthetic/generation/deriveSyntheticRoadMarkings.ts` |
+| Secondary skyline promotion | `src/city/synthetic/generation/promoteSecondarySkyline.ts` |
 | 2 km city composition | `src/city/synthetic/generation/generateSyntheticCity.ts` |
 | Deterministic matcher | `src/city/synthetic/generation/selectAssetForSlot.ts` |
 | Stable district population | `src/city/synthetic/generation/populateSyntheticDistrict.ts` |
 | Stable full-city population | `src/city/synthetic/generation/populateSyntheticCity.ts` |
 | Synthetic debug geometry | `src/city/synthetic/rendering/addSyntheticDistrictDebugLayers.ts` |
+| Instanced roads and sidewalks | `src/city/synthetic/rendering/addSyntheticStreetLayers.ts` |
+| Instanced arterial markings | `src/city/synthetic/rendering/addSyntheticRoadMarkingLayer.ts` |
+| Toggleable distance atmosphere | `src/city/synthetic/rendering/addSyntheticAtmosphereLayer.ts` |
+| Shared inspection lighting | `src/city/synthetic/rendering/addSyntheticInspectionLighting.ts` |
 | City chunk outlines | `src/city/synthetic/rendering/addSyntheticCityDebugLayer.ts` |
 | Instanced selected models | `src/city/synthetic/rendering/addSyntheticBuildingLayer.ts` |
 | Batched city chunks | `src/city/synthetic/rendering/addSyntheticCityBuildingLayer.ts` |
@@ -212,7 +317,7 @@ actually drawn in the last frame.
 | First-person controller | `src/app/createFirstPersonController.ts` |
 | First-person movement rules | `src/app/firstPersonMovement.ts` |
 | Synthetic app lifecycle | `src/synthetic/createSyntheticDistrictApp.ts` |
-| Focused tests | `src/city/synthetic/generation/*.test.ts` |
+| Focused tests | `src/city/synthetic/**/*.test.ts` |
 
 ## Validation contract
 
@@ -226,35 +331,67 @@ and preservation of structured rejection diagnostics.
 Full-city tests additionally verify the 2 km bounds, non-overlapping district
 chunks, 4/8/4 profile distribution, single landmark ownership, centre-to-edge
 height gradient, absence of tall edge slots, and repetition-cap enforcement
-across district boundaries. Offset-band tests verify its 20-block continuity,
-four-district span, smooth bounded change, minimum street gap, block
-non-overlap, and slot containment.
+across district boundaries. Grid-variant tests verify exact 500 m axis fill,
+complete rhythm distribution, valid mirrored orientation, layout-seed
+repeatability, and independence from the content seed. Offset-band tests verify
+its 20-block continuity, four-district span, smooth bounded change, minimum
+street gap, block non-overlap, and slot containment.
+
+Skyline tests verify the configurable four-to-six count, coverage of all three
+eligible centre districts, two-anchor district cap, 220 m separation, secondary
+height limits below the primary landmark, repeatability, and successful
+catalogue population of all six skyscraper slots.
+
+Street tests additionally verify complete internal gap and intersection
+coverage, unique semantic IDs, 10 city arterials, exact use of offset-block
+edges, positive surface bounds, district containment, and no overlap with any
+block.
+
+Road-marking tests verify exact counts, stable unique IDs, repeatability,
+containment inside the six interior arterial surfaces, centre-line clearance
+at all nine crossings, and four six-bar crosswalks per marked intersection.
 
 First-person movement tests verify speed-normalized diagonal travel, partial
 input, fixed eye height, city-bound clamping, and invalid-bound rejection.
+
+Atmosphere tests verify extent-scaled fog distances, configuration rejection,
+visibility toggling, restoration on disposal, and the shared light rig's
+scale-aware placement.
 
 For the current catalogue and default seed, every slot has between 3 and 14
 compatible candidates before city-wide repetition caps are applied. The
 landmark is deliberately the narrowest category, with three candidates.
 
-The default proof overview measured 42 draw calls, 43,437 rendered triangles,
-54 scene objects, and 48 visible objects in the local browser. Rendering is
+The default proof overview measured 45 draw calls, 43,749 rendered triangles,
+59 scene objects, and 53 visible objects in the local browser. Rendering is
 on-demand while the camera is idle. No active-frame-rate claim is made yet.
 
-The default full-city overview measured 26 draw calls, 482,897 rendered
-triangles, 40 scene objects, 33 visible objects, 16 rendered district batches,
-and 1,188 rendered model instances. The street preset reduced that to 19 draw
-calls, 275,638 triangles, 9 rendered districts, and 650 rendered buildings.
-The dedicated spine preset measured 18 draw calls, 282,256 triangles, 9
-rendered districts, and 647 rendered buildings.
-The first-person spawn measured 19 draw calls, 275,638 triangles, 9 rendered
-districts, and 650 rendered buildings. Unlike the orbit views, walk mode renders
-continuously while active; no frame-rate claim is made yet.
-The 477,519 model triangles exclude the debug layers. These are local-browser
-inspection measurements, not active-frame-rate claims.
+The default full-city overview measured 33 draw calls, 481,365 rendered
+triangles, 50 scene objects, 43 visible objects, 16 rendered district batches,
+and 1,188 rendered model instances. The street preset reduced that to 28 draw
+calls, 343,623 triangles, 11 rendered districts, and 807 rendered buildings.
+The dedicated spine preset measured 28 draw calls, 337,536 triangles, 11
+rendered districts, and 805 rendered buildings. The dedicated crossing preset
+measured 24 draw calls, 253,959 triangles, 8 rendered districts, and 607
+rendered buildings. The revised rooftop preset measured 32 draw calls, 452,635
+triangles, 15 rendered districts, and 1,110 rendered buildings.
+The first-person spawn measured 28 draw calls, 343,623 triangles, 11 rendered
+districts, 807 rendered buildings, 50 scene objects, and 39 visible objects.
+Unlike the orbit views, walk mode renders
+continuously while active; no frame-rate claim is made yet. Compared with the
+previous street-and-sidewalk slice, the marking layer adds exactly two draw
+calls and 1,632 triangles; model triangle count and chunk visibility are
+unchanged.
+The skyline template adds one debug draw while the selected asset mix changes
+the model total from 470,422 to 469,343 triangles and increases used variants
+from 55 to 58; this is a selection outcome, not an optimization claim. Model
+triangles exclude the debug layers. These are local-browser inspection
+measurements, not active-frame-rate claims.
 
 ## Next slice
 
-Introduce two or three deterministic district-grid variants by mirroring the
-existing unequal block widths and street gaps. This should reduce the repeated
-5 × 5 rhythm without adding arbitrary polygons or another geometry system.
+Add lightweight first-person collision against generated building-slot bounds.
+Use geometry-independent swept movement or axis separation, preserve road and
+sidewalk navigation, and keep the implementation deterministic and testable.
+Do not introduce a physics engine, gravity, jumping, stairs, or mesh-level
+collision.

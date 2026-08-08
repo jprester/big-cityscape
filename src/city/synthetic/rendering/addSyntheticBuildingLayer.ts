@@ -13,6 +13,7 @@ import {
 } from '../../rendering/loadBuildingModels';
 import type { SyntheticBuildingPlacement } from '../model/buildingPlacement';
 import type { SyntheticDistrictPopulation } from '../model/districtPopulation';
+import { addSyntheticInspectionLighting } from './addSyntheticInspectionLighting';
 
 const BUILDING_COLORS: Readonly<Record<BuildingHeightClass, number>> = {
   'low-rise': 0xb6c9bd,
@@ -32,6 +33,7 @@ export type SyntheticBuildingRenderStats = Readonly<{
 export async function addSyntheticBuildingLayer(
   layers: DebugLayerManager,
   population: SyntheticDistrictPopulation,
+  worldSizeMetres: number,
 ): Promise<SyntheticBuildingRenderStats> {
   const assetsById = new Map(
     BUILDING_ASSET_CATALOG.map((asset) => [asset.id, asset]),
@@ -91,7 +93,7 @@ export async function addSyntheticBuildingLayer(
     },
   });
 
-  addInspectionLighting(layers);
+  addSyntheticInspectionLighting(layers, worldSizeMetres);
 
   return {
     instances: population.metadata.placedCount,
@@ -196,21 +198,6 @@ function createFallbackInstances(
     material,
     triangles: 12 * placements.length,
   };
-}
-
-function addInspectionLighting(layers: DebugLayerManager): void {
-  const group = new THREE.Group();
-  group.name = 'synthetic:inspection-lighting';
-  const hemisphere = new THREE.HemisphereLight(0xe6edf2, 0x263038, 2.3);
-  const key = new THREE.DirectionalLight(0xffedda, 2.8);
-  key.position.set(-280, 520, 330);
-  group.add(hemisphere, key);
-
-  layers.add({
-    id: 'synthetic-lighting',
-    label: 'Inspection lighting',
-    object: group,
-  });
 }
 
 function createBuildingMaterials(): Readonly<

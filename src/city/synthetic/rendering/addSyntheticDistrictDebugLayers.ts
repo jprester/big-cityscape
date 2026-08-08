@@ -9,10 +9,13 @@ import type {
 } from '../model/proofDistrict';
 import { SYNTHETIC_BLOCK_TEMPLATE_IDS } from '../model/proofDistrict';
 import type { BuildingSlot } from '../model/buildingSlot';
+import type { SyntheticStreetCorridor } from '../model/streetCorridor';
+import { addSyntheticStreetLayers } from './addSyntheticStreetLayers';
 
 export type SyntheticDebugSpatialDefinition = Readonly<{
   bounds: SyntheticBounds2;
   blocks: readonly SyntheticBlockDefinition[];
+  streetCorridors: readonly SyntheticStreetCorridor[];
   slots: readonly BuildingSlot[];
 }>;
 
@@ -22,6 +25,7 @@ const TEMPLATE_COLORS: Readonly<Record<SyntheticBlockTemplateId, number>> = {
   'fabric-grid': 0x34594d,
   'edge-slabs': 0x3b5268,
   'anchor-and-fill': 0x66563c,
+  'skyline-anchor': 0x5f496c,
   'landmark-plaza': 0x684457,
   'open-space': 0x386844,
 };
@@ -43,6 +47,7 @@ export function addSyntheticDistrictDebugLayers(
   spatial: SyntheticDebugSpatialDefinition,
 ): void {
   addStreetGroundLayer(layers, spatial);
+  addSyntheticStreetLayers(layers, spatial);
   addMetricGridLayer(layers, spatial);
   addBlockTemplateLayer(layers, spatial);
   addOpenSpaceLayer(layers, spatial);
@@ -72,7 +77,7 @@ function addStreetGroundLayer(
 
   layers.add({
     id: 'street-negative-space',
-    label: 'Street negative space',
+    label: 'Street base · dark negative space',
     object: ground,
     dispose: () => {
       geometry.dispose();
@@ -159,7 +164,7 @@ function addBlockTemplateLayer(
 
   layers.add({
     id: 'block-templates',
-    label: 'Block templates · green fabric/parks · blue slabs · amber anchors · rose landmark',
+    label: 'Block templates · green fabric/parks · blue slabs · amber anchors · violet skyline · rose landmark',
     object: group,
     dispose: () => {
       meshes.forEach((mesh) => mesh.dispose());

@@ -1,10 +1,13 @@
 import { createSeededRandom, deriveSeed } from '../../../core/random';
 import { createBlockSlots } from './createBlockSlots';
+import { deriveDistrictStreetCorridors } from './deriveSyntheticStreetCorridors';
 import type {
   SyntheticBlockDefinition,
   SyntheticBlockTemplateId,
   SyntheticBounds2,
   SyntheticDistrictCompositionProfileId,
+  SyntheticDistrictGridOrientationId,
+  SyntheticDistrictGridVariantId,
   SyntheticDistrictProfileId,
   SyntheticProofDistrict,
 } from '../model/proofDistrict';
@@ -14,6 +17,8 @@ export type ProofDistrictConfig = Readonly<{
   seed: number;
   center: readonly [xMetres: number, zMetres: number];
   compositionProfileId: SyntheticDistrictCompositionProfileId;
+  gridVariantId: SyntheticDistrictGridVariantId;
+  gridOrientationId: SyntheticDistrictGridOrientationId;
   hasLandmark: boolean;
   sizeMetres: number;
   outerMarginMetres: number;
@@ -35,6 +40,8 @@ export const DEFAULT_PROOF_DISTRICT_CONFIG: ProofDistrictConfig = {
   seed: 20_260_805,
   center: [0, 0],
   compositionProfileId: 'centre',
+  gridVariantId: 'balanced',
+  gridOrientationId: 'identity',
   hasLandmark: true,
   sizeMetres: 500,
   outerMarginMetres: 20,
@@ -133,15 +140,19 @@ export function generateProofDistrict(
   }
 
   const slots = blocks.flatMap((block) => block.slots);
+  const streetCorridors = deriveDistrictStreetCorridors(config.id, blocks);
 
   return {
     id: config.id,
     seed: config.seed,
     center: config.center,
     compositionProfileId: config.compositionProfileId,
+    gridVariantId: config.gridVariantId,
+    gridOrientationId: config.gridOrientationId,
     hasLandmark: config.hasLandmark,
     bounds: districtBounds,
     blocks,
+    streetCorridors,
     slots,
     metadata: {
       blockCount: blocks.length,
@@ -337,6 +348,9 @@ function countTemplates(
       .length,
     'anchor-and-fill': blocks.filter(
       (block) => block.templateId === 'anchor-and-fill',
+    ).length,
+    'skyline-anchor': blocks.filter(
+      (block) => block.templateId === 'skyline-anchor',
     ).length,
     'landmark-plaza': blocks.filter(
       (block) => block.templateId === 'landmark-plaza',

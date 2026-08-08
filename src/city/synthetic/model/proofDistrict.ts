@@ -1,4 +1,5 @@
 import type { BuildingSlot } from './buildingSlot';
+import type { SyntheticStreetCorridor } from './streetCorridor';
 
 export type SyntheticBounds2 = Readonly<{
   minX: number;
@@ -21,10 +22,30 @@ export const SYNTHETIC_DISTRICT_COMPOSITION_PROFILE_IDS = [
 export type SyntheticDistrictCompositionProfileId =
   (typeof SYNTHETIC_DISTRICT_COMPOSITION_PROFILE_IDS)[number];
 
+export const SYNTHETIC_DISTRICT_GRID_VARIANT_IDS = [
+  'balanced',
+  'fine-grain',
+  'large-block',
+] as const;
+
+export type SyntheticDistrictGridVariantId =
+  (typeof SYNTHETIC_DISTRICT_GRID_VARIANT_IDS)[number];
+
+export const SYNTHETIC_DISTRICT_GRID_ORIENTATION_IDS = [
+  'identity',
+  'mirror-x',
+  'mirror-z',
+  'mirror-both',
+] as const;
+
+export type SyntheticDistrictGridOrientationId =
+  (typeof SYNTHETIC_DISTRICT_GRID_ORIENTATION_IDS)[number];
+
 export const SYNTHETIC_BLOCK_TEMPLATE_IDS = [
   'fabric-grid',
   'edge-slabs',
   'anchor-and-fill',
+  'skyline-anchor',
   'landmark-plaza',
   'open-space',
 ] as const;
@@ -60,9 +81,12 @@ export type SyntheticProofDistrict = Readonly<{
   seed: number;
   center: readonly [xMetres: number, zMetres: number];
   compositionProfileId: SyntheticDistrictCompositionProfileId;
+  gridVariantId: SyntheticDistrictGridVariantId;
+  gridOrientationId: SyntheticDistrictGridOrientationId;
   hasLandmark: boolean;
   bounds: SyntheticBounds2;
   blocks: readonly SyntheticBlockDefinition[];
+  streetCorridors: readonly SyntheticStreetCorridor[];
   slots: readonly BuildingSlot[];
   metadata: Readonly<{
     blockCount: number;

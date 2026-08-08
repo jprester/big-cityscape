@@ -32,6 +32,7 @@ The successor flow is:
 ```text
 synthetic city composition
 → district-aware blocks
+→ semantic street corridors
 → block-template placement slots
 → deterministic compatible asset selection
 → declarative building placements

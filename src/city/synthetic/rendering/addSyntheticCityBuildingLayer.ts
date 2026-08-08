@@ -17,6 +17,7 @@ import type { SyntheticCityPopulation } from '../model/cityPopulation';
 import type { SyntheticProofDistrict } from '../model/proofDistrict';
 import type { SyntheticCity } from '../model/syntheticCity';
 import { isSyntheticDistrictWithinVisibilityRange } from './syntheticDistrictVisibility';
+import { addSyntheticInspectionLighting } from './addSyntheticInspectionLighting';
 
 const BUILDING_COLORS: Readonly<Record<BuildingHeightClass, number>> = {
   'low-rise': 0xb6c9bd,
@@ -125,7 +126,10 @@ export async function addSyntheticCityBuildingLayer(
     },
   });
 
-  addInspectionLighting(layers);
+  addSyntheticInspectionLighting(
+    layers,
+    city.bounds.maxX - city.bounds.minX,
+  );
 
   const stats: SyntheticCityBuildingRenderStats = {
     instances: population.metadata.placedCount,
@@ -308,21 +312,6 @@ function groupPlacementsByDistrict(
   }
 
   return grouped;
-}
-
-function addInspectionLighting(layers: DebugLayerManager): void {
-  const group = new THREE.Group();
-  group.name = 'synthetic:inspection-lighting';
-  const hemisphere = new THREE.HemisphereLight(0xe6edf2, 0x263038, 2.3);
-  const key = new THREE.DirectionalLight(0xffedda, 2.8);
-  key.position.set(-1_100, 1_800, 1_300);
-  group.add(hemisphere, key);
-
-  layers.add({
-    id: 'synthetic-lighting',
-    label: 'Inspection lighting',
-    object: group,
-  });
 }
 
 function toModelCatalogEntry(

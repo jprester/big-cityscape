@@ -16,21 +16,73 @@ describe('generateSyntheticCity', () => {
       minZ: -1_000,
       maxZ: 1_000,
     });
+    expect(city.layoutSeed).toBe(DEFAULT_SYNTHETIC_CITY_CONFIG.layoutSeed);
     expect(city.metadata).toEqual({
       districtCount: 16,
       blockCount: 400,
       slotCount: 1_188,
       landmarkDistrictId: 'synthetic-city/district-r1-c1',
+      secondarySkylineAnchorCount: 5,
       profileCounts: {
         centre: 4,
         urban: 8,
         edge: 4,
       },
+      gridVariantCounts: {
+        balanced: 6,
+        'fine-grain': 5,
+        'large-block': 5,
+      },
     });
     expect(city.districts.filter((district) => district.hasLandmark)).toHaveLength(1);
     expect(new Set(city.districts.map((district) => district.id)).size).toBe(16);
     expect(new Set(city.blocks.map((block) => block.id)).size).toBe(400);
+    expect(city.streetCorridors).toHaveLength(906);
+    expect(new Set(city.streetCorridors.map((street) => street.id)).size).toBe(
+      906,
+    );
     expect(new Set(city.slots.map((slot) => slot.id)).size).toBe(1_188);
+  });
+
+  it('adds city arterials while preserving district secondary and local streets', () => {
+    const city = generateSyntheticCity();
+    const arterials = city.streetCorridors.filter(
+      (street) => street.hierarchyId === 'arterial',
+    );
+    const internalStreets = city.streetCorridors.filter(
+      (street) => street.districtId !== null,
+    );
+
+    expect(arterials).toHaveLength(10);
+    expect(internalStreets).toHaveLength(896);
+    expect(
+      city.districts.every(
+        (district) => district.streetCorridors.length === 56,
+      ),
+    ).toBe(true);
+    expect(
+      internalStreets.some((street) => street.hierarchyId === 'secondary'),
+    ).toBe(true);
+    expect(
+      internalStreets.some((street) => street.hierarchyId === 'local'),
+    ).toBe(true);
+  });
+
+  it('distributes deterministic block rhythms and mirrored orientations', () => {
+    const city = generateSyntheticCity();
+
+    expect(new Set(city.districts.map((district) => district.gridVariantId))).toEqual(
+      new Set(['balanced', 'fine-grain', 'large-block']),
+    );
+    expect(
+      new Set(city.districts.map((district) => district.gridOrientationId)).size,
+    ).toBeGreaterThan(1);
+    expect(
+      Object.values(city.metadata.gridVariantCounts).reduce(
+        (total, count) => total + count,
+        0,
+      ),
+    ).toBe(city.metadata.districtCount);
   });
 
   it('places sparse deterministic open space toward urban and edge districts', () => {
@@ -144,6 +196,110 @@ describe('generateSyntheticCity', () => {
     expect(city.slots.filter((slot) => slot.role === 'landmark')).toHaveLength(1);
   });
 
+  it('distributes a restrained secondary skyline around the primary landmark', () => {
+    const city = generateSyntheticCity();
+    const skylineBlocks = city.blocks.filter(
+      (block) => block.templateId === 'skyline-anchor',
+    );
+    const skylineSlots = skylineBlocks.map((block) => {
+      const slot = block.slots.find(
+        (candidate) => candidate.heightClass === 'skyscraper',
+      );
+
+      if (slot === undefined) {
+        throw new Error(`Expected ${block.id} to contain a skyscraper slot.`);
+      }
+
+      return slot;
+    });
+    const landmark = city.slots.find((slot) => slot.role === 'landmark');
+
+    if (landmark === undefined) {
+      throw new Error('Expected the city to contain its primary landmark.');
+    }
+
+    expect(skylineBlocks).toHaveLength(5);
+    expect(new Set(skylineBlocks.map((block) => block.districtId)).size).toBe(3);
+    expect(
+      skylineBlocks.every(
+        (block) => block.districtId !== city.metadata.landmarkDistrictId,
+      ),
+    ).toBe(true);
+    expect(
+      skylineSlots.every(
+        (slot) =>
+          slot.role === 'anchor' &&
+          slot.targetHeightMetres >= 205 &&
+          slot.targetHeightMetres <= 255 &&
+          slot.targetHeightMetres < landmark.targetHeightMetres,
+      ),
+    ).toBe(true);
+
+    const tallCenters = [
+      landmark.center,
+      ...skylineSlots.map((slot) => slot.center),
+    ];
+
+    for (let index = 0; index < tallCenters.length; index += 1) {
+      const first = tallCenters[index];
+
+      if (first === undefined) {
+        throw new Error(`Expected tall centre ${index}.`);
+      }
+
+      for (const second of tallCenters.slice(index + 1)) {
+        expect(
+          Math.hypot(
+            first[0] - second[0],
+            first[1] - second[1],
+          ),
+        ).toBeGreaterThanOrEqual(
+          DEFAULT_SYNTHETIC_CITY_CONFIG.secondarySkyline.minimumSeparationMetres,
+        );
+      }
+    }
+
+    for (const district of city.districts) {
+      const districtAnchorCount = district.blocks.filter(
+        (block) => block.templateId === 'skyline-anchor',
+      ).length;
+      expect(districtAnchorCount).toBeLessThanOrEqual(2);
+
+      if (district.compositionProfileId === 'centre' && !district.hasLandmark) {
+        expect(districtAnchorCount).toBeGreaterThanOrEqual(1);
+      } else {
+        expect(districtAnchorCount).toBe(0);
+      }
+    }
+  });
+
+  it('supports a bounded four-to-six secondary-anchor configuration', () => {
+    for (const anchorCount of [4, 6]) {
+      const city = generateSyntheticCity({
+        ...DEFAULT_SYNTHETIC_CITY_CONFIG,
+        secondarySkyline: {
+          ...DEFAULT_SYNTHETIC_CITY_CONFIG.secondarySkyline,
+          anchorCount,
+        },
+      });
+
+      expect(city.metadata.secondarySkylineAnchorCount).toBe(anchorCount);
+      expect(
+        city.blocks.filter((block) => block.templateId === 'skyline-anchor'),
+      ).toHaveLength(anchorCount);
+    }
+
+    expect(() =>
+      generateSyntheticCity({
+        ...DEFAULT_SYNTHETIC_CITY_CONFIG,
+        secondarySkyline: {
+          ...DEFAULT_SYNTHETIC_CITY_CONFIG.secondarySkyline,
+          anchorCount: 3,
+        },
+      }),
+    ).toThrow(/between four and six/);
+  });
+
   it('is repeatable while allowing a new seed to change semantic output', () => {
     const first = generateSyntheticCity();
     const repeated = generateSyntheticCity();
@@ -159,7 +315,38 @@ describe('generateSyntheticCity', () => {
     expect(changed.blocks.map((block) => block.bounds)).toEqual(
       first.blocks.map((block) => block.bounds),
     );
+    expect(changed.streetCorridors).toEqual(first.streetCorridors);
+    expect(changed.roadMarkings).toEqual(first.roadMarkings);
+    expect(
+      changed.districts.map((district) => [
+        district.gridVariantId,
+        district.gridOrientationId,
+      ]),
+    ).toEqual(
+      first.districts.map((district) => [
+        district.gridVariantId,
+        district.gridOrientationId,
+      ]),
+    );
     expect(changed).not.toEqual(first);
+  });
+
+  it('can change street geometry independently with a new layout seed', () => {
+    const first = generateSyntheticCity();
+    const changed = generateSyntheticCity({
+      ...DEFAULT_SYNTHETIC_CITY_CONFIG,
+      layoutSeed: DEFAULT_SYNTHETIC_CITY_CONFIG.layoutSeed + 1,
+    });
+
+    expect(changed.seed).toBe(first.seed);
+    expect(changed.districts.map((district) => district.bounds)).toEqual(
+      first.districts.map((district) => district.bounds),
+    );
+    expect(changed.blocks.map((block) => block.bounds)).not.toEqual(
+      first.blocks.map((block) => block.bounds),
+    );
+    expect(changed.streetCorridors).not.toEqual(first.streetCorridors);
+    expect(changed.roadMarkings).toEqual(first.roadMarkings);
   });
 });
 

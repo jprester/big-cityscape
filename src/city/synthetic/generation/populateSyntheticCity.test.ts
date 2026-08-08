@@ -31,6 +31,14 @@ describe('populateSyntheticCity', () => {
       population.assetUsage.reduce((total, usage) => total + usage.count, 0),
     ).toBe(1_188);
     expect(Math.max(...population.assetUsage.map((usage) => usage.count))).toBeLessThan(90);
+    expect(
+      population.placements.filter((placement) =>
+        city.slots.some(
+          (slot) =>
+            slot.id === placement.slotId && slot.heightClass === 'skyscraper',
+        ),
+      ),
+    ).toHaveLength(6);
 
     for (const usage of population.assetUsage) {
       const asset = catalogById.get(usage.assetId);
