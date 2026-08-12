@@ -144,17 +144,20 @@ independently toggleable inspection layers.
 ### Arterial road markings
 
 The six interior district-boundary arterials carry restrained semantic road
-markings. Their centrelines contain 600 nine-metre amber dashes, with explicit
+markings. Their centrelines contain 588 nine-metre amber dashes, with explicit
 clearance around every arterial crossing. The three north-south and three
 east-west arterials form nine marked intersections. Each receives four
-six-bar zebra crossings, for 216 off-white crosswalk bars in total. Perimeter
-arterials remain unmarked so the treatment reads as an urban hierarchy rather
-than a texture spread over every road.
+fourteen-bar zebra crossings, for 504 off-white crosswalk bars in total. Each
+bar is 1.5 metres wide, runs ten metres parallel to vehicle travel, and is
+repeated across the road width. The resulting 36.6-metre stripe field leaves
+about 1.7 metres at each curb. Perimeter arterials remain unmarked so the
+treatment reads as an urban hierarchy rather than a texture spread over every
+road.
 
 Markings are declarative metre-based rectangles with stable IDs; they are not
 lane meshes or a navigation graph. Rendering packs all centre-line dashes into
 one instanced plane draw and all crosswalk bars into a second. The complete
-layer therefore adds two draw calls and 1,632 triangles. A city-only `Crossing`
+layer therefore adds two draw calls and 2,184 triangles. A city-only `Crossing`
 camera preset provides a reproducible close view of the middle marked
 intersection.
 
@@ -372,7 +375,9 @@ block.
 
 Road-marking tests verify exact counts, stable unique IDs, repeatability,
 containment inside the six interior arterial surfaces, centre-line clearance
-at all nine crossings, and four six-bar crosswalks per marked intersection.
+at all nine crossings, four fourteen-bar crosswalks per marked intersection,
+longitudinal stripe orientation, near-curb stripe-field reach, and separation
+between crosswalks and centre dashes.
 
 First-person movement tests verify speed-normalized diagonal travel, partial
 input, fixed eye height, city-bound clamping, and invalid-bound rejection.
@@ -392,22 +397,25 @@ The default proof overview measured 46 draw calls, 44,485 rendered triangles,
 60 scene objects, and 54 visible objects in the local browser. Rendering is
 on-demand while the camera is idle. No active-frame-rate claim is made yet.
 
-The default full-city overview measured 34 draw calls, 482,101 rendered
+The default full-city overview measured 34 draw calls, 482,653 rendered
 triangles, 51 scene objects, 44 visible objects, 16 rendered district batches,
 and 1,188 rendered model instances. The street preset reduced that to 29 draw
-calls, 344,359 triangles, 11 rendered districts, and 807 rendered buildings.
-The dedicated spine preset measured 29 draw calls, 338,272 triangles, 11
+calls, 344,911 triangles, 11 rendered districts, and 807 rendered buildings.
+The dedicated spine preset measured 29 draw calls, 338,824 triangles, 11
 rendered districts, and 805 rendered buildings. The dedicated crossing preset
-measured 25 draw calls, 254,695 triangles, 8 rendered districts, and 607
-rendered buildings. The revised rooftop preset measured 33 draw calls, 453,371
+measured 25 draw calls, 255,247 triangles, 8 rendered districts, and 607
+rendered buildings. The revised rooftop preset measured 33 draw calls, 453,923
 triangles, 15 rendered districts, and 1,110 rendered buildings.
-The first-person spawn measured 29 draw calls, 344,359 triangles, 11 rendered
+The first-person spawn measured 29 draw calls, 344,911 triangles, 11 rendered
 districts, 807 rendered buildings, 51 scene objects, and 40 visible objects.
 Unlike the orbit views, walk mode renders continuously while active; no
 frame-rate claim is made yet. Compared with the previous street-and-sidewalk
 slice, the marking layer adds exactly two draw
-calls and 1,632 triangles; model triangle count and chunk visibility are
-unchanged.
+calls and 2,184 triangles; model triangle count and chunk visibility are
+unchanged. The revised crossing totals are deterministic projections from the
+previous browser measurements: adding 276 two-triangle marking instances
+increases every full-city camera total by exactly 552 triangles without
+changing draw calls or scene objects.
 The skyline template adds one debug draw while the selected asset mix changes
 the model total from 470,422 to 469,343 triangles and increases used variants
 from 55 to 58; this is a selection outcome, not an optimization claim. Model
@@ -415,7 +423,7 @@ triangles exclude the debug layers. These are local-browser inspection
 measurements, not active-frame-rate claims.
 
 Day, Dusk, and Night retain the same rendering topology for a given camera:
-the overview remains 34 draw calls, 482,101 triangles, 51 scene objects, and 44
+the overview remains 34 draw calls, 482,653 triangles, 51 scene objects, and 44
 visible objects. Preset switching therefore adds no meshes, materials, model
 instances, or draw calls. It only changes existing fog, vertex-color, and light
 state.

@@ -8,12 +8,12 @@ import type { SyntheticStreetCorridor } from '../model/streetCorridor';
 const CENTRE_LINE_WIDTH_METRES = 0.45;
 const CENTRE_LINE_DASH_LENGTH_METRES = 9;
 const CENTRE_LINE_REPEAT_METRES = 18;
-const INTERSECTION_CLEARANCE_METRES = 34;
-const CROSSWALK_BAR_COUNT = 6;
-const CROSSWALK_BAR_THICKNESS_METRES = 0.8;
-const CROSSWALK_BAR_SPACING_METRES = 1.8;
-const CROSSWALK_EDGE_OFFSET_METRES = 6;
-const CROSSWALK_SIDE_INSET_METRES = 4;
+const CROSSWALK_BAR_THICKNESS_METRES = 1.5;
+const CROSSWALK_BAR_GAP_METRES = 1.2;
+const CROSSWALK_LENGTH_ALONG_ROAD_METRES = 10;
+const CROSSWALK_INTERSECTION_GAP_METRES = 1.5;
+const CROSSWALK_SIDE_INSET_METRES = 1.5;
+const CENTRE_LINE_CROSSWALK_GAP_METRES = 1.5;
 
 type ArterialIntersection = Readonly<{
   id: string;
@@ -100,15 +100,28 @@ function createCentreLineDashes(
   const fixedCenter = northSouth
     ? centerX(road.bounds)
     : centerZ(road.bounds);
-  const crossingCoordinates = intersections
+  const crossingClearances = intersections
     .filter((intersection) =>
       northSouth
         ? intersection.vertical.id === road.id
         : intersection.horizontal.id === road.id,
     )
-    .map((intersection) =>
-      northSouth ? intersection.center[1] : intersection.center[0],
-    );
+    .map((intersection) => ({
+      coordinate: northSouth
+        ? intersection.center[1]
+        : intersection.center[0],
+      radius:
+        (northSouth
+          ? intersection.horizontal.bounds.maxZ -
+            intersection.horizontal.bounds.minZ
+          : intersection.vertical.bounds.maxX -
+            intersection.vertical.bounds.minX) /
+          2 +
+        CROSSWALK_INTERSECTION_GAP_METRES +
+        CROSSWALK_LENGTH_ALONG_ROAD_METRES +
+        CENTRE_LINE_DASH_LENGTH_METRES / 2 +
+        CENTRE_LINE_CROSSWALK_GAP_METRES,
+    }));
   const markings: SyntheticRoadMarking[] = [];
   let sourceIndex = 0;
 
@@ -121,9 +134,9 @@ function createCentreLineDashes(
     sourceIndex += 1;
 
     if (
-      crossingCoordinates.some(
+      crossingClearances.some(
         (crossing) =>
-          Math.abs(center - crossing) < INTERSECTION_CLEARANCE_METRES,
+          Math.abs(center - crossing.coordinate) < crossing.radius,
       )
     ) {
       continue;
@@ -159,63 +172,82 @@ function createCrosswalkBars(
     intersection.vertical.bounds.maxX - intersection.vertical.bounds.minX;
   const horizontalRoadWidth =
     intersection.horizontal.bounds.maxZ - intersection.horizontal.bounds.minZ;
-  const horizontalBarLength =
+  const northSouthCrossingSpan =
     verticalRoadWidth - CROSSWALK_SIDE_INSET_METRES * 2;
-  const verticalBarLength =
+  const eastWestCrossingSpan =
     horizontalRoadWidth - CROSSWALK_SIDE_INSET_METRES * 2;
   const northSouthOffset =
-    horizontalRoadWidth / 2 + CROSSWALK_EDGE_OFFSET_METRES;
+    horizontalRoadWidth / 2 +
+    CROSSWALK_INTERSECTION_GAP_METRES +
+    CROSSWALK_LENGTH_ALONG_ROAD_METRES / 2;
   const eastWestOffset =
-    verticalRoadWidth / 2 + CROSSWALK_EDGE_OFFSET_METRES;
+    verticalRoadWidth / 2 +
+    CROSSWALK_INTERSECTION_GAP_METRES +
+    CROSSWALK_LENGTH_ALONG_ROAD_METRES / 2;
   const bars: SyntheticRoadMarking[] = [];
 
   for (const [side, direction] of [
     ['north', 1],
     ['south', -1],
   ] as const) {
-    for (let index = 0; index < CROSSWALK_BAR_COUNT; index += 1) {
-      const repeatOffset = centeredRepeatOffset(index);
-      const z = centerZMetres + direction * northSouthOffset + repeatOffset;
+    // The crossing spans X, while each individual stripe runs along the
+    // north-south road (Z), parallel to vehicle travel.
+    const offsets = createCrosswalkBarOffsets(northSouthCrossingSpan);
+
+    offsets.forEach((offset, index) => {
       bars.push({
         id: `${intersection.id}/crosswalk-${side}-bar-${index}`,
         kind: 'crosswalk-bar',
         bounds: boundsFromCenter(
-          centerXMetres,
-          z,
-          horizontalBarLength,
+          centerXMetres + offset,
+          centerZMetres + direction * northSouthOffset,
           CROSSWALK_BAR_THICKNESS_METRES,
+          CROSSWALK_LENGTH_ALONG_ROAD_METRES,
         ),
       });
-    }
+    });
   }
 
   for (const [side, direction] of [
     ['east', 1],
     ['west', -1],
   ] as const) {
-    for (let index = 0; index < CROSSWALK_BAR_COUNT; index += 1) {
-      const repeatOffset = centeredRepeatOffset(index);
-      const x = centerXMetres + direction * eastWestOffset + repeatOffset;
+    // East-west crossings use the same convention rotated by ninety degrees.
+    const offsets = createCrosswalkBarOffsets(eastWestCrossingSpan);
+
+    offsets.forEach((offset, index) => {
       bars.push({
         id: `${intersection.id}/crosswalk-${side}-bar-${index}`,
         kind: 'crosswalk-bar',
         bounds: boundsFromCenter(
-          x,
-          centerZMetres,
+          centerXMetres + direction * eastWestOffset,
+          centerZMetres + offset,
+          CROSSWALK_LENGTH_ALONG_ROAD_METRES,
           CROSSWALK_BAR_THICKNESS_METRES,
-          verticalBarLength,
         ),
       });
-    }
+    });
   }
 
   return bars;
 }
 
-function centeredRepeatOffset(index: number): number {
-  return (
-    (index - (CROSSWALK_BAR_COUNT - 1) / 2) *
-    CROSSWALK_BAR_SPACING_METRES
+function createCrosswalkBarOffsets(
+  availableSpanMetres: number,
+): readonly number[] {
+  const repeatMetres =
+    CROSSWALK_BAR_THICKNESS_METRES + CROSSWALK_BAR_GAP_METRES;
+  const count = Math.floor(
+    (availableSpanMetres + CROSSWALK_BAR_GAP_METRES) / repeatMetres,
+  );
+
+  if (count < 1) {
+    throw new Error('A synthetic crosswalk is too narrow for one bar.');
+  }
+
+  return Array.from(
+    { length: count },
+    (_, index) => (index - (count - 1) / 2) * repeatMetres,
   );
 }
 

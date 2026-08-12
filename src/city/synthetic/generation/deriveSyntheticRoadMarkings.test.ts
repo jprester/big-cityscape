@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { SyntheticBounds2 } from '../model/proofDistrict';
+import type { SyntheticRoadMarking } from '../model/roadMarking';
 import { generateSyntheticCity } from './generateSyntheticCity';
 import { deriveSyntheticRoadMarkings } from './deriveSyntheticRoadMarkings';
 
@@ -9,12 +10,14 @@ describe('deriveSyntheticRoadMarkings', () => {
     const plan = city.roadMarkings;
 
     expect(plan.metadata).toEqual({
-      centreLineDashCount: 600,
-      crosswalkBarCount: 216,
+      centreLineDashCount: 588,
+      crosswalkBarCount: 504,
       markedIntersectionCount: 9,
     });
-    expect(plan.markings).toHaveLength(816);
-    expect(new Set(plan.markings.map((marking) => marking.id)).size).toBe(816);
+    expect(plan.markings).toHaveLength(1_092);
+    expect(new Set(plan.markings.map((marking) => marking.id)).size).toBe(
+      1_092,
+    );
     expect(generateSyntheticCity().roadMarkings).toEqual(plan);
   });
 
@@ -71,7 +74,7 @@ describe('deriveSyntheticRoadMarkings', () => {
     ).toBe(true);
   });
 
-  it('creates four six-bar crosswalks per marked intersection', () => {
+  it('creates four curb-spanning fourteen-bar crosswalks per intersection', () => {
     const city = generateSyntheticCity();
     const crosswalkBars = city.roadMarkings.markings.filter(
       (marking) => marking.kind === 'crosswalk-bar',
@@ -81,7 +84,50 @@ describe('deriveSyntheticRoadMarkings', () => {
     );
 
     expect(intersectionIds.size).toBe(9);
-    expect(crosswalkBars).toHaveLength(9 * 4 * 6);
+    expect(crosswalkBars).toHaveLength(9 * 4 * 14);
+
+    for (const bar of crosswalkBars) {
+      const width = bar.bounds.maxX - bar.bounds.minX;
+      const depth = bar.bounds.maxZ - bar.bounds.minZ;
+      const northSouthSide =
+        bar.id.includes('/crosswalk-north-') ||
+        bar.id.includes('/crosswalk-south-');
+
+      expect(width, bar.id).toBeCloseTo(northSouthSide ? 1.5 : 10);
+      expect(depth, bar.id).toBeCloseTo(northSouthSide ? 10 : 1.5);
+    }
+
+    const crosswalks = groupCrosswalkBars(crosswalkBars);
+
+    expect(crosswalks.size).toBe(9 * 4);
+
+    for (const [id, bars] of crosswalks) {
+      const bounds = enclosingBounds(bars.map((bar) => bar.bounds));
+      const width = bounds.maxX - bounds.minX;
+      const depth = bounds.maxZ - bounds.minZ;
+      const northSouthSide =
+        id.includes('/crosswalk-north') || id.includes('/crosswalk-south');
+
+      expect(bars, id).toHaveLength(14);
+      expect(width, id).toBeCloseTo(northSouthSide ? 36.6 : 10);
+      expect(depth, id).toBeCloseTo(northSouthSide ? 10 : 36.6);
+    }
+  });
+
+  it('leaves a clean gap between centre-line dashes and crosswalk bars', () => {
+    const markings = generateSyntheticCity().roadMarkings.markings;
+    const dashes = markings.filter(
+      (marking) => marking.kind === 'centre-line-dash',
+    );
+    const crosswalkBars = markings.filter(
+      (marking) => marking.kind === 'crosswalk-bar',
+    );
+
+    expect(
+      dashes.every((dash) =>
+        crosswalkBars.every((bar) => !overlaps(dash.bounds, bar.bounds)),
+      ),
+    ).toBe(true);
   });
 
   it('rejects an empty city ID', () => {
@@ -107,4 +153,28 @@ function overlaps(first: SyntheticBounds2, second: SyntheticBounds2): boolean {
     first.minZ < second.maxZ &&
     first.maxZ > second.minZ
   );
+}
+
+function enclosingBounds(bounds: readonly SyntheticBounds2[]): SyntheticBounds2 {
+  return {
+    minX: Math.min(...bounds.map((candidate) => candidate.minX)),
+    maxX: Math.max(...bounds.map((candidate) => candidate.maxX)),
+    minZ: Math.min(...bounds.map((candidate) => candidate.minZ)),
+    maxZ: Math.max(...bounds.map((candidate) => candidate.maxZ)),
+  };
+}
+
+function groupCrosswalkBars(
+  bars: readonly SyntheticRoadMarking[],
+): ReadonlyMap<string, readonly SyntheticRoadMarking[]> {
+  const groups = new Map<string, SyntheticRoadMarking[]>();
+
+  for (const bar of bars) {
+    const id = bar.id.replace(/-bar-\d+$/, '');
+    const group = groups.get(id) ?? [];
+    group.push(bar);
+    groups.set(id, group);
+  }
+
+  return groups;
 }
