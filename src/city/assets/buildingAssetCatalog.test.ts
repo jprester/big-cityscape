@@ -51,4 +51,45 @@ describe('BUILDING_ASSET_CATALOG', () => {
       ),
     ).toEqual(['removed-c', 'removed-z']);
   });
+
+  it('keeps the latest visually reviewed intake enabled and classified', () => {
+    expect(reviewedAsset('high-rise-38')).toMatchObject({
+      use: 'office',
+      form: 'tower',
+      heightClass: 'mid-rise',
+      enabled: true,
+    });
+    expect(reviewedAsset('high-rise-39')).toMatchObject({
+      use: 'office',
+      form: 'slab',
+      heightClass: 'mid-rise',
+      enabled: true,
+    });
+    expect(reviewedAsset('high-rise-40')).toMatchObject({
+      use: 'commercial',
+      form: 'podium-tower',
+      heightClass: 'low-rise',
+      allowedUniformScale: [0.6, 1],
+      enabled: true,
+    });
+    expect(reviewedAsset('residential-31')).toMatchObject({
+      use: 'residential',
+      form: 'tower',
+      heightClass: 'mid-rise',
+      enabled: true,
+    });
+    expect(reviewedAsset('residential-32')).toMatchObject({
+      use: 'residential',
+      form: 'podium-tower',
+      heightClass: 'low-rise',
+      enabled: true,
+    });
+  });
 });
+
+function reviewedAsset(id: string) {
+  const asset = BUILDING_ASSET_CATALOG.find((candidate) => candidate.id === id);
+
+  expect(asset, `Expected reviewed catalogue asset ${id}.`).toBeDefined();
+  return asset;
+}

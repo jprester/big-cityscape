@@ -212,11 +212,11 @@ accepted slots, structured rejection records, sorted asset-usage counts, and
 summary totals. Incoming catalogue order also cannot change the result.
 
 With the current catalogue and default district seed, all 79 slots are filled
-with 36 distinct assets and no rejections. Its most repeated asset appears eight
+with 37 distinct assets and no rejections. Its most repeated asset appears seven
 times.
 
-With the default full-city seed, all 1,188 slots are filled with 58 distinct
-assets and no rejections. The most common asset appears 79 times. The soft reuse
+With the default full-city seed, all 1,188 slots are filled with 63 distinct
+assets and no rejections. The most common asset appears 71 times. The soft reuse
 multiplier preserves fit scoring and still allows repetition when an asset is
 the only compatible candidate; the statistics panel exposes the current maximum
 directly.
@@ -393,20 +393,20 @@ For the current catalogue and default seed, every slot has between 3 and 14
 compatible candidates before city-wide repetition caps are applied. The
 landmark is deliberately the narrowest category, with three candidates.
 
-The default proof overview measured 46 draw calls, 44,485 rendered triangles,
-60 scene objects, and 54 visible objects in the local browser. Rendering is
+The default proof overview measured 47 draw calls, 70,854 rendered triangles,
+61 scene objects, and 55 visible objects in the local browser. Rendering is
 on-demand while the camera is idle. No active-frame-rate claim is made yet.
 
-The default full-city overview measured 34 draw calls, 482,653 rendered
+The default full-city overview measured 34 draw calls, 1,024,884 rendered
 triangles, 51 scene objects, 44 visible objects, 16 rendered district batches,
 and 1,188 rendered model instances. The street preset reduced that to 29 draw
-calls, 344,911 triangles, 11 rendered districts, and 807 rendered buildings.
-The dedicated spine preset measured 29 draw calls, 338,824 triangles, 11
+calls, 647,759 triangles, 11 rendered districts, and 807 rendered buildings.
+The dedicated spine preset measured 29 draw calls, 672,984 triangles, 11
 rendered districts, and 805 rendered buildings. The dedicated crossing preset
-measured 25 draw calls, 255,247 triangles, 8 rendered districts, and 607
-rendered buildings. The revised rooftop preset measured 33 draw calls, 453,923
+measured 25 draw calls, 510,112 triangles, 8 rendered districts, and 607
+rendered buildings. The revised rooftop preset measured 33 draw calls, 943,183
 triangles, 15 rendered districts, and 1,110 rendered buildings.
-The first-person spawn measured 29 draw calls, 344,911 triangles, 11 rendered
+The first-person spawn measured 29 draw calls, 647,759 triangles, 11 rendered
 districts, 807 rendered buildings, 51 scene objects, and 40 visible objects.
 Unlike the orbit views, walk mode renders continuously while active; no
 frame-rate claim is made yet. Compared with the previous street-and-sidewalk
@@ -416,14 +416,14 @@ unchanged. The revised crossing totals are deterministic projections from the
 previous browser measurements: adding 276 two-triangle marking instances
 increases every full-city camera total by exactly 552 triangles without
 changing draw calls or scene objects.
-The skyline template adds one debug draw while the selected asset mix changes
-the model total from 470,422 to 469,343 triangles and increases used variants
-from 55 to 58; this is a selection outcome, not an optimization claim. Model
+The latest five-asset intake changes the deterministic full-city model total to
+1,011,574 triangles and increases used variants from 58 to 63; this is a
+selection outcome, not an optimization claim. Model
 triangles exclude the debug layers. These are local-browser inspection
 measurements, not active-frame-rate claims.
 
 Day, Dusk, and Night retain the same rendering topology for a given camera:
-the overview remains 34 draw calls, 482,653 triangles, 51 scene objects, and 44
+the overview remains 34 draw calls, 1,024,884 triangles, 51 scene objects, and 44
 visible objects. Preset switching therefore adds no meshes, materials, model
 instances, or draw calls. It only changes existing fog, vertex-color, and light
 state.

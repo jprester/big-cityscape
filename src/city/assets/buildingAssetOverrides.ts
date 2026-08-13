@@ -23,6 +23,7 @@ export const BUILDING_ASSET_OVERRIDES: Readonly<
   'residential-27': { use: 'mixed-use', form: 'podium-tower' },
   'residential-29': { use: 'mixed-use', form: 'podium-tower' },
   'residential-30': { form: 'complex' },
+  'residential-32': { form: 'podium-tower' },
 
   'high-rise-1': { form: 'complex' },
   'high-rise-5': {
@@ -68,6 +69,16 @@ export const BUILDING_ASSET_OVERRIDES: Readonly<
   'high-rise-34': { form: 'complex' },
   'high-rise-36': { form: 'tower' },
   'high-rise-37': { form: 'slab' },
+  'high-rise-38': { form: 'tower' },
+  'high-rise-39': { form: 'slab' },
+  'high-rise-40': {
+    use: 'commercial',
+    form: 'podium-tower',
+    heightClass: 'low-rise',
+    allowedUniformScale: [0.6, 1],
+    notes:
+      'Reviewed as a broad commercial campus; uniform down-scaling fits large fabric cells without footprint distortion.',
+  },
 
   'skyscraper-2': {
     placementRoles: ['anchor', 'landmark'],

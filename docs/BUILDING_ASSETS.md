@@ -120,6 +120,16 @@ width, depth, and height fitting.
 - `high-rise-5` remains retired after the earlier city visual review.
 - The replacement `skyscraper-16` has a correct centred origin and is distinct
   from the current `skyscraper-12` export.
+- The latest five-asset intake (`high-rise-38` through `high-rise-40` and
+  `residential-31` through `residential-32`) is centred, grounded, unique, and
+  free of technical audit warnings.
+- Visual review classifies `high-rise-38` as an office tower, `high-rise-39` as
+  an office slab, `high-rise-40` as a broad low-rise commercial podium/tower,
+  `residential-31` as a residential tower, and `residential-32` as a
+  residential podium/tower.
+- `high-rise-40` permits uniform scale down to `0.6` so its 47 × 68 m campus
+  footprint can use the largest current fabric cells. It is not independently
+  stretched along its axes.
 - No source GLB is modified by the catalogue workflow.
 
 Semantic use is necessarily interpretive because the Blender collection names

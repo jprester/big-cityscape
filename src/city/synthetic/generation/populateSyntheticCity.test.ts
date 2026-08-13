@@ -50,6 +50,23 @@ describe('populateSyntheticCity', () => {
     }
   });
 
+  it('places every asset from the latest reviewed intake in the reference city', () => {
+    const population = populateSyntheticCity(generateSyntheticCity());
+    const usageById = new Map(
+      population.assetUsage.map((usage) => [usage.assetId, usage.count]),
+    );
+
+    for (const id of [
+      'high-rise-38',
+      'high-rise-39',
+      'high-rise-40',
+      'residential-31',
+      'residential-32',
+    ]) {
+      expect(usageById.get(id), id).toBeGreaterThan(0);
+    }
+  });
+
   it('is independent of incoming district and catalogue order', () => {
     const city = generateSyntheticCity();
     const first = populateSyntheticCity(city);
