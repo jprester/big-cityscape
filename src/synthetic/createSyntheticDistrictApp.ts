@@ -14,6 +14,7 @@ import {
   DEFAULT_SYNTHETIC_CITY_CONFIG,
   generateSyntheticCity,
 } from '../city/synthetic/generation/generateSyntheticCity';
+import { deriveSyntheticStreetLamps } from '../city/synthetic/generation/deriveSyntheticStreetLamps';
 import { populateSyntheticCity } from '../city/synthetic/generation/populateSyntheticCity';
 import { populateSyntheticDistrict } from '../city/synthetic/generation/populateSyntheticDistrict';
 import type { SyntheticBuildingPlacement } from '../city/synthetic/model/buildingPlacement';
@@ -36,6 +37,7 @@ import {
 import { addSyntheticInspectionLighting } from '../city/synthetic/rendering/addSyntheticInspectionLighting';
 import { addSyntheticCityDebugLayer } from '../city/synthetic/rendering/addSyntheticCityDebugLayer';
 import { addSyntheticRoadMarkingLayer } from '../city/synthetic/rendering/addSyntheticRoadMarkingLayer';
+import { addSyntheticStreetLampLayer } from '../city/synthetic/rendering/addSyntheticStreetLampLayer';
 import {
   addSyntheticDistrictDebugLayers,
 } from '../city/synthetic/rendering/addSyntheticDistrictDebugLayers';
@@ -129,6 +131,17 @@ export async function createSyntheticDistrictApp(
   );
   atmosphereLayer.update(inspectionCamera.camera);
   addSyntheticDistrictDebugLayers(debugLayers, viewData.spatial);
+  const streetLampPlan = deriveSyntheticStreetLamps(
+    `${viewData.spatial.id}/street-lamps`,
+    viewData.spatial.seed,
+    viewData.spatial.bounds,
+    viewData.spatial.streetCorridors,
+  );
+  const streetLampLayer = addSyntheticStreetLampLayer(
+    debugLayers,
+    streetLampPlan.lamps,
+    initialEnvironment.streetLamps,
+  );
 
   let cityRenderLayer: SyntheticCityBuildingRenderLayer | undefined;
   let buildingRenderStats: SyntheticBuildingRenderStats;
@@ -168,6 +181,7 @@ export async function createSyntheticDistrictApp(
     buildingRenderStats,
     seed,
     activeEnvironmentPresetId,
+    streetLampPlan.metadata.lampCount,
   );
   let isRunning = false;
   let isDisposed = false;
@@ -223,6 +237,7 @@ export async function createSyntheticDistrictApp(
     cityRenderLayer?.beginFrame();
     cityRenderLayer?.updateVisibility(inspectionCamera.camera);
     atmosphereLayer.update(inspectionCamera.camera);
+    streetLampLayer.update(inspectionCamera.camera);
     renderer.render(scene, inspectionCamera.camera);
     performancePanel.update(deltaSeconds);
 
@@ -308,6 +323,7 @@ export async function createSyntheticDistrictApp(
           activeEnvironmentPresetId = id;
           atmosphereLayer.setConfig(environment.atmosphere);
           lightingLayer.setConfig(environment.lighting);
+          streetLampLayer.setConfig(environment.streetLamps);
           window.history.replaceState(
             window.history.state,
             '',
@@ -717,6 +733,7 @@ function createStatisticsPanel(
   rendering: SyntheticBuildingRenderStats,
   seed: number,
   environmentPresetId: SyntheticEnvironmentPresetId,
+  streetLampCount: number,
 ): HTMLElement {
   const panel = document.createElement('aside');
   panel.className = 'synthetic-statistics';
@@ -736,6 +753,11 @@ function createStatisticsPanel(
   const metrics = document.createElement('dl');
   metrics.className = 'synthetic-statistics__metrics';
   addCompositionStatistics(metrics, viewData);
+  addStatistic(
+    metrics,
+    'Street lamps',
+    streetLampCount.toLocaleString('en-US'),
+  );
   addStatistic(
     metrics,
     'Asset variants',

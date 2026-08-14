@@ -32,6 +32,14 @@ describe('synthetic environment presets', () => {
     expect(day.lighting.hemisphereIntensity).toBeGreaterThan(
       dusk.lighting.hemisphereIntensity,
     );
+    expect(day.streetLamps.realLightCount).toBe(0);
+    expect(dusk.streetLamps.realLightCount).toBeGreaterThan(0);
+    expect(night.streetLamps.realLightCount).toBeGreaterThan(
+      dusk.streetLamps.realLightCount,
+    );
+    expect(night.streetLamps.poolOpacity).toBeGreaterThan(
+      dusk.streetLamps.poolOpacity,
+    );
   });
 
   it('reads dusk by default and validates the time query parameter', () => {

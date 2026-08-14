@@ -3,6 +3,7 @@ import {
   type SyntheticAtmosphereConfig,
 } from '../city/synthetic/rendering/addSyntheticAtmosphereLayer';
 import type { SyntheticInspectionLightingConfig } from '../city/synthetic/rendering/addSyntheticInspectionLighting';
+import type { SyntheticStreetLampConfig } from '../city/synthetic/rendering/addSyntheticStreetLampLayer';
 
 export const SYNTHETIC_ENVIRONMENT_PRESET_IDS = [
   'day',
@@ -18,6 +19,7 @@ export type SyntheticEnvironmentPreset = Readonly<{
   label: string;
   atmosphere: SyntheticAtmosphereConfig;
   lighting: SyntheticInspectionLightingConfig;
+  streetLamps: SyntheticStreetLampConfig;
 }>;
 
 export function createSyntheticEnvironmentPreset(
@@ -47,6 +49,16 @@ export function createSyntheticEnvironmentPreset(
           keyIntensity: 2.95,
           keyPositionScale: [-0.55, 0.9, 0.65],
         },
+        streetLamps: {
+          bulbColor: 0xaeb9bd,
+          bulbOpacity: 0.2,
+          poolColor: 0xffc476,
+          poolOpacity: 0,
+          realLightColor: 0xffd39a,
+          realLightIntensity: 0,
+          realLightDistanceMetres: 48,
+          realLightCount: 0,
+        },
       };
     case 'dusk':
       return {
@@ -60,6 +72,16 @@ export function createSyntheticEnvironmentPreset(
           keyColor: 0xffe2c2,
           keyIntensity: 2.65,
           keyPositionScale: [-0.55, 0.9, 0.65],
+        },
+        streetLamps: {
+          bulbColor: 0xffd4a0,
+          bulbOpacity: 0.72,
+          poolColor: 0xffae55,
+          poolOpacity: 0.15,
+          realLightColor: 0xffbf73,
+          realLightIntensity: 58,
+          realLightDistanceMetres: 46,
+          realLightCount: 4,
         },
       };
     case 'night':
@@ -81,6 +103,16 @@ export function createSyntheticEnvironmentPreset(
           keyColor: 0x9abce5,
           keyIntensity: 1.18,
           keyPositionScale: [0.45, 0.82, -0.35],
+        },
+        streetLamps: {
+          bulbColor: 0xffe0ad,
+          bulbOpacity: 1,
+          poolColor: 0xffa84d,
+          poolOpacity: 0.32,
+          realLightColor: 0xffbd6f,
+          realLightIntensity: 110,
+          realLightDistanceMetres: 52,
+          realLightCount: 8,
         },
       };
   }
