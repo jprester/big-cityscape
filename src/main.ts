@@ -1,4 +1,5 @@
 import './styles.css';
+import { resolveAppView } from './appView';
 
 type AppLifecycle = Readonly<{
   start: () => void;
@@ -14,19 +15,21 @@ if (host === null) {
 let app: AppLifecycle | undefined;
 
 try {
-  if (requestedView(window.location.search) === 'assets') {
+  const view = resolveAppView(window.location.search);
+
+  if (view === 'assets') {
     const { createBuildingAssetCatalogApp } = await import(
       './catalog/createBuildingAssetCatalogApp'
     );
     app = await createBuildingAssetCatalogApp(host);
-  } else if (requestedView(window.location.search) === 'synthetic') {
+  } else if (view === 'legacy') {
+    const { createApp } = await import('./app/createApp');
+    app = await createApp(host);
+  } else {
     const { createSyntheticDistrictApp } = await import(
       './synthetic/createSyntheticDistrictApp'
     );
     app = await createSyntheticDistrictApp(host);
-  } else {
-    const { createApp } = await import('./app/createApp');
-    app = await createApp(host);
   }
 
   app.start();
@@ -36,10 +39,6 @@ try {
   message.textContent = 'City Field could not start the requested view.';
   host.replaceChildren(message);
   console.error(error);
-}
-
-function requestedView(search: string): string | null {
-  return new URLSearchParams(search).get('view');
 }
 
 if (import.meta.hot !== undefined) {

@@ -223,9 +223,11 @@ directly.
 
 ## Synthetic debug view
 
-Open `?view=synthetic` to inspect the complete city. Use `mode=proof` to return
-to the original 500 m district, or the on-screen Full city / Proof district
-switch. An optional integer `seed` query parameter regenerates template
+Open the application root to inspect the complete city; the synthetic city is
+now the default product view. `?view=synthetic` remains a compatible explicit
+URL, while `?view=legacy` opens the earlier geodata implementation for
+comparison. Use `mode=proof` to return to the original 500 m district, or the
+on-screen Full city / Proof district switch. An optional integer `seed` query parameter regenerates template
 choices, slot heights, and asset selection while leaving the direct street
 geometry unchanged. The optional `time=day|dusk|night` query parameter selects
 an environment preset; Dusk remains the default when the parameter is absent.
@@ -294,8 +296,8 @@ inspection/navigation tool rather than a game-character controller. Leaving
 the page, hiding it, or disposing the view exits walk mode and releases its
 keyboard, mouse, and pointer-lock listeners.
 
-Proof mode loads only its 36 selected asset files and uses one `InstancedMesh`
-per asset. Full-city mode loads its 58 selected assets once and packs all models
+Proof mode loads only its 37 selected asset files and uses one `InstancedMesh`
+per asset. Full-city mode loads its 63 selected assets once and packs all models
 for each 500 m district into one `BatchedMesh`. This produces 16 independently
 cullable building batches rather than approximately 460 per-asset district
 batches or 1,188 separate building objects.

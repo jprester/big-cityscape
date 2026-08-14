@@ -1,11 +1,9 @@
 # City Field
 
-City Field is a scale-first Three.js experiment for generating a large, fictional,
-high-density futuristic city from simplified real-world urban structure.
-
-Milestone 4 spatially partitions the deterministic primitive massing into
-independently culled render chunks. The browser still does not load raw
-geographic data or use real-world building footprints.
+City Field is a deterministic Three.js experiment for generating a fictional,
+high-density futuristic city. The current product view is a synthetic 2 × 2 km
+city assembled from rectangular districts, semantic block templates, and a
+reviewed low-poly building catalogue—without real geography or runtime GIS.
 
 ## Requirements
 
@@ -23,6 +21,16 @@ npm test
 npm run build
 ```
 
+Running `npm run dev` and opening the root URL now loads the full synthetic city:
+
+```text
+http://localhost:5173/
+```
+
+The earlier geodata city remains available for comparison at
+`http://localhost:5173/?view=legacy`. The asset gallery remains at
+`http://localhost:5173/?view=assets`.
+
 ## Building asset catalogue
 
 Run `npm run catalog:build` after adding or changing a building GLB. The command
@@ -35,24 +43,24 @@ While the development server is running, open
 roles, nominal metre dimensions, scale limits, geometry cost, and audit status.
 See `docs/BUILDING_ASSETS.md` for the catalogue workflow and conventions.
 
-## Inspection controls
+## Synthetic-city inspection controls
 
 - Left mouse drag: orbit around the current target
 - Right mouse drag: pan
 - Middle mouse drag, mouse wheel, or pinch: zoom
-- **Aerial**, **Rooftop**, and **Street**: restore reproducible comparison views
+- **Overview**, **Rooftop**, **Street**, **Crossing**, and **Spine**: restore
+  reproducible comparison views
+- **Walk**: enter the 1.8 m first-person inspection mode
 
-Append `?seed=123` to the development URL to inspect another deterministic
-massing variation.
+Append `?seed=123` to the development URL to inspect another deterministic city
+variation. Use `?mode=proof` for the 500 × 500 m proof district.
 
-The debug panel independently toggles the metre grid, world axes, joined
-width-classed road surfaces, height-aligned road centrelines, railways, water,
-working-area bounds, district fills, block outlines, buildable outlines, stable
-block IDs, rejected block candidates grouped by reason, residual fabric lots,
-primitive building masses, building footprints, and height and occupied-chunk
-markers. The performance panel reports frames per second,
-average frame time, draw calls, triangles, scene objects, and rendered chunk,
-batch, and primitive-part counts.
+The debug panel independently toggles atmosphere, street surfaces, sidewalks,
+block templates, open spaces, buildable bounds, placement slots, chunk bounds,
+the offset spine, road markings, selected building models, and inspection
+lighting. The statistics and performance panels report composition, draw calls,
+triangles, scene objects, rendered chunks and batches, and visible model
+instances.
 
 ## Coordinate convention
 
@@ -61,25 +69,24 @@ batch, and primitive-part counts.
 - `X` and `Z` form the horizontal city plane.
 - Runtime city data should remain centred close to `[0, 0, 0]`.
 
-Geographic coordinates are projected into local metric coordinates by
-`scripts/preprocess-osm.ts`. Raw GeoJSON is never imported into the browser
-bundle. See `docs/PREPROCESSING.md` for the selected clip and projection, and
-`docs/BLOCKS.md` for the block derivation rules and current limitations.
-Primitive placement and rendering are documented in `docs/MASSING.md`.
-Chunking budgets and measured culling behavior are documented in
-`docs/PERFORMANCE.md`.
+The synthetic city is generated directly in local metre coordinates and does
+not load geographic data. See `docs/SYNTHETIC_CITY.md` for its composition,
+selection, rendering, and performance contract. The legacy route retains the
+offline geographic preprocessing described in `docs/PREPROCESSING.md`.
 
 ## Architecture
 
 ```text
 src/
-  app/      renderer lifecycle, camera, resizing, and performance display
-  city/     domain models, deterministic generation, rendering, and debug views
+  synthetic/  current product-view lifecycle and environment controls
+  app/        retained legacy geodata-view lifecycle
+  city/       domain models, deterministic generation, rendering, and debug views
+  catalog/    building-asset inspection gallery
   core/     framework-independent deterministic utilities
   debug/    render-only inspection layers and their UI
 scripts/
-  preprocess/  pure projection, clipping, classification, and tests
-  blocks/      offline road polygonization, exclusions, insets, and tests
+  catalog-building-assets.ts  reproducible GLB measurements
+  preprocess/ and blocks/     retained legacy offline geodata processing
 ```
 
 The debug layer manager owns named Three.js visualization groups and their
@@ -92,19 +99,19 @@ calls to `Math.random()` do not belong in generation code.
 
 ## Current scope boundary
 
-Milestone 4 includes the earlier foundation and structural viewer plus 118 valid
-blocks, 274 high-confidence regions, a road-aware residual urban-fabric layer,
-4,791 deterministic primitive buildings, proportion-constrained massing, merged
-road and highway surfaces, stable 250 m chunks, one color-instanced batch per
-occupied chunk, frustum culling, occupied-chunk inspection, a deterministic
-236-candidate coverage audit, and explicit render-work counters.
+The default city contains 16 deterministic districts, 400 blocks, 1,188
+catalogue-selected buildings, hierarchical street surfaces, sidewalks, open
+spaces, road markings, a primary landmark and secondary skyline anchors,
+distance atmosphere, day/dusk/night presets, district batching and visibility,
+saved camera views, and first-person inspection.
 
-General parcel meshes, LOD, distance culling, facades, textures, traffic, and
-atmosphere remain deferred to later milestones in `docs/PROJECT_PLAN.md`.
+Detailed facades and materials, emissive windows and signage, traffic,
+pedestrians, collision, and complex irregular road topology remain future work.
 
 ## Source-data attribution
 
-Structural source data is derived from OpenStreetMap and will require the
-appropriate attribution in any distributed data or public build:
+The default synthetic city contains no OpenStreetMap-derived structure. The
+legacy route does, and any distribution that includes it still requires the
+appropriate attribution:
 
 > Map data © OpenStreetMap contributors
