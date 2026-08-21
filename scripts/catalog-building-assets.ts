@@ -3,6 +3,8 @@ import { createHash } from 'node:crypto';
 import path from 'node:path';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import type { BuildingFacadeSlot } from '../src/city/assets/buildingFacadeSlot';
+import { extractBuildingFacadeSlots } from './lib/extract-building-facade-slots';
 
 const MODEL_ROOT = path.resolve(
   'public/assets/models/buildings/lowpoly-buildings-pack',
@@ -27,6 +29,7 @@ type CatalogAsset = Readonly<{
     min: readonly [number, number, number];
     max: readonly [number, number, number];
   }>;
+  facadeSlots: readonly BuildingFacadeSlot[];
   proportions: Readonly<{
     footprintAspect: number;
     slenderness: number;
@@ -61,7 +64,7 @@ async function buildCatalog(): Promise<void> {
   const assets = markDuplicateShapes(inspectedAssets);
 
   const output = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     generatedFrom: 'public/assets/models/buildings/lowpoly-buildings-pack',
     assets,
   };
@@ -76,10 +79,21 @@ async function buildCatalog(): Promise<void> {
     ]),
   );
   const warningCount = assets.filter((asset) => asset.audit.warnings.length > 0).length;
+  const facadeSlotCount = assets.reduce(
+    (count, asset) => count + asset.facadeSlots.length,
+    0,
+  );
+  const assetsWithoutFacadeSlots = assets.filter(
+    (asset) => asset.facadeSlots.length === 0,
+  ).length;
 
   console.log(`Catalogued ${assets.length} building assets.`);
   console.log(`Source categories: ${JSON.stringify(counts)}`);
   console.log(`Assets with audit warnings: ${warningCount}`);
+  console.log(
+    `Facade slots: ${facadeSlotCount} across ${assets.length - assetsWithoutFacadeSlots} assets ` +
+      `(${assetsWithoutFacadeSlots} without slots).`,
+  );
   console.log(`Wrote ${path.relative(process.cwd(), OUTPUT_PATH)}.`);
 }
 
@@ -256,6 +270,7 @@ async function inspectAsset(
         min: vectorTuple(bounds.min),
         max: vectorTuple(bounds.max),
       },
+      facadeSlots: extractBuildingFacadeSlots(gltf.scene, bounds),
       proportions: {
         footprintAspect: rounded(
           Math.max(size.x, size.z) / Math.min(size.x, size.z),

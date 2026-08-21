@@ -193,6 +193,7 @@ function createAsset(
     assetPath: `assets/test/${id}.glb`,
     sourceDimensions: { width: 20, height: 100, depth: 20 },
     sourceBounds: { min: [-10, 0, -10], max: [10, 100, 10] },
+    facadeSlots: [],
     proportions: { footprintAspect: 1, slenderness: 5 },
     geometry: {
       meshes: 1,

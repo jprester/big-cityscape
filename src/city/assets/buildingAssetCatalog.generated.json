@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "generatedFrom": "public/assets/models/buildings/lowpoly-buildings-pack",
   "assets": [
     {
@@ -23,6 +23,140 @@
           35.0664
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            14.1712,
+            52,
+            32.0799
+          ],
+          "widthMetres": 26,
+          "heightMetres": 66
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            9.1712,
+            109,
+            32.0798
+          ],
+          "widthMetres": 16,
+          "heightMetres": 44
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            23.1712,
+            109,
+            -1.4933
+          ],
+          "widthMetres": 8,
+          "heightMetres": 44
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            27.8288,
+            43,
+            -0.9336
+          ],
+          "widthMetres": 66,
+          "heightMetres": 84
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            18.5948,
+            109,
+            16.0664
+          ],
+          "widthMetres": 32,
+          "heightMetres": 44
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            27.8288,
+            109,
+            -17.9336
+          ],
+          "widthMetres": 32,
+          "heightMetres": 44
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            6.8288,
+            66,
+            -35.0664
+          ],
+          "widthMetres": 40,
+          "heightMetres": 130
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -18.1712,
+            74,
+            -27.9085
+          ],
+          "widthMetres": 6,
+          "heightMetres": 146
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            -4.1712,
+            138,
+            -29.8696
+          ],
+          "widthMetres": 6,
+          "heightMetres": 10
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -23.3203,
+            83,
+            -12.0664
+          ],
+          "widthMetres": 16,
+          "heightMetres": 128
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -23.3203,
+            7,
+            -12.0664
+          ],
+          "widthMetres": 16,
+          "heightMetres": 12
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -15.1341,
+            7,
+            -31.0664
+          ],
+          "widthMetres": 6,
+          "heightMetres": 12
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.2601,
         "slenderness": 2.1199
@@ -65,6 +199,52 @@
           10.8049
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.0216,
+            62,
+            10.8049
+          ],
+          "widthMetres": 46,
+          "heightMetres": 122
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            24.0216,
+            62,
+            -0.1951
+          ],
+          "widthMetres": 20,
+          "heightMetres": 122
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.0216,
+            62,
+            -10.8049
+          ],
+          "widthMetres": 46,
+          "heightMetres": 122
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -24.0216,
+            62,
+            0.1951
+          ],
+          "widthMetres": 20,
+          "heightMetres": 122
+        }
+      ],
       "proportions": {
         "footprintAspect": 2.2232,
         "slenderness": 2.6983
@@ -107,6 +287,140 @@
           19.283
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.3606,
+            56,
+            17.3868
+          ],
+          "widthMetres": 44,
+          "heightMetres": 78
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            -0.6394,
+            129,
+            14.9979
+          ],
+          "widthMetres": 38,
+          "heightMetres": 64
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            0.3606,
+            8,
+            19.283
+          ],
+          "widthMetres": 48,
+          "heightMetres": 14
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            23.5681,
+            56,
+            0.283
+          ],
+          "widthMetres": 32,
+          "heightMetres": 78
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            20.3543,
+            129,
+            0.283
+          ],
+          "widthMetres": 28,
+          "heightMetres": 64
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            24.6394,
+            8,
+            0.283
+          ],
+          "widthMetres": 36,
+          "heightMetres": 14
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.3606,
+            56,
+            -17.3868
+          ],
+          "widthMetres": 44,
+          "heightMetres": 78
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            0.6394,
+            129,
+            -14.9979
+          ],
+          "widthMetres": 38,
+          "heightMetres": 64
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            -0.3606,
+            8,
+            -19.283
+          ],
+          "widthMetres": 48,
+          "heightMetres": 14
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -23.5681,
+            56,
+            -0.283
+          ],
+          "widthMetres": 32,
+          "heightMetres": 78
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -20.3543,
+            129,
+            -0.283
+          ],
+          "widthMetres": 28,
+          "heightMetres": 64
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -24.6394,
+            8,
+            -0.283
+          ],
+          "widthMetres": 36,
+          "heightMetres": 14
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.2778,
         "slenderness": 3.4435
@@ -149,6 +463,140 @@
           20.9438
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.4021,
+            55,
+            19.7802
+          ],
+          "widthMetres": 38,
+          "heightMetres": 76
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            0.4021,
+            127,
+            16.5805
+          ],
+          "widthMetres": 30,
+          "heightMetres": 64
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            0.4021,
+            8,
+            20.9438
+          ],
+          "widthMetres": 50,
+          "heightMetres": 14
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            24.4344,
+            55,
+            -0.0562
+          ],
+          "widthMetres": 28,
+          "heightMetres": 76
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            20.0711,
+            127,
+            -0.0562
+          ],
+          "widthMetres": 24,
+          "heightMetres": 64
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            25.5979,
+            8,
+            -0.0562
+          ],
+          "widthMetres": 40,
+          "heightMetres": 14
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.4021,
+            55,
+            -19.7802
+          ],
+          "widthMetres": 38,
+          "heightMetres": 76
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -0.4021,
+            127,
+            -16.5805
+          ],
+          "widthMetres": 30,
+          "heightMetres": 64
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            -0.4021,
+            8,
+            -20.9438
+          ],
+          "widthMetres": 50,
+          "heightMetres": 14
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -24.4344,
+            55,
+            0.0562
+          ],
+          "widthMetres": 28,
+          "heightMetres": 76
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -20.0711,
+            127,
+            0.0562
+          ],
+          "widthMetres": 24,
+          "heightMetres": 64
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -25.5979,
+            8,
+            0.0562
+          ],
+          "widthMetres": 40,
+          "heightMetres": 14
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.2222,
         "slenderness": 3.2582
@@ -191,6 +639,140 @@
           22.6557
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.3097,
+            61,
+            21.0195
+          ],
+          "widthMetres": 50,
+          "heightMetres": 84
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            0.3097,
+            142,
+            18.5022
+          ],
+          "widthMetres": 42,
+          "heightMetres": 74
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            0.3097,
+            9,
+            22.6557
+          ],
+          "widthMetres": 54,
+          "heightMetres": 16
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            26.4317,
+            61,
+            0.6557
+          ],
+          "widthMetres": 38,
+          "heightMetres": 84
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            22.6557,
+            142,
+            -0.3443
+          ],
+          "widthMetres": 32,
+          "heightMetres": 74
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            27.6903,
+            9,
+            -0.3443
+          ],
+          "widthMetres": 44,
+          "heightMetres": 16
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.3097,
+            61,
+            -21.0195
+          ],
+          "widthMetres": 50,
+          "heightMetres": 84
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -0.3097,
+            142,
+            -18.5022
+          ],
+          "widthMetres": 42,
+          "heightMetres": 74
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            -0.3097,
+            9,
+            -22.6557
+          ],
+          "widthMetres": 54,
+          "heightMetres": 16
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -26.4317,
+            61,
+            -0.6557
+          ],
+          "widthMetres": 38,
+          "heightMetres": 84
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -22.6557,
+            142,
+            0.3443
+          ],
+          "widthMetres": 32,
+          "heightMetres": 74
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -27.6903,
+            9,
+            0.3443
+          ],
+          "widthMetres": 44,
+          "heightMetres": 16
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.2222,
         "slenderness": 3.4455
@@ -233,6 +815,140 @@
           19
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0,
+            55,
+            17
+          ],
+          "widthMetres": 40,
+          "heightMetres": 72
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            0,
+            116,
+            14
+          ],
+          "widthMetres": 32,
+          "heightMetres": 46
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            0,
+            9,
+            19
+          ],
+          "widthMetres": 44,
+          "heightMetres": 16
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            21,
+            55,
+            0
+          ],
+          "widthMetres": 32,
+          "heightMetres": 72
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            17,
+            116,
+            0
+          ],
+          "widthMetres": 28,
+          "heightMetres": 46
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            23,
+            9,
+            0
+          ],
+          "widthMetres": 36,
+          "heightMetres": 16
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0,
+            55,
+            -17
+          ],
+          "widthMetres": 40,
+          "heightMetres": 72
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            0,
+            116,
+            -14
+          ],
+          "widthMetres": 32,
+          "heightMetres": 46
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            0,
+            9,
+            -19
+          ],
+          "widthMetres": 44,
+          "heightMetres": 16
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -21,
+            55,
+            0
+          ],
+          "widthMetres": 32,
+          "heightMetres": 72
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -17,
+            116,
+            0
+          ],
+          "widthMetres": 28,
+          "heightMetres": 46
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -23,
+            9,
+            0
+          ],
+          "widthMetres": 36,
+          "heightMetres": 16
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.2105,
         "slenderness": 3.1961
@@ -275,6 +991,96 @@
           26.6267
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.1081,
+            76,
+            20.3616
+          ],
+          "widthMetres": 52,
+          "heightMetres": 106
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            0.1081,
+            11,
+            26.6267
+          ],
+          "widthMetres": 64,
+          "heightMetres": 20
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            26.6267,
+            76,
+            0.6267
+          ],
+          "widthMetres": 38,
+          "heightMetres": 106
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            32.8919,
+            11,
+            -0.3733
+          ],
+          "widthMetres": 52,
+          "heightMetres": 20
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.1081,
+            76,
+            -20.3616
+          ],
+          "widthMetres": 52,
+          "heightMetres": 106
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -0.1081,
+            11,
+            -26.6267
+          ],
+          "widthMetres": 64,
+          "heightMetres": 20
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -26.6267,
+            76,
+            -0.6267
+          ],
+          "widthMetres": 38,
+          "heightMetres": 106
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -32.8919,
+            11,
+            0.3733
+          ],
+          "widthMetres": 52,
+          "heightMetres": 20
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.2353,
         "slenderness": 2.1324
@@ -317,6 +1123,140 @@
           23.6127
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.4836,
+            60,
+            20.9891
+          ],
+          "widthMetres": 56,
+          "heightMetres": 78
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            0.5164,
+            122,
+            18.3654
+          ],
+          "widthMetres": 46,
+          "heightMetres": 42
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            -0.4836,
+            10,
+            23.6127
+          ],
+          "widthMetres": 60,
+          "heightMetres": 18
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            28.86,
+            60,
+            0.6127
+          ],
+          "widthMetres": 40,
+          "heightMetres": 78
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            23.6127,
+            122,
+            -0.3873
+          ],
+          "widthMetres": 34,
+          "heightMetres": 42
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            31.4836,
+            10,
+            -0.3873
+          ],
+          "widthMetres": 46,
+          "heightMetres": 18
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.4836,
+            60,
+            -20.9891
+          ],
+          "widthMetres": 56,
+          "heightMetres": 78
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -0.5164,
+            122,
+            -18.3654
+          ],
+          "widthMetres": 46,
+          "heightMetres": 42
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            0.4836,
+            10,
+            -23.6127
+          ],
+          "widthMetres": 60,
+          "heightMetres": 18
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -28.86,
+            60,
+            -0.6127
+          ],
+          "widthMetres": 40,
+          "heightMetres": 78
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -23.6127,
+            122,
+            0.3873
+          ],
+          "widthMetres": 34,
+          "heightMetres": 42
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -31.4836,
+            10,
+            0.3873
+          ],
+          "widthMetres": 46,
+          "heightMetres": 18
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.3333,
         "slenderness": 2.4408
@@ -359,6 +1299,85 @@
           29.9425
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.1042,
+            69,
+            29.9425
+          ],
+          "widthMetres": 56,
+          "heightMetres": 136
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            29.1042,
+            69,
+            -0.0575
+          ],
+          "widthMetres": 58,
+          "heightMetres": 136
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            18.0651,
+            143,
+            0.9425
+          ],
+          "widthMetres": 12,
+          "heightMetres": 8
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.1042,
+            69,
+            -29.9425
+          ],
+          "widthMetres": 56,
+          "heightMetres": 136
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -12.8958,
+            143,
+            -6.3746
+          ],
+          "widthMetres": 6,
+          "heightMetres": 8
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -29.1042,
+            69,
+            0.0575
+          ],
+          "widthMetres": 58,
+          "heightMetres": 136
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -17.8911,
+            143,
+            1.0575
+          ],
+          "widthMetres": 12,
+          "heightMetres": 8
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.0288,
         "slenderness": 2.8199
@@ -401,6 +1420,52 @@
           18.209
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.0391,
+            62,
+            18.209
+          ],
+          "widthMetres": 44,
+          "heightMetres": 122
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            22.9609,
+            62,
+            0.209
+          ],
+          "widthMetres": 34,
+          "heightMetres": 122
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.0391,
+            62,
+            -18.209
+          ],
+          "widthMetres": 44,
+          "heightMetres": 122
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -22.9609,
+            62,
+            -0.209
+          ],
+          "widthMetres": 34,
+          "heightMetres": 122
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.261,
         "slenderness": 3.0836
@@ -443,6 +1508,85 @@
           27.5566
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.1422,
+            64,
+            27.5566
+          ],
+          "widthMetres": 56,
+          "heightMetres": 118
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            0.8578,
+            130,
+            22.1573
+          ],
+          "widthMetres": 26,
+          "heightMetres": 6
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            31.1422,
+            64,
+            0.5566
+          ],
+          "widthMetres": 48,
+          "heightMetres": 118
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            14.0964,
+            130,
+            17.5566
+          ],
+          "widthMetres": 6,
+          "heightMetres": 6
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.1422,
+            64,
+            -27.5566
+          ],
+          "widthMetres": 56,
+          "heightMetres": 118
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -31.1422,
+            64,
+            -0.5566
+          ],
+          "widthMetres": 48,
+          "heightMetres": 118
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -12.5226,
+            130,
+            18.4434
+          ],
+          "widthMetres": 6,
+          "heightMetres": 6
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.1301,
         "slenderness": 2.2698
@@ -485,6 +1629,52 @@
           14.1975
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.0754,
+            66,
+            14.1975
+          ],
+          "widthMetres": 50,
+          "heightMetres": 130
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            26.0754,
+            66,
+            0.1975
+          ],
+          "widthMetres": 26,
+          "heightMetres": 130
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.0754,
+            66,
+            -14.1975
+          ],
+          "widthMetres": 50,
+          "heightMetres": 130
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -26.0754,
+            66,
+            -0.1975
+          ],
+          "widthMetres": 26,
+          "heightMetres": 130
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.8366,
         "slenderness": 2.827
@@ -527,6 +1717,52 @@
           21.5403
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.4597,
+            69,
+            21.5403
+          ],
+          "widthMetres": 42,
+          "heightMetres": 136
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            21.5403,
+            69,
+            -0.4597
+          ],
+          "widthMetres": 42,
+          "heightMetres": 136
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.4597,
+            69,
+            -21.5403
+          ],
+          "widthMetres": 42,
+          "heightMetres": 136
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -21.5403,
+            69,
+            0.4597
+          ],
+          "widthMetres": 42,
+          "heightMetres": 136
+        }
+      ],
       "proportions": {
         "footprintAspect": 1,
         "slenderness": 3.3842
@@ -569,6 +1805,63 @@
           25.1249
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.0753,
+            64,
+            25.1249
+          ],
+          "widthMetres": 64,
+          "heightMetres": 126
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            33.0753,
+            64,
+            3.1249
+          ],
+          "widthMetres": 42,
+          "heightMetres": 126
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            16.0753,
+            64,
+            -19.6595
+          ],
+          "widthMetres": 32,
+          "heightMetres": 126
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -16.9247,
+            64,
+            -25.1249
+          ],
+          "widthMetres": 30,
+          "heightMetres": 126
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -33.0753,
+            64,
+            -0.1249
+          ],
+          "widthMetres": 48,
+          "heightMetres": 126
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.3164,
         "slenderness": 2.002
@@ -611,6 +1904,63 @@
           12.7724
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.122,
+            65,
+            9.2785
+          ],
+          "widthMetres": 14,
+          "heightMetres": 72
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            0.122,
+            14,
+            12.7594
+          ],
+          "widthMetres": 14,
+          "heightMetres": 26
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            17.8105,
+            108,
+            0.7724
+          ],
+          "widthMetres": 10,
+          "heightMetres": 10
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.122,
+            51,
+            -12.7572
+          ],
+          "widthMetres": 10,
+          "heightMetres": 100
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -17.9424,
+            108,
+            1.2276
+          ],
+          "widthMetres": 10,
+          "heightMetres": 10
+        }
+      ],
       "proportions": {
         "footprintAspect": 2.4958,
         "slenderness": 1.9406
@@ -653,6 +2003,85 @@
           13.6982
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            6.7175,
+            55,
+            13.5853
+          ],
+          "widthMetres": 16,
+          "heightMetres": 108
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            2.7175,
+            120,
+            13.5853
+          ],
+          "widthMetres": 8,
+          "heightMetres": 18
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            0.7175,
+            135,
+            10.5664
+          ],
+          "widthMetres": 12,
+          "heightMetres": 8
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            15.0995,
+            55,
+            9.6982
+          ],
+          "widthMetres": 6,
+          "heightMetres": 108
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            8.2825,
+            55,
+            -13.1853
+          ],
+          "widthMetres": 10,
+          "heightMetres": 108
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -2.7175,
+            65,
+            -13.5872
+          ],
+          "widthMetres": 8,
+          "heightMetres": 128
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            -0.7175,
+            135,
+            -10.57
+          ],
+          "widthMetres": 12,
+          "heightMetres": 8
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.3347,
         "slenderness": 4.4647
@@ -695,6 +2124,140 @@
           19.0056
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            10.9802,
+            14,
+            8.5039
+          ],
+          "widthMetres": 54,
+          "heightMetres": 26
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            17.9802,
+            40,
+            8.5038
+          ],
+          "widthMetres": 40,
+          "heightMetres": 22
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            -28.0198,
+            11,
+            19.0056
+          ],
+          "widthMetres": 20,
+          "heightMetres": 20
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            39.0195,
+            26,
+            -4.9944
+          ],
+          "widthMetres": 26,
+          "heightMetres": 50
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            38.4455,
+            59,
+            -4.9944
+          ],
+          "widthMetres": 18,
+          "heightMetres": 12
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            -17.8425,
+            11,
+            14.0056
+          ],
+          "widthMetres": 8,
+          "heightMetres": 20
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            11.0198,
+            14,
+            -19.0055
+          ],
+          "widthMetres": 54,
+          "heightMetres": 26
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            18.0198,
+            40,
+            -19.0056
+          ],
+          "widthMetres": 40,
+          "heightMetres": 22
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            -27.9802,
+            11,
+            -16.9982
+          ],
+          "widthMetres": 20,
+          "heightMetres": 20
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -39.0198,
+            11,
+            0.9944
+          ],
+          "widthMetres": 34,
+          "heightMetres": 20
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -2.2565,
+            42,
+            -4.0056
+          ],
+          "widthMetres": 24,
+          "heightMetres": 18
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -37.2879,
+            27,
+            0.9944
+          ],
+          "widthMetres": 34,
+          "heightMetres": 8
+        }
+      ],
       "proportions": {
         "footprintAspect": 2.0531,
         "slenderness": 0.85
@@ -737,6 +2300,52 @@
           10.3563
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.3276,
+            35,
+            10.3563
+          ],
+          "widthMetres": 36,
+          "heightMetres": 68
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            19.3276,
+            35,
+            0.3563
+          ],
+          "widthMetres": 18,
+          "heightMetres": 68
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.3276,
+            35,
+            -10.3563
+          ],
+          "widthMetres": 36,
+          "heightMetres": 68
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -19.3276,
+            35,
+            -0.3563
+          ],
+          "widthMetres": 18,
+          "heightMetres": 68
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.8663,
         "slenderness": 1.9641
@@ -779,6 +2388,52 @@
           11.8251
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.1749,
+            44,
+            11.8251
+          ],
+          "widthMetres": 22,
+          "heightMetres": 86
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            11.8251,
+            44,
+            -0.1749
+          ],
+          "widthMetres": 22,
+          "heightMetres": 86
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.1749,
+            44,
+            -11.8251
+          ],
+          "widthMetres": 22,
+          "heightMetres": 86
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -11.8251,
+            44,
+            0.1749
+          ],
+          "widthMetres": 22,
+          "heightMetres": 86
+        }
+      ],
       "proportions": {
         "footprintAspect": 1,
         "slenderness": 3.7132
@@ -821,6 +2476,107 @@
           18.3353
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -13.1416,
+            68,
+            9.4484
+          ],
+          "widthMetres": 24,
+          "heightMetres": 94
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            -9.1416,
+            10,
+            18.3248
+          ],
+          "widthMetres": 32,
+          "heightMetres": 18
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            -13.1416,
+            120,
+            9.4444
+          ],
+          "widthMetres": 16,
+          "heightMetres": 6
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            26.1416,
+            10,
+            -6.6648
+          ],
+          "widthMetres": 20,
+          "heightMetres": 18
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            12.8206,
+            10,
+            13.3352
+          ],
+          "widthMetres": 8,
+          "heightMetres": 18
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            8.1416,
+            68,
+            -12.345
+          ],
+          "widthMetres": 18,
+          "heightMetres": 94
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            12.1416,
+            10,
+            -18.3085
+          ],
+          "widthMetres": 26,
+          "heightMetres": 18
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            6.1416,
+            120,
+            -12.3053
+          ],
+          "widthMetres": 14,
+          "heightMetres": 6
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -25.7886,
+            10,
+            12.6648
+          ],
+          "widthMetres": 8,
+          "heightMetres": 18
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.4258,
         "slenderness": 2.5446
@@ -863,6 +2619,74 @@
           10.3724
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -5.6657,
+            40,
+            10.3724
+          ],
+          "widthMetres": 24,
+          "heightMetres": 78
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            13.3343,
+            40,
+            6.9815
+          ],
+          "widthMetres": 10,
+          "heightMetres": 78
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            18.6657,
+            40,
+            2.3724
+          ],
+          "widthMetres": 6,
+          "heightMetres": 78
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.3343,
+            40,
+            -10.3724
+          ],
+          "widthMetres": 36,
+          "heightMetres": 78
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -18.6657,
+            40,
+            4.6276
+          ],
+          "widthMetres": 8,
+          "heightMetres": 78
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -18.6657,
+            40,
+            -6.3724
+          ],
+          "widthMetres": 6,
+          "heightMetres": 78
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.7996,
         "slenderness": 2.1693
@@ -905,6 +2729,52 @@
           9.1864
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.4834,
+            33,
+            9.1864
+          ],
+          "widthMetres": 24,
+          "heightMetres": 64
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            15.4834,
+            33,
+            0.1864
+          ],
+          "widthMetres": 12,
+          "heightMetres": 64
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.4834,
+            33,
+            -9.1864
+          ],
+          "widthMetres": 24,
+          "heightMetres": 64
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -15.4834,
+            33,
+            -0.1864
+          ],
+          "widthMetres": 12,
+          "heightMetres": 64
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.6855,
         "slenderness": 2.3303
@@ -947,6 +2817,52 @@
           14.0946
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.0946,
+            35,
+            14.0946
+          ],
+          "widthMetres": 26,
+          "heightMetres": 68
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            14.0946,
+            35,
+            0.0946
+          ],
+          "widthMetres": 26,
+          "heightMetres": 68
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.0946,
+            35,
+            -14.0946
+          ],
+          "widthMetres": 26,
+          "heightMetres": 68
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -14.0946,
+            35,
+            -0.0946
+          ],
+          "widthMetres": 26,
+          "heightMetres": 68
+        }
+      ],
       "proportions": {
         "footprintAspect": 1,
         "slenderness": 2.5389
@@ -989,6 +2905,52 @@
           12.1101
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -5.1017,
+            39,
+            12.1101
+          ],
+          "widthMetres": 26,
+          "heightMetres": 76
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            19.1017,
+            39,
+            -4.8899
+          ],
+          "widthMetres": 12,
+          "heightMetres": 76
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.1017,
+            39,
+            -12.1101
+          ],
+          "widthMetres": 36,
+          "heightMetres": 76
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -19.1017,
+            39,
+            -0.1101
+          ],
+          "widthMetres": 22,
+          "heightMetres": 76
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.5773,
         "slenderness": 2.2043
@@ -1031,6 +2993,52 @@
           15.6911
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.3089,
+            47,
+            15.6911
+          ],
+          "widthMetres": 30,
+          "heightMetres": 92
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            15.6911,
+            47,
+            -0.3089
+          ],
+          "widthMetres": 30,
+          "heightMetres": 92
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.3089,
+            47,
+            -15.6911
+          ],
+          "widthMetres": 30,
+          "heightMetres": 92
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -15.6911,
+            47,
+            0.3089
+          ],
+          "widthMetres": 30,
+          "heightMetres": 92
+        }
+      ],
       "proportions": {
         "footprintAspect": 1,
         "slenderness": 3.2312
@@ -1073,6 +3081,140 @@
           26.052
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -11.0519,
+            48,
+            17.1646
+          ],
+          "widthMetres": 12,
+          "heightMetres": 94
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            11.9481,
+            48,
+            17.1646
+          ],
+          "widthMetres": 10,
+          "heightMetres": 94
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            0.9481,
+            53,
+            26.0519
+          ],
+          "widthMetres": 8,
+          "heightMetres": 104
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            17.1646,
+            48,
+            -10.9481
+          ],
+          "widthMetres": 12,
+          "heightMetres": 94
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            17.1646,
+            48,
+            12.0519
+          ],
+          "widthMetres": 10,
+          "heightMetres": 94
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            26.0519,
+            53,
+            1.0519
+          ],
+          "widthMetres": 8,
+          "heightMetres": 104
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -10.9481,
+            48,
+            -17.1646
+          ],
+          "widthMetres": 12,
+          "heightMetres": 94
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            12.0519,
+            48,
+            -17.1646
+          ],
+          "widthMetres": 10,
+          "heightMetres": 94
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            1.0519,
+            53,
+            -26.0519
+          ],
+          "widthMetres": 8,
+          "heightMetres": 104
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -17.1646,
+            48,
+            -11.0519
+          ],
+          "widthMetres": 12,
+          "heightMetres": 94
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -17.1646,
+            48,
+            11.9481
+          ],
+          "widthMetres": 10,
+          "heightMetres": 94
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -26.0519,
+            53,
+            0.9481
+          ],
+          "widthMetres": 8,
+          "heightMetres": 104
+        }
+      ],
       "proportions": {
         "footprintAspect": 1,
         "slenderness": 2.6076
@@ -1115,6 +3257,96 @@
           24.2618
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            1.5925,
+            54,
+            22.9356
+          ],
+          "widthMetres": 22,
+          "heightMetres": 106
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            18.4075,
+            49,
+            -0.7382
+          ],
+          "widthMetres": 20,
+          "heightMetres": 96
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            12.8208,
+            49,
+            20.2618
+          ],
+          "widthMetres": 6,
+          "heightMetres": 96
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            10.7197,
+            103,
+            0.2618
+          ],
+          "widthMetres": 38,
+          "heightMetres": 8
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.4075,
+            56,
+            -24.2618
+          ],
+          "widthMetres": 22,
+          "heightMetres": 110
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -18.4075,
+            49,
+            0.7382
+          ],
+          "widthMetres": 20,
+          "heightMetres": 96
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -12.8208,
+            49,
+            -20.2618
+          ],
+          "widthMetres": 6,
+          "heightMetres": 96
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -10.7197,
+            103,
+            -0.2618
+          ],
+          "widthMetres": 38,
+          "heightMetres": 8
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.318,
         "slenderness": 2.4601
@@ -1157,6 +3389,30 @@
           38.3724
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.6071,
+            34,
+            18.9762
+          ],
+          "widthMetres": 40,
+          "heightMetres": 66
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.6071,
+            34,
+            -18.9762
+          ],
+          "widthMetres": 40,
+          "heightMetres": 66
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.0005,
         "slenderness": 0.9116
@@ -1199,6 +3455,129 @@
           42.1599
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.5554,
+            41,
+            38.3314
+          ],
+          "widthMetres": 82,
+          "heightMetres": 80
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            20.4446,
+            86,
+            38.3314
+          ],
+          "widthMetres": 40,
+          "heightMetres": 6
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            20.4446,
+            95,
+            30.6018
+          ],
+          "widthMetres": 20,
+          "heightMetres": 8
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            42.2833,
+            45,
+            0.1599
+          ],
+          "widthMetres": 74,
+          "heightMetres": 88
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            32.4088,
+            95,
+            20.1599
+          ],
+          "widthMetres": 18,
+          "heightMetres": 8
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.4446,
+            41,
+            -38.123
+          ],
+          "widthMetres": 84,
+          "heightMetres": 80
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            20.5554,
+            86,
+            -38.123
+          ],
+          "widthMetres": 42,
+          "heightMetres": 6
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            26.5554,
+            95,
+            11.0549
+          ],
+          "widthMetres": 10,
+          "heightMetres": 8
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -43.3016,
+            41,
+            -0.1599
+          ],
+          "widthMetres": 74,
+          "heightMetres": 80
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -0.5091,
+            86,
+            -13.1599
+          ],
+          "widthMetres": 48,
+          "heightMetres": 6
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            8.7552,
+            95,
+            20.8401
+          ],
+          "widthMetres": 16,
+          "heightMetres": 8
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.1043,
         "slenderness": 1.0646
@@ -1241,6 +3620,52 @@
           22.9595
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.0405,
+            71,
+            20.4986
+          ],
+          "widthMetres": 40,
+          "heightMetres": 140
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            20.4986,
+            71,
+            -0.0405
+          ],
+          "widthMetres": 40,
+          "heightMetres": 140
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.0405,
+            71,
+            -20.4986
+          ],
+          "widthMetres": 40,
+          "heightMetres": 140
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -20.4986,
+            71,
+            0.0405
+          ],
+          "widthMetres": 40,
+          "heightMetres": 140
+        }
+      ],
       "proportions": {
         "footprintAspect": 1,
         "slenderness": 4.08
@@ -1283,6 +3708,52 @@
           35.1393
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.1393,
+            30,
+            33.3928
+          ],
+          "widthMetres": 64,
+          "heightMetres": 50
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            33.3928,
+            30,
+            0.1393
+          ],
+          "widthMetres": 64,
+          "heightMetres": 50
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.1393,
+            30,
+            -33.3928
+          ],
+          "widthMetres": 64,
+          "heightMetres": 50
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -33.3928,
+            30,
+            -0.1393
+          ],
+          "widthMetres": 64,
+          "heightMetres": 50
+        }
+      ],
       "proportions": {
         "footprintAspect": 1,
         "slenderness": 0.8534
@@ -1325,6 +3796,96 @@
           18.3301
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.6699,
+            42,
+            16.6964
+          ],
+          "widthMetres": 32,
+          "heightMetres": 74
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            -0.3301,
+            109,
+            14.0218
+          ],
+          "widthMetres": 26,
+          "heightMetres": 56
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            16.6964,
+            42,
+            -0.6699
+          ],
+          "widthMetres": 32,
+          "heightMetres": 74
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            14.0218,
+            109,
+            0.3301
+          ],
+          "widthMetres": 26,
+          "heightMetres": 56
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.6699,
+            42,
+            -16.6964
+          ],
+          "widthMetres": 32,
+          "heightMetres": 74
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            0.3301,
+            109,
+            -14.0218
+          ],
+          "widthMetres": 26,
+          "heightMetres": 56
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -16.6964,
+            42,
+            0.6699
+          ],
+          "widthMetres": 32,
+          "heightMetres": 74
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -14.0218,
+            109,
+            -0.3301
+          ],
+          "widthMetres": 26,
+          "heightMetres": 56
+        }
+      ],
       "proportions": {
         "footprintAspect": 1,
         "slenderness": 4.3092
@@ -1367,6 +3928,52 @@
           27.9066
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            2.3447,
+            74,
+            25.4848
+          ],
+          "widthMetres": 12,
+          "heightMetres": 138
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            33.391,
+            74,
+            -1.0934
+          ],
+          "widthMetres": 12,
+          "heightMetres": 138
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -2.3447,
+            74,
+            -25.4848
+          ],
+          "widthMetres": 12,
+          "heightMetres": 138
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -33.391,
+            74,
+            1.0934
+          ],
+          "widthMetres": 12,
+          "heightMetres": 138
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.3135,
         "slenderness": 2.557
@@ -1409,6 +4016,129 @@
           37.45
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.0609,
+            49,
+            37.45
+          ],
+          "widthMetres": 28,
+          "heightMetres": 96
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            0.0609,
+            121,
+            23.1283
+          ],
+          "widthMetres": 28,
+          "heightMetres": 44
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            -23.9391,
+            72,
+            -7.1608
+          ],
+          "widthMetres": 8,
+          "heightMetres": 142
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            19.7197,
+            72,
+            8.45
+          ],
+          "widthMetres": 28,
+          "heightMetres": 142
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            28.9391,
+            72,
+            -21.55
+          ],
+          "widthMetres": 28,
+          "heightMetres": 142
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            15.1315,
+            49,
+            30.45
+          ],
+          "widthMetres": 12,
+          "heightMetres": 96
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.0609,
+            72,
+            -37.45
+          ],
+          "widthMetres": 56,
+          "heightMetres": 142
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -9.0609,
+            149,
+            1.8419
+          ],
+          "widthMetres": 10,
+          "heightMetres": 8
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -28.9391,
+            72,
+            -22.45
+          ],
+          "widthMetres": 28,
+          "heightMetres": 142
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -19.7197,
+            72,
+            7.55
+          ],
+          "widthMetres": 28,
+          "heightMetres": 142
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -15.1315,
+            49,
+            29.55
+          ],
+          "widthMetres": 12,
+          "heightMetres": 96
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.2941,
         "slenderness": 2.0646
@@ -1451,6 +4181,52 @@
           22.9595
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.0405,
+            62,
+            20.4986
+          ],
+          "widthMetres": 40,
+          "heightMetres": 122
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            20.4986,
+            62,
+            -0.0405
+          ],
+          "widthMetres": 40,
+          "heightMetres": 122
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.0405,
+            62,
+            -20.4986
+          ],
+          "widthMetres": 40,
+          "heightMetres": 122
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -20.4986,
+            62,
+            0.0405
+          ],
+          "widthMetres": 40,
+          "heightMetres": 122
+        }
+      ],
       "proportions": {
         "footprintAspect": 1,
         "slenderness": 3.3939
@@ -1493,6 +4269,52 @@
           17.2302
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.3496,
+            35,
+            17.2301
+          ],
+          "widthMetres": 30,
+          "heightMetres": 68
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            16.3496,
+            35,
+            0.2301
+          ],
+          "widthMetres": 32,
+          "heightMetres": 68
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.3496,
+            35,
+            -17.2301
+          ],
+          "widthMetres": 30,
+          "heightMetres": 68
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -16.3496,
+            35,
+            -0.2301
+          ],
+          "widthMetres": 32,
+          "heightMetres": 68
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.0539,
         "slenderness": 2.1992
@@ -1535,6 +4357,41 @@
           13.7112
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -11.2581,
+            34,
+            -0.823
+          ],
+          "widthMetres": 20,
+          "heightMetres": 66
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -8.7419,
+            34,
+            -13.7112
+          ],
+          "widthMetres": 24,
+          "heightMetres": 66
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -22.2581,
+            34,
+            -7.7112
+          ],
+          "widthMetres": 10,
+          "heightMetres": 66
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.6234,
         "slenderness": 1.5894
@@ -1577,6 +4434,52 @@
           11.5562
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.2388,
+            30,
+            11.3368
+          ],
+          "widthMetres": 28,
+          "heightMetres": 46
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            15.1065,
+            27,
+            0.5562
+          ],
+          "widthMetres": 20,
+          "heightMetres": 52
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.2388,
+            27,
+            -11.3573
+          ],
+          "widthMetres": 28,
+          "heightMetres": 52
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -15.1075,
+            27,
+            -0.5562
+          ],
+          "widthMetres": 20,
+          "heightMetres": 52
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.3187,
         "slenderness": 1.9725
@@ -1619,6 +4522,74 @@
           16.3997
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            1.0849,
+            28,
+            13.6968
+          ],
+          "widthMetres": 8,
+          "heightMetres": 42
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            10.0849,
+            25,
+            12.9934
+          ],
+          "widthMetres": 6,
+          "heightMetres": 48
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            20.0849,
+            25,
+            12.9934
+          ],
+          "widthMetres": 6,
+          "heightMetres": 48
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            25.9151,
+            25,
+            -0.6003
+          ],
+          "widthMetres": 28,
+          "heightMetres": 48
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.9151,
+            25,
+            -15.4715
+          ],
+          "widthMetres": 48,
+          "heightMetres": 48
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -25.9151,
+            25,
+            -1.3997
+          ],
+          "widthMetres": 28,
+          "heightMetres": 48
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.5802,
         "slenderness": 1.1605
@@ -1661,6 +4632,74 @@
           33.752
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -6.695,
+            24,
+            31.2459
+          ],
+          "widthMetres": 24,
+          "heightMetres": 46
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            7.2794,
+            30,
+            25.752
+          ],
+          "widthMetres": 10,
+          "heightMetres": 34
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            3.695,
+            32,
+            19.782
+          ],
+          "widthMetres": 6,
+          "heightMetres": 30
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -16.305,
+            32,
+            19.782
+          ],
+          "widthMetres": 6,
+          "heightMetres": 30
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -19.4611,
+            24,
+            25.248
+          ],
+          "widthMetres": 8,
+          "heightMetres": 46
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -23.2493,
+            9,
+            -1.752
+          ],
+          "widthMetres": 18,
+          "heightMetres": 8
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.4244,
         "slenderness": 0.7882
@@ -1703,6 +4742,85 @@
           11.656
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -1.7379,
+            16,
+            11.656
+          ],
+          "widthMetres": 18,
+          "heightMetres": 30
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            11.7379,
+            28,
+            -4.344
+          ],
+          "widthMetres": 14,
+          "heightMetres": 54
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            7.9352,
+            16,
+            7.656
+          ],
+          "widthMetres": 6,
+          "heightMetres": 30
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            4.7379,
+            28,
+            -11.656
+          ],
+          "widthMetres": 12,
+          "heightMetres": 54
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -7.2621,
+            16,
+            -8.0171
+          ],
+          "widthMetres": 8,
+          "heightMetres": 30
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -11.7379,
+            16,
+            2.344
+          ],
+          "widthMetres": 18,
+          "heightMetres": 30
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -2.9914,
+            44,
+            -2.656
+          ],
+          "widthMetres": 8,
+          "heightMetres": 22
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.007,
         "slenderness": 2.4673
@@ -1745,6 +4863,41 @@
           6.3712
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            7.1235,
+            12,
+            -1.6288
+          ],
+          "widthMetres": 6,
+          "heightMetres": 22
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.1235,
+            12,
+            -6.3712
+          ],
+          "widthMetres": 12,
+          "heightMetres": 22
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -7.1235,
+            12,
+            -1.3712
+          ],
+          "widthMetres": 8,
+          "heightMetres": 22
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.1181,
         "slenderness": 1.7034
@@ -1787,6 +4940,63 @@
           7.3102
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.4091,
+            19,
+            7.3102
+          ],
+          "widthMetres": 18,
+          "heightMetres": 36
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            10.4091,
+            19,
+            0.3102
+          ],
+          "widthMetres": 12,
+          "heightMetres": 36
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            5.4091,
+            19,
+            -5.72
+          ],
+          "widthMetres": 8,
+          "heightMetres": 36
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -4.5909,
+            19,
+            -7.3102
+          ],
+          "widthMetres": 8,
+          "heightMetres": 36
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -10.4091,
+            19,
+            -0.3102
+          ],
+          "widthMetres": 12,
+          "heightMetres": 36
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.4239,
         "slenderness": 1.8425
@@ -1829,6 +5039,30 @@
           6.3558
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -1.304,
+            12,
+            -6.3558
+          ],
+          "widthMetres": 6,
+          "heightMetres": 22
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -4.696,
+            9,
+            -0.3558
+          ],
+          "widthMetres": 10,
+          "heightMetres": 16
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.3535,
         "slenderness": 1.9442
@@ -1871,6 +5105,52 @@
           18.1023
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.1023,
+            16,
+            12.8794
+          ],
+          "widthMetres": 22,
+          "heightMetres": 22
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            12.8794,
+            16,
+            0.1023
+          ],
+          "widthMetres": 22,
+          "heightMetres": 22
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.1023,
+            16,
+            -12.8794
+          ],
+          "widthMetres": 22,
+          "heightMetres": 22
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -12.8794,
+            16,
+            -0.1023
+          ],
+          "widthMetres": 22,
+          "heightMetres": 22
+        }
+      ],
       "proportions": {
         "footprintAspect": 1,
         "slenderness": 0.9775
@@ -1913,6 +5193,52 @@
           7.0601
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.3904,
+            14,
+            7.0601
+          ],
+          "widthMetres": 42,
+          "heightMetres": 26
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            21.6096,
+            14,
+            0.0601
+          ],
+          "widthMetres": 12,
+          "heightMetres": 26
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.3904,
+            14,
+            -7.0601
+          ],
+          "widthMetres": 42,
+          "heightMetres": 26
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -21.6096,
+            14,
+            -0.0601
+          ],
+          "widthMetres": 12,
+          "heightMetres": 26
+        }
+      ],
       "proportions": {
         "footprintAspect": 3.0608,
         "slenderness": 0.8296
@@ -1955,6 +5281,52 @@
           7.4178
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -8.877,
+            21,
+            7.4178
+          ],
+          "widthMetres": 12,
+          "heightMetres": 40
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            5.123,
+            21,
+            5.7925
+          ],
+          "widthMetres": 12,
+          "heightMetres": 40
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.123,
+            20,
+            -7.4178
+          ],
+          "widthMetres": 30,
+          "heightMetres": 38
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -15.877,
+            21,
+            -0.4178
+          ],
+          "widthMetres": 12,
+          "heightMetres": 40
+        }
+      ],
       "proportions": {
         "footprintAspect": 2.1404,
         "slenderness": 1.4122
@@ -1997,6 +5369,74 @@
           12.217
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -6.1247,
+            21,
+            0.1201
+          ],
+          "widthMetres": 12,
+          "heightMetres": 40
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            6.8753,
+            21,
+            12.217
+          ],
+          "widthMetres": 10,
+          "heightMetres": 40
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            13.1247,
+            21,
+            0.217
+          ],
+          "widthMetres": 22,
+          "heightMetres": 40
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.1247,
+            21,
+            -12.217
+          ],
+          "widthMetres": 24,
+          "heightMetres": 40
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -13.1247,
+            21,
+            -6.217
+          ],
+          "widthMetres": 10,
+          "heightMetres": 40
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            0,
+            21,
+            5.783
+          ],
+          "widthMetres": 10,
+          "heightMetres": 40
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.0743,
         "slenderness": 1.8365
@@ -2039,6 +5479,63 @@
           8.3959
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -8.4361,
+            21,
+            8.3959
+          ],
+          "widthMetres": 8,
+          "heightMetres": 40
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            7.5639,
+            21,
+            8.3959
+          ],
+          "widthMetres": 8,
+          "heightMetres": 40
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            13.4361,
+            21,
+            0.3959
+          ],
+          "widthMetres": 14,
+          "heightMetres": 40
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.4361,
+            21,
+            -8.3959
+          ],
+          "widthMetres": 24,
+          "heightMetres": 40
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -13.4361,
+            21,
+            -0.3959
+          ],
+          "widthMetres": 14,
+          "heightMetres": 40
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.6003,
         "slenderness": 1.6664
@@ -2081,6 +5578,96 @@
           13.5425
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            1.5519,
+            7,
+            13.5425
+          ],
+          "widthMetres": 20,
+          "heightMetres": 12
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            -3.4481,
+            19,
+            3.4513
+          ],
+          "widthMetres": 10,
+          "heightMetres": 8
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            13.4481,
+            7,
+            2.5425
+          ],
+          "widthMetres": 20,
+          "heightMetres": 12
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            3.5457,
+            19,
+            -2.4575
+          ],
+          "widthMetres": 10,
+          "heightMetres": 8
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -4.5519,
+            12,
+            -13.5425
+          ],
+          "widthMetres": 14,
+          "heightMetres": 22
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            8.4481,
+            7,
+            -9.1552
+          ],
+          "widthMetres": 8,
+          "heightMetres": 12
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -13.4481,
+            12,
+            -5.5425
+          ],
+          "widthMetres": 14,
+          "heightMetres": 22
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -9.2496,
+            7,
+            8.4575
+          ],
+          "widthMetres": 10,
+          "heightMetres": 12
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.007,
         "slenderness": 0.9031
@@ -2123,6 +5710,140 @@
           15.3096
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.0361,
+            36,
+            15.3094
+          ],
+          "widthMetres": 10,
+          "heightMetres": 70
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            -12.9639,
+            34,
+            13.007
+          ],
+          "widthMetres": 8,
+          "heightMetres": 66
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            13.0361,
+            34,
+            13.0074
+          ],
+          "widthMetres": 8,
+          "heightMetres": 66
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            17.9639,
+            36,
+            8.3096
+          ],
+          "widthMetres": 8,
+          "heightMetres": 70
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            14.0049,
+            36,
+            -0.6904
+          ],
+          "widthMetres": 6,
+          "heightMetres": 70
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            17.9635,
+            36,
+            -8.6904
+          ],
+          "widthMetres": 6,
+          "heightMetres": 70
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.0361,
+            36,
+            -15.3094
+          ],
+          "widthMetres": 10,
+          "heightMetres": 70
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            12.9639,
+            34,
+            -13.0075
+          ],
+          "widthMetres": 8,
+          "heightMetres": 66
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            -13.0361,
+            34,
+            -13.0071
+          ],
+          "widthMetres": 8,
+          "heightMetres": 66
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -17.9637,
+            36,
+            -8.3096
+          ],
+          "widthMetres": 8,
+          "heightMetres": 70
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -14.2903,
+            36,
+            0.6904
+          ],
+          "widthMetres": 6,
+          "heightMetres": 70
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -17.9636,
+            36,
+            8.6904
+          ],
+          "widthMetres": 6,
+          "heightMetres": 70
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.1734,
         "slenderness": 2.182
@@ -2165,6 +5886,52 @@
           5.0055
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.0363,
+            19,
+            5.0055
+          ],
+          "widthMetres": 10,
+          "heightMetres": 36
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            6.0363,
+            19,
+            0.0055
+          ],
+          "widthMetres": 8,
+          "heightMetres": 36
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.0363,
+            19,
+            -5.0055
+          ],
+          "widthMetres": 10,
+          "heightMetres": 36
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -6.0363,
+            19,
+            -0.0055
+          ],
+          "widthMetres": 8,
+          "heightMetres": 36
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.2059,
         "slenderness": 3.4402
@@ -2207,6 +5974,52 @@
           7.2302
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -1.6801,
+            19,
+            7.2302
+          ],
+          "widthMetres": 38,
+          "heightMetres": 36
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            19.0093,
+            19,
+            0.2302
+          ],
+          "widthMetres": 12,
+          "heightMetres": 36
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -1.3199,
+            19,
+            -7.2302
+          ],
+          "widthMetres": 40,
+          "heightMetres": 36
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -21.6801,
+            19,
+            -0.2302
+          ],
+          "widthMetres": 12,
+          "heightMetres": 36
+        }
+      ],
       "proportions": {
         "footprintAspect": 2.9986,
         "slenderness": 1.0648
@@ -2249,6 +6062,52 @@
           4.0195
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.1389,
+            16,
+            4.0195
+          ],
+          "widthMetres": 14,
+          "heightMetres": 30
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            7.8611,
+            16,
+            0.0195
+          ],
+          "widthMetres": 6,
+          "heightMetres": 30
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.1389,
+            16,
+            -1.6183
+          ],
+          "widthMetres": 6,
+          "heightMetres": 30
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -7.8611,
+            16,
+            -0.0195
+          ],
+          "widthMetres": 6,
+          "heightMetres": 30
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.9557,
         "slenderness": 2.2328
@@ -2291,6 +6150,52 @@
           6.5865
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.4308,
+            13,
+            6.5864
+          ],
+          "widthMetres": 16,
+          "heightMetres": 24
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            9.4308,
+            13,
+            -0.4136
+          ],
+          "widthMetres": 12,
+          "heightMetres": 24
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.4308,
+            13,
+            -6.5864
+          ],
+          "widthMetres": 16,
+          "heightMetres": 24
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -9.4308,
+            13,
+            0.4136
+          ],
+          "widthMetres": 12,
+          "heightMetres": 24
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.4318,
         "slenderness": 1.576
@@ -2333,6 +6238,52 @@
           9.0382
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.0165,
+            39,
+            9.0382
+          ],
+          "widthMetres": 16,
+          "heightMetres": 76
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            9.0165,
+            39,
+            0.0382
+          ],
+          "widthMetres": 16,
+          "heightMetres": 76
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.0165,
+            39,
+            -9.0382
+          ],
+          "widthMetres": 16,
+          "heightMetres": 76
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -9.0165,
+            39,
+            -0.0382
+          ],
+          "widthMetres": 16,
+          "heightMetres": 76
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.0024,
         "slenderness": 4.9226
@@ -2375,6 +6326,52 @@
           6.4889
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.3134,
+            18,
+            6.4889
+          ],
+          "widthMetres": 22,
+          "heightMetres": 34
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            11.6866,
+            18,
+            0.4889
+          ],
+          "widthMetres": 10,
+          "heightMetres": 34
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.6866,
+            18,
+            -6.4889
+          ],
+          "widthMetres": 20,
+          "heightMetres": 34
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -11.6866,
+            18,
+            -0.4889
+          ],
+          "widthMetres": 10,
+          "heightMetres": 34
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.801,
         "slenderness": 1.8508
@@ -2417,6 +6414,52 @@
           10.7131
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.3144,
+            19,
+            10.7131
+          ],
+          "widthMetres": 32,
+          "heightMetres": 36
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            17.3144,
+            19,
+            0.7131
+          ],
+          "widthMetres": 18,
+          "heightMetres": 36
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.3144,
+            19,
+            -10.7131
+          ],
+          "widthMetres": 32,
+          "heightMetres": 36
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -17.3144,
+            19,
+            0.2869
+          ],
+          "widthMetres": 20,
+          "heightMetres": 36
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.6162,
         "slenderness": 1.2705
@@ -2459,6 +6502,52 @@
           8.3341
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.4465,
+            28,
+            8.3341
+          ],
+          "widthMetres": 30,
+          "heightMetres": 54
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            15.5535,
+            28,
+            0.3341
+          ],
+          "widthMetres": 14,
+          "heightMetres": 54
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.4465,
+            28,
+            -8.3341
+          ],
+          "widthMetres": 30,
+          "heightMetres": 54
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -15.5535,
+            28,
+            -0.3341
+          ],
+          "widthMetres": 14,
+          "heightMetres": 54
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.8663,
         "slenderness": 1.9641
@@ -2501,6 +6590,41 @@
           11.8976
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            10.9556,
+            33,
+            1.8976
+          ],
+          "widthMetres": 6,
+          "heightMetres": 64
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.0425,
+            33,
+            -11.8968
+          ],
+          "widthMetres": 20,
+          "heightMetres": 64
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -10.9555,
+            33,
+            -6.8976
+          ],
+          "widthMetres": 8,
+          "heightMetres": 64
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.0858,
         "slenderness": 3.0462
@@ -2543,6 +6667,52 @@
           8.4745
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.0567,
+            30,
+            8.4745
+          ],
+          "widthMetres": 20,
+          "heightMetres": 58
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            12.9433,
+            30,
+            -0.5255
+          ],
+          "widthMetres": 12,
+          "heightMetres": 58
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.0567,
+            30,
+            -8.4745
+          ],
+          "widthMetres": 20,
+          "heightMetres": 58
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -12.9433,
+            30,
+            0.5255
+          ],
+          "widthMetres": 12,
+          "heightMetres": 58
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.5273,
         "slenderness": 2.3154
@@ -2585,6 +6755,52 @@
           10.5653
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            4.546,
+            30,
+            8.8305
+          ],
+          "widthMetres": 14,
+          "heightMetres": 58
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            13.454,
+            30,
+            -0.4347
+          ],
+          "widthMetres": 16,
+          "heightMetres": 58
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            4.454,
+            30,
+            -8.9785
+          ],
+          "widthMetres": 16,
+          "heightMetres": 58
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -13.454,
+            30,
+            0.4347
+          ],
+          "widthMetres": 16,
+          "heightMetres": 58
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.2734,
         "slenderness": 2.2888
@@ -2627,6 +6843,52 @@
           7.6728
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.104,
+            19,
+            7.5796
+          ],
+          "widthMetres": 28,
+          "heightMetres": 36
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            15.0133,
+            19,
+            -0.3272
+          ],
+          "widthMetres": 14,
+          "heightMetres": 36
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.104,
+            19,
+            -7.5796
+          ],
+          "widthMetres": 28,
+          "heightMetres": 36
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -15.0133,
+            19,
+            0.3272
+          ],
+          "widthMetres": 14,
+          "heightMetres": 36
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.9685,
         "slenderness": 1.2573
@@ -2669,6 +6931,85 @@
           10.6896
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.3897,
+            10,
+            10.6897
+          ],
+          "widthMetres": 40,
+          "heightMetres": 18
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            10.6103,
+            30,
+            10.6897
+          ],
+          "widthMetres": 18,
+          "heightMetres": 18
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            21.3897,
+            20,
+            -0.3103
+          ],
+          "widthMetres": 20,
+          "heightMetres": 38
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.3897,
+            10,
+            -10.6897
+          ],
+          "widthMetres": 40,
+          "heightMetres": 18
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            10.3897,
+            30,
+            -10.6896
+          ],
+          "widthMetres": 20,
+          "heightMetres": 18
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            0.0406,
+            30,
+            0.3103
+          ],
+          "widthMetres": 20,
+          "heightMetres": 18
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -21.3897,
+            10,
+            0.3103
+          ],
+          "widthMetres": 20,
+          "heightMetres": 18
+        }
+      ],
       "proportions": {
         "footprintAspect": 2.001,
         "slenderness": 0.9846
@@ -2711,6 +7052,52 @@
           20.2688
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.5213,
+            13,
+            18.4253
+          ],
+          "widthMetres": 38,
+          "heightMetres": 20
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            20.4729,
+            13,
+            0.2688
+          ],
+          "widthMetres": 34,
+          "heightMetres": 20
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.5213,
+            13,
+            -18.4253
+          ],
+          "widthMetres": 38,
+          "heightMetres": 20
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -20.4729,
+            13,
+            -0.2688
+          ],
+          "widthMetres": 34,
+          "heightMetres": 20
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.1111,
         "slenderness": 0.6057
@@ -2753,6 +7140,129 @@
           17.9512
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            7.2792,
+            25,
+            7.6741
+          ],
+          "widthMetres": 12,
+          "heightMetres": 36
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            -3.7208,
+            18,
+            15.3481
+          ],
+          "widthMetres": 6,
+          "heightMetres": 22
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            -3.7208,
+            38,
+            0
+          ],
+          "widthMetres": 6,
+          "heightMetres": 14
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            0,
+            26,
+            -4.0488
+          ],
+          "widthMetres": 6,
+          "heightMetres": 38
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            13.4412,
+            25,
+            3.9512
+          ],
+          "widthMetres": 6,
+          "heightMetres": 36
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            0,
+            18,
+            11.9512
+          ],
+          "widthMetres": 6,
+          "heightMetres": 22
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -7.2792,
+            26,
+            -7.6741
+          ],
+          "widthMetres": 12,
+          "heightMetres": 38
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            3.7208,
+            16,
+            -15.3481
+          ],
+          "widthMetres": 6,
+          "heightMetres": 18
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -13.4412,
+            26,
+            -3.9512
+          ],
+          "widthMetres": 6,
+          "heightMetres": 38
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            0,
+            25,
+            4.0488
+          ],
+          "widthMetres": 6,
+          "heightMetres": 36
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -6.7206,
+            18,
+            12.0488
+          ],
+          "widthMetres": 6,
+          "heightMetres": 22
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.1419,
         "slenderness": 1.3442
@@ -2795,6 +7305,74 @@
           10.735
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -6.7246,
+            26,
+            9.6484
+          ],
+          "widthMetres": 6,
+          "heightMetres": 50
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            1.2754,
+            25,
+            10.735
+          ],
+          "widthMetres": 6,
+          "heightMetres": 48
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            6.1188,
+            26,
+            -4.265
+          ],
+          "widthMetres": 8,
+          "heightMetres": 50
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            10.7246,
+            26,
+            4.735
+          ],
+          "widthMetres": 6,
+          "heightMetres": 50
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -2.2754,
+            26,
+            -9.7576
+          ],
+          "widthMetres": 16,
+          "heightMetres": 50
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -10.7246,
+            26,
+            -0.735
+          ],
+          "widthMetres": 18,
+          "heightMetres": 50
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.001,
         "slenderness": 2.4845
@@ -2837,6 +7415,63 @@
           12.1741
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -3.6585,
+            23,
+            7.979
+          ],
+          "widthMetres": 10,
+          "heightMetres": 36
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            9.0713,
+            27,
+            0.1741
+          ],
+          "widthMetres": 14,
+          "heightMetres": 28
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -4.3415,
+            23,
+            -8.8792
+          ],
+          "widthMetres": 10,
+          "heightMetres": 36
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            5.6585,
+            27,
+            -8.1849
+          ],
+          "widthMetres": 6,
+          "heightMetres": 28
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -9.3944,
+            23,
+            -0.1741
+          ],
+          "widthMetres": 14,
+          "heightMetres": 36
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.0442,
         "slenderness": 1.8116
@@ -2879,6 +7514,74 @@
           5.2543
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -9.301,
+            14,
+            3.73
+          ],
+          "widthMetres": 10,
+          "heightMetres": 26
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            9.699,
+            14,
+            3.73
+          ],
+          "widthMetres": 8,
+          "heightMetres": 26
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            0.699,
+            14,
+            5.2543
+          ],
+          "widthMetres": 6,
+          "heightMetres": 26
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            15.301,
+            14,
+            -0.7457
+          ],
+          "widthMetres": 6,
+          "heightMetres": 26
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.301,
+            14,
+            -5.2543
+          ],
+          "widthMetres": 28,
+          "heightMetres": 26
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -15.301,
+            14,
+            -1.2543
+          ],
+          "widthMetres": 6,
+          "heightMetres": 26
+        }
+      ],
       "proportions": {
         "footprintAspect": 2.9121,
         "slenderness": 1.0026
@@ -2921,6 +7624,85 @@
           13.6522
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -3.6732,
+            35,
+            10.0119
+          ],
+          "widthMetres": 14,
+          "heightMetres": 64
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            4.0735,
+            35,
+            5.6522
+          ],
+          "widthMetres": 6,
+          "heightMetres": 64
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            9.079,
+            15,
+            -6.3478
+          ],
+          "widthMetres": 10,
+          "heightMetres": 24
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -5.3268,
+            35,
+            0.911
+          ],
+          "widthMetres": 8,
+          "heightMetres": 64
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            4.6732,
+            15,
+            -12.0577
+          ],
+          "widthMetres": 8,
+          "heightMetres": 24
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -10.9429,
+            34,
+            5.3478
+          ],
+          "widthMetres": 8,
+          "heightMetres": 66
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            0.2056,
+            14,
+            -4.6522
+          ],
+          "widthMetres": 8,
+          "heightMetres": 26
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.0015,
         "slenderness": 2.7463
@@ -2963,6 +7745,74 @@
           15.172
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -5.8916,
+            24,
+            -6.6184
+          ],
+          "widthMetres": 10,
+          "heightMetres": 30
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            10.1084,
+            14,
+            13.485
+          ],
+          "widthMetres": 6,
+          "heightMetres": 18
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            13.2682,
+            24,
+            6.172
+          ],
+          "widthMetres": 8,
+          "heightMetres": 30
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            0.7824,
+            22,
+            -10.828
+          ],
+          "widthMetres": 6,
+          "heightMetres": 26
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -5.1084,
+            24,
+            -14.4911
+          ],
+          "widthMetres": 8,
+          "heightMetres": 30
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            6.0599,
+            24,
+            6.828
+          ],
+          "widthMetres": 10,
+          "heightMetres": 30
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.0922,
         "slenderness": 1.4705
@@ -3005,6 +7855,52 @@
           32.9567
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.284,
+            132,
+            32.9567
+          ],
+          "widthMetres": 56,
+          "heightMetres": 262
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            33.284,
+            132,
+            -0.0433
+          ],
+          "widthMetres": 56,
+          "heightMetres": 262
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.284,
+            132,
+            -32.9567
+          ],
+          "widthMetres": 56,
+          "heightMetres": 262
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -33.284,
+            132,
+            0.0433
+          ],
+          "widthMetres": 56,
+          "heightMetres": 262
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.0099,
         "slenderness": 4.0152
@@ -3047,6 +7943,129 @@
           36.6779
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            2.1299,
+            46,
+            36.6759
+          ],
+          "widthMetres": 38,
+          "heightMetres": 90
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            2.1299,
+            106,
+            35.9652
+          ],
+          "widthMetres": 38,
+          "heightMetres": 26
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            2.1299,
+            131,
+            35.2096
+          ],
+          "widthMetres": 38,
+          "heightMetres": 20
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            39.8692,
+            180,
+            -0.3221
+          ],
+          "widthMetres": 32,
+          "heightMetres": 358
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            39.8692,
+            368,
+            0.6779
+          ],
+          "widthMetres": 30,
+          "heightMetres": 14
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -2.1299,
+            46,
+            -36.6758
+          ],
+          "widthMetres": 38,
+          "heightMetres": 90
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -0.1299,
+            135,
+            -35.2636
+          ],
+          "widthMetres": 46,
+          "heightMetres": 32
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            -0.1299,
+            164,
+            -34.0493
+          ],
+          "widthMetres": 46,
+          "heightMetres": 22
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -39.8692,
+            168,
+            0.3221
+          ],
+          "widthMetres": 32,
+          "heightMetres": 334
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -39.8692,
+            365,
+            0.3221
+          ],
+          "widthMetres": 28,
+          "heightMetres": 20
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -39.8692,
+            345,
+            0.3221
+          ],
+          "widthMetres": 32,
+          "heightMetres": 16
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.087,
         "slenderness": 4.7545
@@ -3089,6 +8108,140 @@
           25.9801
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.3433,
+            152,
+            25.9796
+          ],
+          "widthMetres": 14,
+          "heightMetres": 302
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            -21.3433,
+            68,
+            23.5091
+          ],
+          "widthMetres": 24,
+          "heightMetres": 134
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            20.6567,
+            68,
+            23.46
+          ],
+          "widthMetres": 24,
+          "heightMetres": 134
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            28.2252,
+            261,
+            -0.0198
+          ],
+          "widthMetres": 38,
+          "heightMetres": 92
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            34.2839,
+            68,
+            14.9802
+          ],
+          "widthMetres": 16,
+          "heightMetres": 134
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            34.3416,
+            68,
+            -15.0198
+          ],
+          "widthMetres": 16,
+          "heightMetres": 134
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.3433,
+            152,
+            -25.98
+          ],
+          "widthMetres": 14,
+          "heightMetres": 302
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            21.3433,
+            68,
+            -23.5056
+          ],
+          "widthMetres": 24,
+          "heightMetres": 134
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            -20.6567,
+            68,
+            -23.4569
+          ],
+          "widthMetres": 24,
+          "heightMetres": 134
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -29.6174,
+            261,
+            0.0198
+          ],
+          "widthMetres": 38,
+          "heightMetres": 92
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -34.3412,
+            68,
+            -14.9802
+          ],
+          "widthMetres": 16,
+          "heightMetres": 134
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -34.3236,
+            68,
+            15.0198
+          ],
+          "widthMetres": 16,
+          "heightMetres": 134
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.3219,
         "slenderness": 4.8853
@@ -3131,6 +8284,74 @@
           29.3847
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.2117,
+            132,
+            29.3847
+          ],
+          "widthMetres": 60,
+          "heightMetres": 262
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            34.3433,
+            198,
+            -0.6153
+          ],
+          "widthMetres": 50,
+          "heightMetres": 130
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            34.3433,
+            63,
+            0.3847
+          ],
+          "widthMetres": 52,
+          "heightMetres": 124
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.2117,
+            132,
+            -29.3847
+          ],
+          "widthMetres": 60,
+          "heightMetres": 262
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -34.3433,
+            198,
+            0.6153
+          ],
+          "widthMetres": 50,
+          "heightMetres": 130
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -34.3433,
+            63,
+            -0.3847
+          ],
+          "widthMetres": 52,
+          "heightMetres": 124
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.1983,
         "slenderness": 3.9006
@@ -3173,6 +8394,96 @@
           19.139
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.3784,
+            182,
+            19.1389
+          ],
+          "widthMetres": 48,
+          "heightMetres": 362
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            -29.6216,
+            182,
+            14.0582
+          ],
+          "widthMetres": 8,
+          "heightMetres": 362
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            30.3784,
+            182,
+            14.0582
+          ],
+          "widthMetres": 8,
+          "heightMetres": 362
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            34.6216,
+            182,
+            -0.8611
+          ],
+          "widthMetres": 26,
+          "heightMetres": 362
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.3784,
+            182,
+            -19.1389
+          ],
+          "widthMetres": 48,
+          "heightMetres": 362
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            29.6216,
+            182,
+            -14.0582
+          ],
+          "widthMetres": 8,
+          "heightMetres": 362
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            -30.3784,
+            182,
+            -14.0582
+          ],
+          "widthMetres": 8,
+          "heightMetres": 362
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -34.6216,
+            182,
+            0.8611
+          ],
+          "widthMetres": 26,
+          "heightMetres": 362
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.809,
         "slenderness": 5.5181
@@ -3215,6 +8526,74 @@
           29.3847
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.2117,
+            132,
+            29.3847
+          ],
+          "widthMetres": 60,
+          "heightMetres": 262
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            34.3433,
+            198,
+            -0.6153
+          ],
+          "widthMetres": 50,
+          "heightMetres": 130
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            34.3433,
+            63,
+            0.3847
+          ],
+          "widthMetres": 52,
+          "heightMetres": 124
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.2117,
+            132,
+            -29.3847
+          ],
+          "widthMetres": 60,
+          "heightMetres": 262
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -34.3433,
+            198,
+            0.6153
+          ],
+          "widthMetres": 50,
+          "heightMetres": 130
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -34.3433,
+            63,
+            -0.3847
+          ],
+          "widthMetres": 52,
+          "heightMetres": 124
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.1983,
         "slenderness": 3.9006
@@ -3257,6 +8636,140 @@
           28.158
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.127,
+            75,
+            25.5906
+          ],
+          "widthMetres": 56,
+          "heightMetres": 100
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            -12.127,
+            176,
+            19.8762
+          ],
+          "widthMetres": 20,
+          "heightMetres": 98
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            11.873,
+            176,
+            19.8762
+          ],
+          "widthMetres": 20,
+          "heightMetres": 98
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            29.8143,
+            75,
+            -0.842
+          ],
+          "widthMetres": 48,
+          "heightMetres": 100
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            23.1889,
+            176,
+            0.158
+          ],
+          "widthMetres": 38,
+          "heightMetres": 98
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            33.127,
+            12,
+            0.158
+          ],
+          "widthMetres": 54,
+          "heightMetres": 22
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.127,
+            75,
+            -24.8453
+          ],
+          "widthMetres": 56,
+          "heightMetres": 100
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            0.127,
+            176,
+            -19.8762
+          ],
+          "widthMetres": 44,
+          "heightMetres": 98
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            0.127,
+            12,
+            -28.158
+          ],
+          "widthMetres": 64,
+          "heightMetres": 22
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -29.8143,
+            75,
+            0.842
+          ],
+          "widthMetres": 48,
+          "heightMetres": 100
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -23.1889,
+            176,
+            -0.158
+          ],
+          "widthMetres": 38,
+          "heightMetres": 98
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -33.127,
+            12,
+            -0.158
+          ],
+          "widthMetres": 54,
+          "heightMetres": 22
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.1765,
         "slenderness": 3.525
@@ -3299,6 +8812,140 @@
           34.2696
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.6951,
+            97,
+            27.844
+          ],
+          "widthMetres": 66,
+          "heightMetres": 128
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            -0.6951,
+            213,
+            21.4185
+          ],
+          "widthMetres": 50,
+          "heightMetres": 100
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            0.3049,
+            16,
+            34.2696
+          ],
+          "widthMetres": 80,
+          "heightMetres": 30
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            34.2696,
+            97,
+            0.2696
+          ],
+          "widthMetres": 54,
+          "heightMetres": 128
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            25.7022,
+            213,
+            0.2696
+          ],
+          "widthMetres": 42,
+          "heightMetres": 100
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            40.6951,
+            16,
+            0.2696
+          ],
+          "widthMetres": 66,
+          "heightMetres": 30
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.6951,
+            97,
+            -27.844
+          ],
+          "widthMetres": 66,
+          "heightMetres": 128
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            0.6951,
+            213,
+            -21.4185
+          ],
+          "widthMetres": 50,
+          "heightMetres": 100
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            -0.3049,
+            16,
+            -34.2696
+          ],
+          "widthMetres": 80,
+          "heightMetres": 30
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -34.2696,
+            97,
+            -0.2696
+          ],
+          "widthMetres": 54,
+          "heightMetres": 128
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -25.7022,
+            213,
+            -0.2696
+          ],
+          "widthMetres": 42,
+          "heightMetres": 100
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -40.6951,
+            16,
+            -0.2696
+          ],
+          "widthMetres": 66,
+          "heightMetres": 30
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.1875,
         "slenderness": 3.4411
@@ -3341,6 +8988,140 @@
           24.047
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.5342,
+            69,
+            21.218
+          ],
+          "widthMetres": 58,
+          "heightMetres": 84
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            -0.5342,
+            150,
+            18.3889
+          ],
+          "widthMetres": 46,
+          "heightMetres": 74
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            -0.5342,
+            217,
+            15.5599
+          ],
+          "widthMetres": 34,
+          "heightMetres": 56
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            29.7052,
+            69,
+            0.047
+          ],
+          "widthMetres": 42,
+          "heightMetres": 84
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            24.047,
+            150,
+            0.047
+          ],
+          "widthMetres": 34,
+          "heightMetres": 74
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            18.3889,
+            217,
+            0.047
+          ],
+          "widthMetres": 30,
+          "heightMetres": 56
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.5342,
+            69,
+            -21.218
+          ],
+          "widthMetres": 58,
+          "heightMetres": 84
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            0.5342,
+            150,
+            -18.3889
+          ],
+          "widthMetres": 46,
+          "heightMetres": 74
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            0.5342,
+            217,
+            -15.5599
+          ],
+          "widthMetres": 34,
+          "heightMetres": 56
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -29.7052,
+            69,
+            -0.047
+          ],
+          "widthMetres": 42,
+          "heightMetres": 84
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -24.047,
+            150,
+            -0.047
+          ],
+          "widthMetres": 34,
+          "heightMetres": 74
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -18.3889,
+            217,
+            -0.047
+          ],
+          "widthMetres": 30,
+          "heightMetres": 56
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.3529,
         "slenderness": 3.9783
@@ -3383,6 +9164,140 @@
           34.2071
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.6838,
+            16,
+            32.8029
+          ],
+          "widthMetres": 78,
+          "heightMetres": 30
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            -26.3162,
+            165,
+            32.8029
+          ],
+          "widthMetres": 8,
+          "heightMetres": 264
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            -0.3162,
+            159,
+            34.2071
+          ],
+          "widthMetres": 8,
+          "heightMetres": 252
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            40.1615,
+            16,
+            -0.7929
+          ],
+          "widthMetres": 64,
+          "heightMetres": 30
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            40.1615,
+            165,
+            22.2071
+          ],
+          "widthMetres": 6,
+          "heightMetres": 264
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            40.1615,
+            165,
+            -7.7929
+          ],
+          "widthMetres": 6,
+          "heightMetres": 264
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.6838,
+            16,
+            -32.8028
+          ],
+          "widthMetres": 78,
+          "heightMetres": 30
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            26.3162,
+            165,
+            -32.8028
+          ],
+          "widthMetres": 8,
+          "heightMetres": 264
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            0.3162,
+            159,
+            -34.2071
+          ],
+          "widthMetres": 8,
+          "heightMetres": 252
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -40.1614,
+            16,
+            0.7929
+          ],
+          "widthMetres": 64,
+          "heightMetres": 30
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -40.1614,
+            165,
+            -22.2071
+          ],
+          "widthMetres": 6,
+          "heightMetres": 264
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -40.1614,
+            165,
+            7.7929
+          ],
+          "widthMetres": 6,
+          "heightMetres": 264
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.2078,
         "slenderness": 4.0625
@@ -3425,6 +9340,140 @@
           18.6792
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -2.2554,
+            157,
+            18.0284
+          ],
+          "widthMetres": 26,
+          "heightMetres": 100
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            -2.2554,
+            51,
+            18.0284
+          ],
+          "widthMetres": 26,
+          "heightMetres": 100
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            1.7446,
+            213,
+            16.4696
+          ],
+          "widthMetres": 22,
+          "heightMetres": 8
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            18.1223,
+            157,
+            -1.3208
+          ],
+          "widthMetres": 26,
+          "heightMetres": 100
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            18.1223,
+            51,
+            -1.3208
+          ],
+          "widthMetres": 26,
+          "heightMetres": 100
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            16.4696,
+            213,
+            -1.3208
+          ],
+          "widthMetres": 22,
+          "heightMetres": 8
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            2.2554,
+            157,
+            -18.0284
+          ],
+          "widthMetres": 26,
+          "heightMetres": 100
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            2.2554,
+            51,
+            -18.0284
+          ],
+          "widthMetres": 26,
+          "heightMetres": 100
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            -1.7446,
+            213,
+            -16.4696
+          ],
+          "widthMetres": 22,
+          "heightMetres": 8
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -18.1223,
+            157,
+            1.3208
+          ],
+          "widthMetres": 26,
+          "heightMetres": 100
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -18.1223,
+            51,
+            1.3208
+          ],
+          "widthMetres": 26,
+          "heightMetres": 100
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -16.4696,
+            213,
+            1.3208
+          ],
+          "widthMetres": 22,
+          "heightMetres": 8
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.0232,
         "slenderness": 6.1122
@@ -3467,6 +9516,140 @@
           28.2148
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.4752,
+            91,
+            13.1025
+          ],
+          "widthMetres": 58,
+          "heightMetres": 160
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            -0.4752,
+            180,
+            13.7797
+          ],
+          "widthMetres": 58,
+          "heightMetres": 14
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            1.5248,
+            5,
+            28.2148
+          ],
+          "widthMetres": 66,
+          "heightMetres": 8
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            28.2064,
+            91,
+            0.2148
+          ],
+          "widthMetres": 18,
+          "heightMetres": 160
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            42.4752,
+            5,
+            -0.7852
+          ],
+          "widthMetres": 44,
+          "heightMetres": 8
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            29.4886,
+            180,
+            0.2148
+          ],
+          "widthMetres": 18,
+          "heightMetres": 14
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.4752,
+            91,
+            -13.1027
+          ],
+          "widthMetres": 58,
+          "heightMetres": 160
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            0.4752,
+            180,
+            -13.7799
+          ],
+          "widthMetres": 58,
+          "heightMetres": 14
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            -1.5248,
+            5,
+            -28.2148
+          ],
+          "widthMetres": 66,
+          "heightMetres": 8
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -28.2064,
+            91,
+            -0.2148
+          ],
+          "widthMetres": 18,
+          "heightMetres": 160
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -42.4752,
+            5,
+            0.7852
+          ],
+          "widthMetres": 44,
+          "heightMetres": 8
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -29.4886,
+            180,
+            -0.2148
+          ],
+          "widthMetres": 18,
+          "heightMetres": 14
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.5054,
         "slenderness": 2.4484
@@ -3509,6 +9692,118 @@
           14.4098
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            9.7865,
+            78,
+            11.3416
+          ],
+          "widthMetres": 30,
+          "heightMetres": 154
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            -20.2135,
+            109,
+            2.0947
+          ],
+          "widthMetres": 6,
+          "heightMetres": 176
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            -2.2135,
+            177,
+            2.0947
+          ],
+          "widthMetres": 26,
+          "heightMetres": 40
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            19.0242,
+            78,
+            -8.5903
+          ],
+          "widthMetres": 8,
+          "heightMetres": 154
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            26.2135,
+            78,
+            6.4097
+          ],
+          "widthMetres": 6,
+          "heightMetres": 154
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            18.4094,
+            177,
+            -8.5903
+          ],
+          "widthMetres": 8,
+          "heightMetres": 40
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.2135,
+            109,
+            -14.4097
+          ],
+          "widthMetres": 34,
+          "heightMetres": 176
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -3.7865,
+            10,
+            -14.4097
+          ],
+          "widthMetres": 42,
+          "heightMetres": 18
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -23.5594,
+            109,
+            -3.4097
+          ],
+          "widthMetres": 8,
+          "heightMetres": 176
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -26.2135,
+            10,
+            -0.4097
+          ],
+          "widthMetres": 26,
+          "heightMetres": 18
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.8192,
         "slenderness": 3.8242
@@ -3551,6 +9846,52 @@
           17.4668
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.1903,
+            101,
+            17.4417
+          ],
+          "widthMetres": 64,
+          "heightMetres": 200
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            32.7813,
+            101,
+            0.4668
+          ],
+          "widthMetres": 32,
+          "heightMetres": 200
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.1903,
+            101,
+            -17.4668
+          ],
+          "widthMetres": 64,
+          "heightMetres": 200
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -32.8097,
+            101,
+            -0.4668
+          ],
+          "widthMetres": 32,
+          "heightMetres": 200
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.8784,
         "slenderness": 3.1106
@@ -3593,6 +9934,52 @@
           15.8682
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.439,
+            120,
+            15.8672
+          ],
+          "widthMetres": 52,
+          "heightMetres": 238
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            27.4381,
+            120,
+            -0.1318
+          ],
+          "widthMetres": 30,
+          "heightMetres": 238
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.439,
+            120,
+            -15.8672
+          ],
+          "widthMetres": 52,
+          "heightMetres": 238
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -27.4381,
+            120,
+            0.1318
+          ],
+          "widthMetres": 30,
+          "heightMetres": 238
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.7292,
         "slenderness": 4.3842
@@ -3635,6 +10022,140 @@
           20.6765
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.3406,
+            168,
+            10.9725
+          ],
+          "widthMetres": 56,
+          "heightMetres": 54
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            0.3406,
+            128,
+            11.8867
+          ],
+          "widthMetres": 56,
+          "heightMetres": 22
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            0.3406,
+            106,
+            12.873
+          ],
+          "widthMetres": 56,
+          "heightMetres": 18
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            28.6594,
+            159,
+            6.6765
+          ],
+          "widthMetres": 6,
+          "heightMetres": 72
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            28.6594,
+            142,
+            -7.3235
+          ],
+          "widthMetres": 6,
+          "heightMetres": 66
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            28.6594,
+            102,
+            7.6765
+          ],
+          "widthMetres": 8,
+          "heightMetres": 38
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.3406,
+            168,
+            -10.9725
+          ],
+          "widthMetres": 56,
+          "heightMetres": 54
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -0.3406,
+            128,
+            -11.8867
+          ],
+          "widthMetres": 56,
+          "heightMetres": 22
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            -0.3406,
+            106,
+            -12.873
+          ],
+          "widthMetres": 56,
+          "heightMetres": 18
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -28.6594,
+            159,
+            -6.6765
+          ],
+          "widthMetres": 6,
+          "heightMetres": 72
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -28.6594,
+            142,
+            7.3235
+          ],
+          "widthMetres": 6,
+          "heightMetres": 66
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -28.6594,
+            102,
+            -7.6765
+          ],
+          "widthMetres": 8,
+          "heightMetres": 38
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.3861,
         "slenderness": 3.5693
@@ -3677,6 +10198,140 @@
           28.169
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -0.169,
+            99,
+            23.426
+          ],
+          "widthMetres": 22,
+          "heightMetres": 196
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            -0.169,
+            240,
+            18.7829
+          ],
+          "widthMetres": 34,
+          "heightMetres": 82
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            -21.169,
+            63,
+            28.169
+          ],
+          "widthMetres": 12,
+          "heightMetres": 124
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            23.426,
+            99,
+            0.169
+          ],
+          "widthMetres": 22,
+          "heightMetres": 196
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            18.7829,
+            240,
+            0.169
+          ],
+          "widthMetres": 34,
+          "heightMetres": 82
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            28.169,
+            63,
+            21.169
+          ],
+          "widthMetres": 12,
+          "heightMetres": 124
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            0.169,
+            99,
+            -23.426
+          ],
+          "widthMetres": 22,
+          "heightMetres": 196
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            0.169,
+            240,
+            -18.7829
+          ],
+          "widthMetres": 34,
+          "heightMetres": 82
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            21.169,
+            63,
+            -28.169
+          ],
+          "widthMetres": 12,
+          "heightMetres": 124
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -23.426,
+            99,
+            -0.169
+          ],
+          "widthMetres": 22,
+          "heightMetres": 196
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -18.7829,
+            240,
+            -0.169
+          ],
+          "widthMetres": 34,
+          "heightMetres": 82
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -28.169,
+            63,
+            -21.169
+          ],
+          "widthMetres": 12,
+          "heightMetres": 124
+        }
+      ],
       "proportions": {
         "footprintAspect": 1,
         "slenderness": 5.3717
@@ -3719,6 +10374,140 @@
           39.8102
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.1898,
+            101,
+            27.2014
+          ],
+          "widthMetres": 14,
+          "heightMetres": 172
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            0.1898,
+            6,
+            39.8102
+          ],
+          "widthMetres": 78,
+          "heightMetres": 10
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            1.1898,
+            225,
+            16.4035
+          ],
+          "widthMetres": 8,
+          "heightMetres": 72
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            26.8973,
+            101,
+            -2.1898
+          ],
+          "widthMetres": 6,
+          "heightMetres": 172
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            39.8102,
+            6,
+            -0.1898
+          ],
+          "widthMetres": 78,
+          "heightMetres": 10
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            17.0912,
+            225,
+            -2.1898
+          ],
+          "widthMetres": 10,
+          "heightMetres": 72
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -3.1898,
+            101,
+            -27.4018
+          ],
+          "widthMetres": 8,
+          "heightMetres": 172
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -0.1898,
+            6,
+            -39.8102
+          ],
+          "widthMetres": 78,
+          "heightMetres": 10
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            -1.1898,
+            225,
+            -18.0488
+          ],
+          "widthMetres": 8,
+          "heightMetres": 72
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -27.6696,
+            101,
+            1.1898
+          ],
+          "widthMetres": 16,
+          "heightMetres": 172
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -39.8102,
+            6,
+            0.1898
+          ],
+          "widthMetres": 78,
+          "heightMetres": 10
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -17.4833,
+            225,
+            0.1898
+          ],
+          "widthMetres": 6,
+          "heightMetres": 72
+        }
+      ],
       "proportions": {
         "footprintAspect": 1,
         "slenderness": 3.7542
@@ -3761,6 +10550,140 @@
           21.232
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.3238,
+            100,
+            8.66
+          ],
+          "widthMetres": 64,
+          "heightMetres": 66
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            0.3238,
+            33,
+            21.2319
+          ],
+          "widthMetres": 64,
+          "heightMetres": 64
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            -15.6762,
+            171,
+            7.7473
+          ],
+          "widthMetres": 28,
+          "heightMetres": 72
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            32.6762,
+            33,
+            0.2319
+          ],
+          "widthMetres": 40,
+          "heightMetres": 64
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            32.6762,
+            100,
+            -5.7681
+          ],
+          "widthMetres": 28,
+          "heightMetres": 66
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            0,
+            171,
+            0.2319
+          ],
+          "widthMetres": 12,
+          "heightMetres": 72
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.3238,
+            67,
+            -21.2319
+          ],
+          "widthMetres": 64,
+          "heightMetres": 132
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -0.3238,
+            166,
+            -20.3193
+          ],
+          "widthMetres": 60,
+          "heightMetres": 62
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            -15.3238,
+            228,
+            -20.3193
+          ],
+          "widthMetres": 30,
+          "heightMetres": 58
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -32.6762,
+            33,
+            -0.2319
+          ],
+          "widthMetres": 40,
+          "heightMetres": 64
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -30.6809,
+            171,
+            -7.2319
+          ],
+          "widthMetres": 26,
+          "heightMetres": 72
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -32.6762,
+            100,
+            -6.2319
+          ],
+          "widthMetres": 28,
+          "heightMetres": 66
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.539,
         "slenderness": 3.9889
@@ -3803,6 +10726,140 @@
           24.6617
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            0.3127,
+            165,
+            24.6617
+          ],
+          "widthMetres": 48,
+          "heightMetres": 100
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            0.3127,
+            51,
+            24.6617
+          ],
+          "widthMetres": 48,
+          "heightMetres": 100
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            -0.6873,
+            108,
+            23.7375
+          ],
+          "widthMetres": 46,
+          "heightMetres": 10
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            24.6873,
+            165,
+            -0.3383
+          ],
+          "widthMetres": 48,
+          "heightMetres": 100
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            24.6873,
+            51,
+            -0.3383
+          ],
+          "widthMetres": 48,
+          "heightMetres": 100
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            23.7622,
+            108,
+            0.6617
+          ],
+          "widthMetres": 46,
+          "heightMetres": 10
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -0.3127,
+            165,
+            -24.6617
+          ],
+          "widthMetres": 48,
+          "heightMetres": 100
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            -0.3127,
+            51,
+            -24.6617
+          ],
+          "widthMetres": 48,
+          "heightMetres": 100
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            0.6873,
+            108,
+            -23.7375
+          ],
+          "widthMetres": 46,
+          "heightMetres": 10
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -24.6873,
+            165,
+            0.3383
+          ],
+          "widthMetres": 48,
+          "heightMetres": 100
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -24.6873,
+            51,
+            0.3383
+          ],
+          "widthMetres": 48,
+          "heightMetres": 100
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -23.7622,
+            108,
+            -0.6617
+          ],
+          "widthMetres": 46,
+          "heightMetres": 10
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.001,
         "slenderness": 5.0336
@@ -3845,6 +10902,140 @@
           19.0926
         ]
       },
+      "facadeSlots": [
+        {
+          "id": "north-1",
+          "facade": "north",
+          "center": [
+            -9.8575,
+            94,
+            17.7954
+          ],
+          "widthMetres": 44,
+          "heightMetres": 178
+        },
+        {
+          "id": "north-2",
+          "facade": "north",
+          "center": [
+            20.1425,
+            49,
+            19.0926
+          ],
+          "widthMetres": 12,
+          "heightMetres": 88
+        },
+        {
+          "id": "north-3",
+          "facade": "north",
+          "center": [
+            -10.8575,
+            198,
+            17.0922
+          ],
+          "widthMetres": 42,
+          "heightMetres": 18
+        },
+        {
+          "id": "east-1",
+          "facade": "east",
+          "center": [
+            14.6905,
+            141,
+            0.0926
+          ],
+          "widthMetres": 36,
+          "heightMetres": 92
+        },
+        {
+          "id": "east-2",
+          "facade": "east",
+          "center": [
+            27.5011,
+            70,
+            0.0926
+          ],
+          "widthMetres": 16,
+          "heightMetres": 46
+        },
+        {
+          "id": "east-3",
+          "facade": "east",
+          "center": [
+            27.5011,
+            47,
+            14.0926
+          ],
+          "widthMetres": 8,
+          "heightMetres": 92
+        },
+        {
+          "id": "south-1",
+          "facade": "south",
+          "center": [
+            -10.1425,
+            94,
+            -17.7953
+          ],
+          "widthMetres": 44,
+          "heightMetres": 178
+        },
+        {
+          "id": "south-2",
+          "facade": "south",
+          "center": [
+            19.8575,
+            49,
+            -19.0926
+          ],
+          "widthMetres": 12,
+          "heightMetres": 88
+        },
+        {
+          "id": "south-3",
+          "facade": "south",
+          "center": [
+            -10.1425,
+            198,
+            -17.0922
+          ],
+          "widthMetres": 44,
+          "heightMetres": 18
+        },
+        {
+          "id": "west-1",
+          "facade": "west",
+          "center": [
+            -34.8575,
+            94,
+            -0.0926
+          ],
+          "widthMetres": 36,
+          "heightMetres": 186
+        },
+        {
+          "id": "west-2",
+          "facade": "west",
+          "center": [
+            -32.2618,
+            198,
+            -0.0926
+          ],
+          "widthMetres": 32,
+          "heightMetres": 18
+        },
+        {
+          "id": "west-3",
+          "facade": "west",
+          "center": [
+            -10.0835,
+            212,
+            -0.0926
+          ],
+          "widthMetres": 28,
+          "heightMetres": 6
+        }
+      ],
       "proportions": {
         "footprintAspect": 1.8257,
         "slenderness": 3.445

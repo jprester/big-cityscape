@@ -316,6 +316,34 @@ a facade while the 0.38 m player collider is correctly stopped outside it. The
 1 m near plane is restored when Walk mode exits, preserving aerial depth
 precision.
 
+### Procedural signage foundation
+
+Building assets now expose offline-derived façade slots in normalized local
+metres. The signage generator transforms those slots with each selected
+building placement and prefers the façade nearest a block edge. It makes
+independent seeded decisions for three mounting zones: general façade signs,
+storefront bands between 2.4 and 7 m above ground, and crown bands within the
+upper 22 m or 22% of buildings at least 70 m tall. Each building receives at
+most one sign per zone. Centre, urban, and edge district profiles have
+progressively lower density; commercial and mixed-use buildings receive most
+storefronts, while offices and landmarks receive most crown logos. Stable
+building IDs keep the result independent of input traversal order.
+
+The current visual layer is intentionally an inspectable placeholder: one
+instanced plane per selected anchor, colored cyan for advertisements, magenta
+for neon, and amber for building logos. The layer is exposed in the normal
+debug controls and the statistics panel reports its count. At most three draw
+calls and two triangles per selected sign are added. The next visual phase can
+replace these shared-color materials with a small generated atlas and emissive
+night variants without changing façade extraction or placement data.
+
+This slice does not yet include text legibility, image loading, texture-atlas
+packing, emissive bloom, occlusion against detailed façade protrusions,
+multiple signs within one mounting zone, manual placement overrides, or
+chunk-distance visibility. Slots describe large approximately planar surfaces,
+not artist-authored attachment points. Delicate façades can receive explicit
+overrides later without changing the procedural default path.
+
 Proof mode loads only its 37 selected asset files and uses one `InstancedMesh`
 per asset. Full-city mode loads its 63 selected assets once and packs all models
 for each 500 m district into one `BatchedMesh`. This produces 16 independently
@@ -347,6 +375,7 @@ actually drawn in the last frame.
 | District-grid rhythms | `src/city/synthetic/generation/districtGridVariants.ts` |
 | Street-corridor derivation | `src/city/synthetic/generation/deriveSyntheticStreetCorridors.ts` |
 | Road-marking derivation | `src/city/synthetic/generation/deriveSyntheticRoadMarkings.ts` |
+| Signage derivation | `src/city/synthetic/generation/deriveSyntheticSignage.ts` |
 | Secondary skyline promotion | `src/city/synthetic/generation/promoteSecondarySkyline.ts` |
 | 2 km city composition | `src/city/synthetic/generation/generateSyntheticCity.ts` |
 | Deterministic matcher | `src/city/synthetic/generation/selectAssetForSlot.ts` |
@@ -355,6 +384,7 @@ actually drawn in the last frame.
 | Synthetic debug geometry | `src/city/synthetic/rendering/addSyntheticDistrictDebugLayers.ts` |
 | Instanced roads and sidewalks | `src/city/synthetic/rendering/addSyntheticStreetLayers.ts` |
 | Instanced arterial markings | `src/city/synthetic/rendering/addSyntheticRoadMarkingLayer.ts` |
+| Instanced sign-anchor preview | `src/city/synthetic/rendering/addSyntheticSignageDebugLayer.ts` |
 | Reconfigurable distance atmosphere | `src/city/synthetic/rendering/addSyntheticAtmosphereLayer.ts` |
 | Reconfigurable inspection lighting | `src/city/synthetic/rendering/addSyntheticInspectionLighting.ts` |
 | City chunk outlines | `src/city/synthetic/rendering/addSyntheticCityDebugLayer.ts` |
@@ -411,6 +441,13 @@ rig's scale-aware placement. Environment tests verify the three distinct
 presets, proportional fog ranges, default and explicit URL parsing, invalid
 value rejection, and preservation of unrelated query parameters.
 
+Signage tests verify deterministic output under reordered source data, full
+eligible-building façade coverage when density is forced, finite fitted
+transforms, storefront and crown vertical-band containment, unique per-building
+mounting zones, and consistent per-kind and per-zone accounting. The offline
+façade extractor is separately tested on cardinal box surfaces and empty
+geometry.
+
 For the current catalogue and default seed, every slot has between 3 and 14
 compatible candidates before city-wide repetition caps are applied. The
 landmark is deliberately the narrowest category, with three candidates.
@@ -444,14 +481,21 @@ selection outcome, not an optimization claim. Model
 triangles exclude the debug layers. These are local-browser inspection
 measurements, not active-frame-rate claims.
 
-Day, Dusk, and Night retain the same rendering topology for a given camera:
-the overview remains 34 draw calls, 1,024,884 triangles, 51 scene objects, and 44
-visible objects. Preset switching therefore adds no meshes, materials, model
-instances, or draw calls. It only changes existing fog, vertex-color, and light
-state.
+Day, Dusk, and Night retain the same rendering topology for a given camera.
+Preset switching adds no meshes, materials, model instances, or draw calls; it
+only changes existing fog, vertex-color, and light state.
+
+For seed `20260805`, the signage plan selects 377 anchors from 1,188 buildings:
+267 general façade signs, 87 storefronts, and 23 crowns. In the Night overview,
+enabling the preview changes the measured frame from 37 to 40 draw calls and
+from 1,092,756 to 1,093,510 triangles: exactly three shared kind batches and 754
+plane triangles. Scene-object count remains 67; visible objects increase from
+48 to 52 because the debug root and its three instanced meshes become visible.
+This is a measured debug-layer cost, not a frame-rate claim.
 
 ## Next slice
 
-Use the collision-enabled Walk mode to evaluate street widths, setbacks, lamp
-spacing, and building repetition before committing to a larger city footprint
-or a more detailed visual-material slice.
+Replace the colored sign-anchor preview with a compact procedural artwork atlas,
+shared emissive-capable materials, and a small optional image-advertisement
+library. Keep the existing placement plan and batch by district and atlas page
+so night lighting does not create one material or light per sign.

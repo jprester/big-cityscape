@@ -19,6 +19,7 @@ import {
   generateSyntheticCity,
 } from '../city/synthetic/generation/generateSyntheticCity';
 import { deriveSyntheticStreetLamps } from '../city/synthetic/generation/deriveSyntheticStreetLamps';
+import { deriveSyntheticSignage } from '../city/synthetic/generation/deriveSyntheticSignage';
 import { populateSyntheticCity } from '../city/synthetic/generation/populateSyntheticCity';
 import { populateSyntheticDistrict } from '../city/synthetic/generation/populateSyntheticDistrict';
 import type { SyntheticBuildingPlacement } from '../city/synthetic/model/buildingPlacement';
@@ -46,6 +47,7 @@ import { addSyntheticInspectionLighting } from '../city/synthetic/rendering/addS
 import { addSyntheticCityDebugLayer } from '../city/synthetic/rendering/addSyntheticCityDebugLayer';
 import { addSyntheticRoadMarkingLayer } from '../city/synthetic/rendering/addSyntheticRoadMarkingLayer';
 import { addSyntheticStreetLampLayer } from '../city/synthetic/rendering/addSyntheticStreetLampLayer';
+import { addSyntheticSignageDebugLayer } from '../city/synthetic/rendering/addSyntheticSignageDebugLayer';
 import {
   addSyntheticDistrictDebugLayers,
 } from '../city/synthetic/rendering/addSyntheticDistrictDebugLayers';
@@ -154,6 +156,19 @@ export async function createSyntheticDistrictApp(
     streetLampPlan.lamps,
     initialEnvironment.streetLamps,
   );
+  const signagePlan = deriveSyntheticSignage(
+    `${viewData.spatial.id}/signage`,
+    viewData.spatial.seed,
+    viewData.population.placements,
+    viewData.spatial.blocks,
+    viewData.mode === 'city'
+      ? viewData.spatial.districts
+      : [viewData.spatial],
+  );
+  const signageRenderStats = addSyntheticSignageDebugLayer(
+    debugLayers,
+    signagePlan,
+  );
 
   let cityRenderLayer: SyntheticCityBuildingRenderLayer | undefined;
   let buildingRenderStats: SyntheticBuildingRenderStats;
@@ -194,6 +209,7 @@ export async function createSyntheticDistrictApp(
     seed,
     activeEnvironmentPresetId,
     streetLampPlan.metadata.lampCount,
+    signageRenderStats.instanceCount,
   );
   let isRunning = false;
   let isDisposed = false;
@@ -788,6 +804,7 @@ function createStatisticsPanel(
   seed: number,
   environmentPresetId: SyntheticEnvironmentPresetId,
   streetLampCount: number,
+  signAnchorCount: number,
 ): HTMLElement {
   const panel = document.createElement('aside');
   panel.className = 'synthetic-statistics';
@@ -811,6 +828,11 @@ function createStatisticsPanel(
     metrics,
     'Street lamps',
     streetLampCount.toLocaleString('en-US'),
+  );
+  addStatistic(
+    metrics,
+    'Sign anchors',
+    signAnchorCount.toLocaleString('en-US'),
   );
   addStatistic(
     metrics,

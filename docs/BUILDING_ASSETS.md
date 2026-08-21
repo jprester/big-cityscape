@@ -34,7 +34,8 @@ the semantic building classification.
 
 | File | Responsibility |
 | --- | --- |
-| `scripts/catalog-building-assets.ts` | Loads every GLB and measures bounds, proportions, geometry cost, transforms, and duplicate shapes. |
+| `scripts/catalog-building-assets.ts` | Loads every GLB and measures bounds, proportions, geometry cost, transforms, duplicate shapes, and façade sign slots. |
+| `scripts/lib/extract-building-facade-slots.ts` | Offline geometry scanner that derives reusable rectangular sign surfaces from the four cardinal façades. |
 | `src/city/assets/buildingAssetCatalog.generated.json` | Reproducible generated measurements. Do not edit manually. |
 | `src/city/assets/buildingAssetOverrides.ts` | Reviewed use, form, placement role, limits, and exceptions. |
 | `src/city/assets/buildingAssetCatalog.ts` | Typed catalogue API and conservative default classification rules. |
@@ -52,6 +53,13 @@ npm run build
 Run the catalogue command whenever a GLB is added, removed, or re-exported.
 Review any changed dimensions, fingerprints, warnings, and duplicate links
 before accepting the generated JSON.
+
+Catalogue schema version 2 also stores up to three large rectangular
+`facadeSlots` per cardinal side. Slot coordinates are expressed in the same
+centred, grounded local metre space used by the runtime model loader. This scan
+runs once per unique GLB during catalogue generation; the browser does not
+inspect triangles for each placed building. The current 92-asset catalogue has
+637 slots and no asset is missing a usable façade surface.
 
 The watch command performs the same initial regeneration and then rebuilds the
 generated JSON after GLB filesystem changes. The gallery includes the geometry

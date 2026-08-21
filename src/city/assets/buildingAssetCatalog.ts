@@ -1,5 +1,6 @@
 import generatedCatalog from './buildingAssetCatalog.generated.json';
 import { BUILDING_ASSET_OVERRIDES } from './buildingAssetOverrides';
+import type { BuildingFacadeSlot } from './buildingFacadeSlot';
 
 export const BUILDING_ASSET_SOURCE_CATEGORIES = [
   'residential',
@@ -61,6 +62,7 @@ export type GeneratedBuildingAsset = Readonly<{
     min: readonly [number, number, number];
     max: readonly [number, number, number];
   }>;
+  facadeSlots: readonly BuildingFacadeSlot[];
   proportions: Readonly<{
     footprintAspect: number;
     slenderness: number;
