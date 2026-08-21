@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 import type { DebugLayerManager } from '../../../debug/DebugLayerManager';
-import type { SyntheticStreetLampDefinition } from '../model/streetLamp';
+import {
+  SYNTHETIC_STREET_LAMP_POLE_WIDTH_METRES,
+  type SyntheticStreetLampDefinition,
+} from '../model/streetLamp';
 
 export type SyntheticStreetLampConfig = Readonly<{
   bulbColor: number;
@@ -192,7 +195,11 @@ function populateInstances(
     rotation.setFromAxisAngle(yAxis, yaw);
 
     position.set(x, lamp.heightMetres / 2, z);
-    scale.set(0.13, lamp.heightMetres, 0.13);
+    scale.set(
+      SYNTHETIC_STREET_LAMP_POLE_WIDTH_METRES,
+      lamp.heightMetres,
+      SYNTHETIC_STREET_LAMP_POLE_WIDTH_METRES,
+    );
     transform.compose(position, verticalRotation, scale);
     fixtureMesh.setMatrixAt(index * FIXTURE_BOXES_PER_LAMP, transform);
 

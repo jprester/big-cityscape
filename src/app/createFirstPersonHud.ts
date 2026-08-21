@@ -14,7 +14,8 @@ export function createFirstPersonHud(): FirstPersonHud {
   crosshair.setAttribute('aria-hidden', 'true');
   const help = document.createElement('p');
   help.className = 'first-person-hud__help';
-  help.textContent = 'WASD / arrows: walk · Shift: faster · Mouse: look · Esc: exit';
+  help.textContent =
+    'WASD / arrows: walk · Shift: faster · Mouse: look · Buildings + lamps block movement · Esc: exit';
   element.append(crosshair, help);
 
   return {

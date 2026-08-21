@@ -1,6 +1,10 @@
 import * as THREE from 'three';
 import type { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {
+  resolveFirstPersonHorizontalMovement,
+  type FirstPersonCollisionIndex,
+} from './firstPersonCollision';
+import {
   calculateFirstPersonLook,
   calculateFirstPersonTravel,
   clampFirstPersonPosition,
@@ -41,6 +45,10 @@ export type FirstPersonControllerConfig = Readonly<{
   walkSpeedMetresPerSecond: number;
   fastMultiplier: number;
   boundaryInsetMetres: number;
+  collisionIndex: FirstPersonCollisionIndex;
+  collisionRadiusMetres: number;
+  collisionSubstepMetres: number;
+  nearPlaneMetres: number;
   onActiveChange: (active: boolean) => void;
   onChange: () => void;
 }>;
@@ -48,6 +56,16 @@ export type FirstPersonControllerConfig = Readonly<{
 export function createFirstPersonController(
   config: FirstPersonControllerConfig,
 ): FirstPersonController {
+  if (
+    !Number.isFinite(config.nearPlaneMetres) ||
+    config.nearPlaneMetres <= 0 ||
+    config.nearPlaneMetres >= config.collisionRadiusMetres
+  ) {
+    throw new RangeError(
+      'The first-person near plane must be positive and smaller than the collision radius.',
+    );
+  }
+
   const pressedCodes = new Set<string>();
   const forwardDirection = new THREE.Vector3();
   const rightDirection = new THREE.Vector3();
@@ -57,6 +75,7 @@ export function createFirstPersonController(
   let pointerLockObserved = false;
   let lockFailureTimeoutId: number | undefined;
   let disposed = false;
+  let inspectionNearPlaneMetres: number | undefined;
 
   const clearLockFailureTimeout = (): void => {
     if (lockFailureTimeoutId !== undefined) {
@@ -71,6 +90,9 @@ export function createFirstPersonController(
     }
 
     config.orbitControls.enabled = false;
+    inspectionNearPlaneMetres = config.camera.near;
+    config.camera.near = config.nearPlaneMetres;
+    config.camera.updateProjectionMatrix();
     config.camera.position.set(...config.spawnPosition);
     config.camera.lookAt(...config.spawnTarget);
     config.camera.position.y = config.eyeHeightMetres;
@@ -91,6 +113,13 @@ export function createFirstPersonController(
     lockRequested = false;
     pointerLockObserved = false;
     config.orbitControls.enabled = true;
+
+    if (inspectionNearPlaneMetres !== undefined) {
+      config.camera.near = inspectionNearPlaneMetres;
+      inspectionNearPlaneMetres = undefined;
+      config.camera.updateProjectionMatrix();
+    }
+
     config.camera.getWorldDirection(forwardDirection);
     forwardDirection.y = 0;
 
@@ -241,9 +270,20 @@ export function createFirstPersonController(
       forwardDirection.y = 0;
       forwardDirection.normalize();
       rightDirection.crossVectors(forwardDirection, config.camera.up).normalize();
-      config.camera.position
-        .addScaledVector(forwardDirection, travel.forwardMetres)
-        .addScaledVector(rightDirection, travel.rightMetres);
+      const resolvedPosition = resolveFirstPersonHorizontalMovement(
+        [config.camera.position.x, config.camera.position.z],
+        [
+          forwardDirection.x * travel.forwardMetres +
+            rightDirection.x * travel.rightMetres,
+          forwardDirection.z * travel.forwardMetres +
+            rightDirection.z * travel.rightMetres,
+        ],
+        config.collisionIndex,
+        config.collisionRadiusMetres,
+        config.collisionSubstepMetres,
+      );
+      config.camera.position.x = resolvedPosition[0];
+      config.camera.position.z = resolvedPosition[1];
       const clamped = clampFirstPersonPosition(
         [
           config.camera.position.x,

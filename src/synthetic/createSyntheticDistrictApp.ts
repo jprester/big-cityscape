@@ -3,6 +3,10 @@ import {
   createFirstPersonController,
   type FirstPersonController,
 } from '../app/createFirstPersonController';
+import {
+  createFirstPersonCollisionIndex,
+  type FirstPersonCollisionBounds,
+} from '../app/firstPersonCollision';
 import { createFirstPersonHud } from '../app/createFirstPersonHud';
 import { createInspectionCamera } from '../app/createInspectionCamera';
 import { createPerformancePanel } from '../app/createPerformancePanel';
@@ -21,6 +25,10 @@ import type { SyntheticBuildingPlacement } from '../city/synthetic/model/buildin
 import type { SyntheticCityPopulation } from '../city/synthetic/model/cityPopulation';
 import type { SyntheticDistrictPopulation } from '../city/synthetic/model/districtPopulation';
 import type { SyntheticProofDistrict } from '../city/synthetic/model/proofDistrict';
+import {
+  SYNTHETIC_STREET_LAMP_POLE_WIDTH_METRES,
+  type SyntheticStreetLampDefinition,
+} from '../city/synthetic/model/streetLamp';
 import type { SyntheticCity } from '../city/synthetic/model/syntheticCity';
 import { countStreetHierarchies } from '../city/synthetic/model/streetCorridor';
 import {
@@ -62,6 +70,10 @@ const FIRST_PERSON_EYE_HEIGHT_METRES = 1.8;
 const FIRST_PERSON_WALK_SPEED_METRES_PER_SECOND = 7;
 const FIRST_PERSON_FAST_MULTIPLIER = 3.5;
 const FIRST_PERSON_BOUNDARY_INSET_METRES = 2;
+const FIRST_PERSON_COLLISION_RADIUS_METRES = 0.38;
+const FIRST_PERSON_COLLISION_SUBSTEP_METRES = 0.2;
+const FIRST_PERSON_COLLISION_CELL_SIZE_METRES = 100;
+const FIRST_PERSON_NEAR_PLANE_METRES = 0.1;
 
 type SyntheticViewMode = 'city' | 'proof';
 
@@ -283,6 +295,13 @@ export async function createSyntheticDistrictApp(
 
   const firstPersonHud = createFirstPersonHud();
   const firstPersonSpawn = createFirstPersonSpawn(viewData);
+  const firstPersonCollisionIndex = createFirstPersonCollisionIndex(
+    [
+      ...viewData.population.placements.map(toBuildingCollisionBounds),
+      ...streetLampPlan.lamps.map(toStreetLampCollisionBounds),
+    ],
+    FIRST_PERSON_COLLISION_CELL_SIZE_METRES,
+  );
   firstPersonController = createFirstPersonController({
     camera: inspectionCamera.camera,
     canvas: renderer.domElement,
@@ -294,6 +313,10 @@ export async function createSyntheticDistrictApp(
     walkSpeedMetresPerSecond: FIRST_PERSON_WALK_SPEED_METRES_PER_SECOND,
     fastMultiplier: FIRST_PERSON_FAST_MULTIPLIER,
     boundaryInsetMetres: FIRST_PERSON_BOUNDARY_INSET_METRES,
+    collisionIndex: firstPersonCollisionIndex,
+    collisionRadiusMetres: FIRST_PERSON_COLLISION_RADIUS_METRES,
+    collisionSubstepMetres: FIRST_PERSON_COLLISION_SUBSTEP_METRES,
+    nearPlaneMetres: FIRST_PERSON_NEAR_PLANE_METRES,
     onActiveChange: (active) => {
       cameraInteractionActive = active;
       firstPersonHud.setActive(active);
@@ -618,6 +641,37 @@ function findTallestPlacement(
         : tallest,
     first,
   );
+}
+
+function toBuildingCollisionBounds(
+  placement: SyntheticBuildingPlacement,
+): FirstPersonCollisionBounds {
+  // Selection records the fitted world-X/world-Z extents after an optional
+  // quarter turn, so collision must not rotate these dimensions a second time.
+  const halfWidth = placement.dimensionsMetres.width / 2;
+  const halfDepth = placement.dimensionsMetres.depth / 2;
+
+  return {
+    id: `building:${placement.id}`,
+    minX: placement.center[0] - halfWidth,
+    maxX: placement.center[0] + halfWidth,
+    minZ: placement.center[1] - halfDepth,
+    maxZ: placement.center[1] + halfDepth,
+  };
+}
+
+function toStreetLampCollisionBounds(
+  lamp: SyntheticStreetLampDefinition,
+): FirstPersonCollisionBounds {
+  const halfWidth = SYNTHETIC_STREET_LAMP_POLE_WIDTH_METRES / 2;
+
+  return {
+    id: `street-lamp:${lamp.id}`,
+    minX: lamp.position[0] - halfWidth,
+    maxX: lamp.position[0] + halfWidth,
+    minZ: lamp.position[1] - halfWidth,
+    maxZ: lamp.position[1] + halfWidth,
+  };
 }
 
 function setStreetPreset(

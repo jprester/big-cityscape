@@ -289,12 +289,32 @@ crosshair and control reminder replace the composition panels while walking.
 
 The rendered block platforms use a 0.15 m curb-scale height, leaving the camera
 approximately 1.65 m above their surface. Walk mode clamps the camera to a
-two-metre inset inside the generated city
-bounds and restores eye height every frame. It deliberately does not implement
-gravity, terrain following, or collision against buildings yet, so it is an
-inspection/navigation tool rather than a game-character controller. Leaving
-the page, hiding it, or disposing the view exits walk mode and releases its
-keyboard, mouse, and pointer-lock listeners.
+two-metre inset inside the generated city bounds and restores eye height every
+frame.
+
+Every selected building placement contributes one axis-aligned footprint
+collider using its fitted world-space width and depth. Each street-lamp pole
+contributes a 0.13 × 0.13 m footprint using the same semantic position as its
+rendered instance. The player uses a 0.38 m horizontal radius. All colliders are
+indexed into deterministic 100 m cells, and
+movement is divided into steps no longer than 0.2 m before resolving X and Z
+independently. This prevents the 24.5 m/s fast mode from tunnelling through a
+building or lamp while allowing natural wall sliding. The default city indexes
+1,188 building footprints and 1,212 lamp poles; both city and proof district
+spawn points remain outside collision geometry.
+
+Collision is deliberately footprint-level rather than mesh-level. It blocks
+whole building bounds, including visual setbacks or voids inside a model, and
+does not include lamp arms or bulbs, gravity, terrain following, jumping,
+stairs, or interiors. Walk mode remains an inspection controller rather than a
+general physics character. Leaving the page, hiding it, or disposing the view
+exits walk mode and releases its keyboard, mouse, and pointer-lock listeners.
+
+Walk mode temporarily shortens the camera near plane from the 1 m city-scale
+inspection value to 0.1 m. This prevents the camera frustum from slicing through
+a facade while the 0.38 m player collider is correctly stopped outside it. The
+1 m near plane is restored when Walk mode exits, preserving aerial depth
+precision.
 
 Proof mode loads only its 37 selected asset files and uses one `InstancedMesh`
 per asset. Full-city mode loads its 63 selected assets once and packs all models
@@ -432,8 +452,6 @@ state.
 
 ## Next slice
 
-Add lightweight first-person collision against generated building-slot bounds.
-Use geometry-independent swept movement or axis separation, preserve road and
-sidewalk navigation, and keep the implementation deterministic and testable.
-Do not introduce a physics engine, gravity, jumping, stairs, or mesh-level
-collision.
+Use the collision-enabled Walk mode to evaluate street widths, setbacks, lamp
+spacing, and building repetition before committing to a larger city footprint
+or a more detailed visual-material slice.

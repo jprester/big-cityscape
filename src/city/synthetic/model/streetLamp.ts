@@ -1,5 +1,7 @@
 import type { SyntheticStreetHierarchyId } from './streetCorridor';
 
+export const SYNTHETIC_STREET_LAMP_POLE_WIDTH_METRES = 0.13;
+
 export type SyntheticStreetLampDefinition = Readonly<{
   id: string;
   streetId: string;
