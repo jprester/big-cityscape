@@ -41,11 +41,16 @@ the semantic building classification.
 | `src/city/assets/buildingAssetCatalog.ts` | Typed catalogue API and conservative default classification rules. |
 | `src/catalog/createBuildingAssetCatalogApp.ts` | Browser-based visual audit gallery. |
 
+Texture and UV normalization is documented separately in
+[`BUILDING_TEXTURE_PIPELINE.md`](./BUILDING_TEXTURE_PIPELINE.md). Its read-only
+audit covers both the combined Blender source and the exported GLBs.
+
 ## Regeneration
 
 ```sh
 npm run catalog:build
 npm run catalog:watch # optional authoring-time watcher
+npm run textures:audit # source material, image dependency, and GLB UV audit
 npm test
 npm run build
 ```

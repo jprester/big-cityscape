@@ -40,7 +40,10 @@ synthetic city composition
 ```
 
 See `docs/BUILDING_ASSETS.md` for the asset catalogue and
-`docs/SYNTHETIC_CITY.md` for the current implementation contract.
+`docs/SYNTHETIC_CITY.md` for the current implementation contract. The agreed
+finished-project art direction is preserved in `references/concept-art/` and
+should guide later material, lighting, signage, rooftop-detail, and street-life
+milestones without overriding the performance constraints in this plan.
 
 ## 2. Core hypothesis
 

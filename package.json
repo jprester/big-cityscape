@@ -12,6 +12,7 @@
     "preprocess:blocks": "tsx scripts/preprocess-blocks.ts",
     "catalog:build": "tsx scripts/catalog-building-assets.ts",
     "catalog:watch": "tsx scripts/catalog-building-assets.ts --watch",
+    "textures:audit": "tsx scripts/audit-building-textures.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview"
