@@ -1,0 +1,495 @@
+{
+  "schemaVersion": 1,
+  "sourceBlend": "2026-export-low-poly-textured-buildings.blend",
+  "sourceSha256": "1b7cd59b2d4c6713e81132fbabdea399e4b8d163b78c5bf5231985e662a03378",
+  "packFile": "textured-residential-pack.glb",
+  "modelCount": 25,
+  "existingModelCount": 15,
+  "pilotModelCount": 10,
+  "resolvedExternalImageCount": 20,
+  "models": [
+    {
+      "id": "residential-10",
+      "sourceObject": "residential-lp-10-mat",
+      "catalogueStatus": "existing",
+      "knownCatalogAssetId": "residential-10",
+      "dimensionsMetres": {
+        "width": 25.8217,
+        "height": 23.4845,
+        "depth": 26.003
+      },
+      "vertices": 160,
+      "triangles": 292,
+      "uvLayers": [
+        "UV \u8d34\u56fe"
+      ],
+      "materials": [
+        "low-poly-skycraper-textures"
+      ]
+    },
+    {
+      "id": "residential-18",
+      "sourceObject": "residential-lp-18.002",
+      "catalogueStatus": "existing",
+      "knownCatalogAssetId": "residential-18",
+      "dimensionsMetres": {
+        "width": 28.1321,
+        "height": 52.067,
+        "depth": 15.62
+      },
+      "vertices": 154,
+      "triangles": 288,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_High-rise1_Atlas"
+      ]
+    },
+    {
+      "id": "residential-20",
+      "sourceObject": "residential-lp-20.002",
+      "catalogueStatus": "existing",
+      "knownCatalogAssetId": "residential-20",
+      "dimensionsMetres": {
+        "width": 21.6462,
+        "height": 42.5158,
+        "depth": 11.5987
+      },
+      "vertices": 40,
+      "triangles": 20,
+      "uvLayers": [
+        "UVMap",
+        "UVMap.001",
+        "UVMap.002"
+      ],
+      "materials": [
+        "MAT_Residential_Atlas2"
+      ]
+    },
+    {
+      "id": "residential-23",
+      "sourceObject": "residential-lp-23.002",
+      "catalogueStatus": "existing",
+      "knownCatalogAssetId": "residential-23",
+      "dimensionsMetres": {
+        "width": 20.6351,
+        "height": 49.0736,
+        "depth": 16.2046
+      },
+      "vertices": 122,
+      "triangles": 230,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_Residential_Atlas2"
+      ]
+    },
+    {
+      "id": "residential-24",
+      "sourceObject": "residential-lp-24.002",
+      "catalogueStatus": "existing",
+      "knownCatalogAssetId": "residential-24",
+      "dimensionsMetres": {
+        "width": 30.208,
+        "height": 37.9795,
+        "depth": 15.3457
+      },
+      "vertices": 660,
+      "triangles": 1288,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_Residential_Atlas2"
+      ]
+    },
+    {
+      "id": "residential-25",
+      "sourceObject": "residential-lp-25.001",
+      "catalogueStatus": "existing",
+      "knownCatalogAssetId": "residential-25",
+      "dimensionsMetres": {
+        "width": 33.8651,
+        "height": 33.3429,
+        "depth": 16.9243
+      },
+      "vertices": 48,
+      "triangles": 88,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_Residential_Atlas2"
+      ]
+    },
+    {
+      "id": "residential-26",
+      "sourceObject": "residential-lp-26.002",
+      "catalogueStatus": "existing",
+      "knownCatalogAssetId": "residential-26",
+      "dimensionsMetres": {
+        "width": 45.0427,
+        "height": 27.2819,
+        "depth": 40.5377
+      },
+      "vertices": 93,
+      "triangles": 170,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_Residential_Atlas"
+      ]
+    },
+    {
+      "id": "residential-28",
+      "sourceObject": "residential-lp-28.002",
+      "catalogueStatus": "existing",
+      "knownCatalogAssetId": "residential-28",
+      "dimensionsMetres": {
+        "width": 20.2238,
+        "height": 50.2942,
+        "depth": 20.2434
+      },
+      "vertices": 107,
+      "triangles": 204,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_High-rise1_Atlas"
+      ]
+    },
+    {
+      "id": "residential-3",
+      "sourceObject": "residential-lp-3.002",
+      "catalogueStatus": "existing",
+      "knownCatalogAssetId": "residential-3",
+      "dimensionsMetres": {
+        "width": 18.8474,
+        "height": 34.726,
+        "depth": 13.2363
+      },
+      "vertices": 64,
+      "triangles": 116,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_Residential_Atlas2"
+      ]
+    },
+    {
+      "id": "residential-30",
+      "sourceObject": "residential-lp-30.002",
+      "catalogueStatus": "existing",
+      "knownCatalogAssetId": "residential-30",
+      "dimensionsMetres": {
+        "width": 26.5948,
+        "height": 26.6646,
+        "depth": 9.1326
+      },
+      "vertices": 211,
+      "triangles": 406,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_High-rise1_Atlas"
+      ]
+    },
+    {
+      "id": "residential-5",
+      "sourceObject": "residential-lp-5.002",
+      "catalogueStatus": "existing",
+      "knownCatalogAssetId": "residential-5",
+      "dimensionsMetres": {
+        "width": 36.2047,
+        "height": 35.391,
+        "depth": 36.2047
+      },
+      "vertices": 48,
+      "triangles": 84,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_Residential_Atlas2"
+      ]
+    },
+    {
+      "id": "residential-6",
+      "sourceObject": "residential-lp-6.002",
+      "catalogueStatus": "existing",
+      "knownCatalogAssetId": "residential-6",
+      "dimensionsMetres": {
+        "width": 43.2193,
+        "height": 35.8526,
+        "depth": 14.1202
+      },
+      "vertices": 52,
+      "triangles": 88,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_High-rise1_Atlas"
+      ]
+    },
+    {
+      "id": "residential-7",
+      "sourceObject": "residential-lp-7.002",
+      "catalogueStatus": "existing",
+      "knownCatalogAssetId": "residential-7",
+      "dimensionsMetres": {
+        "width": 31.7539,
+        "height": 44.843,
+        "depth": 14.8357
+      },
+      "vertices": 50,
+      "triangles": 92,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_High-rise1_Atlas"
+      ]
+    },
+    {
+      "id": "residential-8",
+      "sourceObject": "residential-lp-8.002",
+      "catalogueStatus": "existing",
+      "knownCatalogAssetId": "residential-8",
+      "dimensionsMetres": {
+        "width": 26.2495,
+        "height": 48.2066,
+        "depth": 24.4341
+      },
+      "vertices": 76,
+      "triangles": 132,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_Residential_Atlas2"
+      ]
+    },
+    {
+      "id": "residential-9",
+      "sourceObject": "residential-lp-9-mat",
+      "catalogueStatus": "existing",
+      "knownCatalogAssetId": "residential-9",
+      "dimensionsMetres": {
+        "width": 27.4141,
+        "height": 45.6837,
+        "depth": 17.1304
+      },
+      "vertices": 140,
+      "triangles": 256,
+      "uvLayers": [
+        "UV \u8d34\u56fe"
+      ],
+      "materials": [
+        "low-poly-skycraper-textures"
+      ]
+    },
+    {
+      "id": "residential-pilot-04",
+      "sourceObject": "RES_04.001",
+      "catalogueStatus": "pilot-new",
+      "knownCatalogAssetId": null,
+      "dimensionsMetres": {
+        "width": 25.5142,
+        "height": 64.7929,
+        "depth": 16.7306
+      },
+      "vertices": 196,
+      "triangles": 368,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_Residential_Atlas",
+        "MAT_Beacon_Red"
+      ]
+    },
+    {
+      "id": "residential-pilot-05",
+      "sourceObject": "RES_05.001",
+      "catalogueStatus": "pilot-new",
+      "knownCatalogAssetId": null,
+      "dimensionsMetres": {
+        "width": 18.0331,
+        "height": 88.9837,
+        "depth": 18.0765
+      },
+      "vertices": 252,
+      "triangles": 482,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_Residential_Atlas",
+        "MAT_Beacon_Red"
+      ]
+    },
+    {
+      "id": "residential-pilot-06",
+      "sourceObject": "RES_06.001",
+      "catalogueStatus": "pilot-new",
+      "knownCatalogAssetId": null,
+      "dimensionsMetres": {
+        "width": 18.8616,
+        "height": 29.7257,
+        "depth": 13.1729
+      },
+      "vertices": 161,
+      "triangles": 306,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_Residential_Atlas",
+        "MAT_Beacon_Red"
+      ]
+    },
+    {
+      "id": "residential-pilot-07",
+      "sourceObject": "RES_07.001",
+      "catalogueStatus": "pilot-new",
+      "knownCatalogAssetId": null,
+      "dimensionsMetres": {
+        "width": 15.7222,
+        "height": 35.1039,
+        "depth": 8.0391
+      },
+      "vertices": 563,
+      "triangles": 1078,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_Beacon_Red",
+        "MAT_Residential_Atlas"
+      ]
+    },
+    {
+      "id": "residential-pilot-08",
+      "sourceObject": "RES_08.001",
+      "catalogueStatus": "pilot-new",
+      "knownCatalogAssetId": null,
+      "dimensionsMetres": {
+        "width": 43.3603,
+        "height": 46.1718,
+        "depth": 14.4604
+      },
+      "vertices": 318,
+      "triangles": 590,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_Residential_Atlas",
+        "MAT_Beacon_Red"
+      ]
+    },
+    {
+      "id": "residential-pilot-09",
+      "sourceObject": "RES_09.001",
+      "catalogueStatus": "pilot-new",
+      "knownCatalogAssetId": null,
+      "dimensionsMetres": {
+        "width": 12.0725,
+        "height": 41.5317,
+        "depth": 10.011
+      },
+      "vertices": 268,
+      "triangles": 516,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_Residential_Atlas",
+        "MAT_Beacon_Red"
+      ]
+    },
+    {
+      "id": "residential-pilot-10",
+      "sourceObject": "RES_10",
+      "catalogueStatus": "pilot-new",
+      "knownCatalogAssetId": null,
+      "dimensionsMetres": {
+        "width": 23.3169,
+        "height": 44.1103,
+        "depth": 24.3483
+      },
+      "vertices": 228,
+      "triangles": 412,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "MAT_Residential_Atlas"
+      ]
+    },
+    {
+      "id": "residential-pilot-asian-a",
+      "sourceObject": "BUILDING_standardSurface1_0",
+      "catalogueStatus": "pilot-new",
+      "knownCatalogAssetId": null,
+      "dimensionsMetres": {
+        "width": 13.0806,
+        "height": 27.6298,
+        "depth": 14.0931
+      },
+      "vertices": 1393,
+      "triangles": 872,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "standardSurface1"
+      ]
+    },
+    {
+      "id": "residential-pilot-asian-b",
+      "sourceObject": "BUILDING_standardSurface1_0.001",
+      "catalogueStatus": "pilot-new",
+      "knownCatalogAssetId": null,
+      "dimensionsMetres": {
+        "width": 21.5001,
+        "height": 27.8168,
+        "depth": 14.1884
+      },
+      "vertices": 1393,
+      "triangles": 872,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "standardSurface1"
+      ]
+    },
+    {
+      "id": "residential-pilot-asian-c",
+      "sourceObject": "BUILDING_standardSurface1_0.003",
+      "catalogueStatus": "pilot-new",
+      "knownCatalogAssetId": null,
+      "dimensionsMetres": {
+        "width": 13.0806,
+        "height": 45.8122,
+        "depth": 14.093
+      },
+      "vertices": 2786,
+      "triangles": 1744,
+      "uvLayers": [
+        "UVMap"
+      ],
+      "materials": [
+        "standardSurface1"
+      ]
+    }
+  ]
+}

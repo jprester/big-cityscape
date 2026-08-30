@@ -26,8 +26,13 @@ export type BuildingModelLibrary = Readonly<{
   }>[];
 }>;
 
+export type LoadBuildingModelOptions = Readonly<{
+  includeCategoryFallbacks?: boolean;
+}>;
+
 export async function loadBuildingModels(
   catalog: readonly BuildingModelCatalogEntry[] = BUILDING_MODEL_CATALOG,
+  options: LoadBuildingModelOptions = {},
 ): Promise<BuildingModelLibrary> {
   const loader = new GLTFLoader();
   const results = await Promise.allSettled(
@@ -55,16 +60,18 @@ export async function loadBuildingModels(
     });
   }
 
-  for (const category of BUILDING_MODEL_CATEGORIES) {
-    if (models.some((model) => model.category === category)) {
-      continue;
-    }
+  if (options.includeCategoryFallbacks ?? true) {
+    for (const category of BUILDING_MODEL_CATEGORIES) {
+      if (models.some((model) => model.category === category)) {
+        continue;
+      }
 
-    models.push(createFallbackModel(category));
-    failedAssets.push({
-      id: `fallback-${category}`,
-      reason: `No ${category} model loaded; using primitive fallback geometry.`,
-    });
+      models.push(createFallbackModel(category));
+      failedAssets.push({
+        id: `fallback-${category}`,
+        reason: `No ${category} model loaded; using primitive fallback geometry.`,
+      });
+    }
   }
 
   if (failedAssets.length > 0) {

@@ -6,6 +6,16 @@ project:
 - `city-field-target-street-night.png`: long street-axis view;
 - `city-field-target-rooftop-night.png`: elevated rooftop and skyline view.
 
+Asset-specific material guides are stored alongside the city-scale targets:
+
+- `residential-texture-guide-27-28-30-31-32-night-v1.png`: five residential
+  masses from the supplied Blender view, textured left-to-right as a coherent
+  night-city family while preserving their distinct silhouettes.
+- `residential-texture-guide-27-28-30-31-32-night-v2.png`: preferred residential
+  revision with apartment-scale punched windows, balcony and privacy rhythms,
+  masonry/precast variation, residential entrances, and sparse occupancy
+  lighting instead of office-style curtain walls.
+
 They were generated from actual City Field screenshots, so their camera
 composition, street hierarchy, skyline distribution, and overall massing are
 more important than incidental AI-generated architectural details.

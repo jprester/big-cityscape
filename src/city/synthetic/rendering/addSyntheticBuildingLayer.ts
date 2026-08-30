@@ -29,21 +29,30 @@ export type SyntheticBuildingRenderStats = Readonly<{
   triangles: number;
 }>;
 
+export type SyntheticBuildingLayerOptions = Readonly<{
+  placements?: readonly SyntheticBuildingPlacement[];
+  layerId?: string;
+  label?: string;
+}>;
+
 export async function addSyntheticBuildingLayer(
   layers: DebugLayerManager,
   population: SyntheticDistrictPopulation,
+  options: SyntheticBuildingLayerOptions = {},
 ): Promise<SyntheticBuildingRenderStats> {
+  const placements = options.placements ?? population.placements;
   const assetsById = new Map(
     BUILDING_ASSET_CATALOG.map((asset) => [asset.id, asset]),
   );
-  const requestedAssets = population.assetUsage.map((usage) =>
-    requireCatalogAsset(assetsById, usage.assetId),
-  );
+  const requestedAssets = [...new Set(placements.map((placement) => placement.assetId))]
+    .sort()
+    .map((assetId) => requireCatalogAsset(assetsById, assetId));
   const library = await loadBuildingModels(
     requestedAssets.map(toModelCatalogEntry),
+    { includeCategoryFallbacks: options.placements === undefined },
   );
   const modelsById = new Map(library.models.map((model) => [model.id, model]));
-  const placementsByAsset = groupPlacementsByAsset(population.placements);
+  const placementsByAsset = groupPlacementsByAsset(placements);
   const group = new THREE.Group();
   group.name = 'synthetic:selected-building-models';
   const materials = createBuildingMaterials();
@@ -79,8 +88,10 @@ export async function addSyntheticBuildingLayer(
   }
 
   layers.add({
-    id: 'selected-building-models',
-    label: `${population.metadata.placedCount} selected GLBs · ${population.metadata.distinctAssetCount} asset variants`,
+    id: options.layerId ?? 'selected-building-models',
+    label:
+      options.label ??
+      `${placements.length} selected GLBs · ${requestedAssets.length} asset variants`,
     object: group,
     dispose: () => {
       meshes.forEach((mesh) => mesh.dispose());
@@ -92,7 +103,7 @@ export async function addSyntheticBuildingLayer(
   });
 
   return {
-    instances: population.metadata.placedCount,
+    instances: placements.length,
     batches: meshes.length,
     loadedModels: requestedAssets.filter((asset) => modelsById.has(asset.id))
       .length,

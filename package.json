@@ -13,6 +13,7 @@
     "catalog:build": "tsx scripts/catalog-building-assets.ts",
     "catalog:watch": "tsx scripts/catalog-building-assets.ts --watch",
     "textures:audit": "tsx scripts/audit-building-textures.ts",
+    "textures:export-residential-pack": "tsx scripts/export-textured-residential-pack.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview"

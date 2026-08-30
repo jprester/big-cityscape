@@ -10,6 +10,7 @@ import {
 import { createFirstPersonHud } from '../app/createFirstPersonHud';
 import { createInspectionCamera } from '../app/createInspectionCamera';
 import { createPerformancePanel } from '../app/createPerformancePanel';
+import { BUILDING_ASSET_CATALOG } from '../city/assets/buildingAssetCatalog';
 import {
   DEFAULT_PROOF_DISTRICT_CONFIG,
   generateProofDistrict,
@@ -48,6 +49,7 @@ import { addSyntheticCityDebugLayer } from '../city/synthetic/rendering/addSynth
 import { addSyntheticRoadMarkingLayer } from '../city/synthetic/rendering/addSyntheticRoadMarkingLayer';
 import { addSyntheticStreetLampLayer } from '../city/synthetic/rendering/addSyntheticStreetLampLayer';
 import { addSyntheticSignageDebugLayer } from '../city/synthetic/rendering/addSyntheticSignageDebugLayer';
+import { addTexturedResidentialBuildingLayer } from '../city/synthetic/rendering/addTexturedResidentialBuildingLayer';
 import {
   addSyntheticDistrictDebugLayers,
 } from '../city/synthetic/rendering/addSyntheticDistrictDebugLayers';
@@ -78,6 +80,7 @@ const FIRST_PERSON_COLLISION_CELL_SIZE_METRES = 100;
 const FIRST_PERSON_NEAR_PLANE_METRES = 0.1;
 
 type SyntheticViewMode = 'city' | 'proof';
+type SyntheticBuildingAppearance = 'catalogue' | 'textured';
 
 type SyntheticViewData =
   | Readonly<{
@@ -102,6 +105,7 @@ export async function createSyntheticDistrictApp(
 ): Promise<SyntheticDistrictApp> {
   const search = window.location.search;
   const seed = readSyntheticSeed(search);
+  const buildingAppearance = readSyntheticBuildingAppearance(search);
   let activeEnvironmentPresetId = readSyntheticEnvironmentPreset(search);
   const viewData = createViewData(readSyntheticViewMode(search), seed);
   const scene = new THREE.Scene();
@@ -172,6 +176,9 @@ export async function createSyntheticDistrictApp(
 
   let cityRenderLayer: SyntheticCityBuildingRenderLayer | undefined;
   let buildingRenderStats: SyntheticBuildingRenderStats;
+  const placementGroups = partitionPlacementsBySourceCategory(
+    viewData.population.placements,
+  );
 
   if (viewData.mode === 'city') {
     addSyntheticCityDebugLayer(debugLayers, viewData.spatial);
@@ -179,12 +186,58 @@ export async function createSyntheticDistrictApp(
       debugLayers,
       viewData.spatial.roadMarkings,
     );
-    cityRenderLayer = await addSyntheticCityBuildingLayer(
-      debugLayers,
-      viewData.spatial,
-      viewData.population,
+    if (buildingAppearance === 'textured') {
+      const [nonResidentialLayer, texturedStats] = await Promise.all([
+        addSyntheticCityBuildingLayer(
+          debugLayers,
+          viewData.spatial,
+          viewData.population,
+          {
+            placements: placementGroups.nonResidential,
+            layerId: 'selected-non-residential-building-models',
+            label: `${placementGroups.nonResidential.length} original high-rise, skyscraper, and other instances`,
+          },
+        ),
+        addTexturedResidentialBuildingLayer(
+          debugLayers,
+          viewData.population,
+          {
+            placements: placementGroups.residential,
+            layerId: 'selected-residential-building-models',
+            label: `${placementGroups.residential.length} textured residential instances`,
+          },
+        ),
+      ]);
+      cityRenderLayer = combineHybridCityRenderLayer(
+        nonResidentialLayer,
+        texturedStats,
+      );
+      buildingRenderStats = cityRenderLayer.stats;
+    } else {
+      cityRenderLayer = await addSyntheticCityBuildingLayer(
+        debugLayers,
+        viewData.spatial,
+        viewData.population,
+      );
+      buildingRenderStats = cityRenderLayer.stats;
+    }
+  } else if (buildingAppearance === 'textured') {
+    const [nonResidentialStats, texturedStats] = await Promise.all([
+      addSyntheticBuildingLayer(debugLayers, viewData.population, {
+        placements: placementGroups.nonResidential,
+        layerId: 'selected-non-residential-building-models',
+        label: `${placementGroups.nonResidential.length} original non-residential instances`,
+      }),
+      addTexturedResidentialBuildingLayer(debugLayers, viewData.population, {
+        placements: placementGroups.residential,
+        layerId: 'selected-residential-building-models',
+        label: `${placementGroups.residential.length} textured residential instances`,
+      }),
+    ]);
+    buildingRenderStats = combineBuildingRenderStats(
+      nonResidentialStats,
+      texturedStats,
     );
-    buildingRenderStats = cityRenderLayer.stats;
   } else {
     buildingRenderStats = await addSyntheticBuildingLayer(
       debugLayers,
@@ -208,6 +261,7 @@ export async function createSyntheticDistrictApp(
     buildingRenderStats,
     seed,
     activeEnvironmentPresetId,
+    buildingAppearance,
     streetLampPlan.metadata.lampCount,
     signageRenderStats.instanceCount,
   );
@@ -798,11 +852,89 @@ function readSyntheticSeed(search: string): number {
   return seed;
 }
 
+function readSyntheticBuildingAppearance(
+  search: string,
+): SyntheticBuildingAppearance {
+  const value = new URLSearchParams(search).get('appearance');
+
+  if (value === null || value === 'catalogue') {
+    return 'catalogue';
+  }
+
+  if (value === 'textured') {
+    return value;
+  }
+
+  throw new Error(
+    'The synthetic building appearance must be "catalogue" or "textured".',
+  );
+}
+
+function partitionPlacementsBySourceCategory(
+  placements: readonly SyntheticBuildingPlacement[],
+): Readonly<{
+  residential: readonly SyntheticBuildingPlacement[];
+  nonResidential: readonly SyntheticBuildingPlacement[];
+}> {
+  const sourceCategoryByAssetId = new Map(
+    BUILDING_ASSET_CATALOG.map((asset) => [asset.id, asset.sourceCategory]),
+  );
+  const residential: SyntheticBuildingPlacement[] = [];
+  const nonResidential: SyntheticBuildingPlacement[] = [];
+
+  for (const placement of placements) {
+    const sourceCategory = sourceCategoryByAssetId.get(placement.assetId);
+    if (sourceCategory === undefined) {
+      throw new Error(`Unknown building asset ${placement.assetId}.`);
+    }
+    (sourceCategory === 'residential' ? residential : nonResidential).push(
+      placement,
+    );
+  }
+
+  return { residential, nonResidential };
+}
+
+function combineBuildingRenderStats(
+  first: SyntheticBuildingRenderStats,
+  second: SyntheticBuildingRenderStats,
+): SyntheticBuildingRenderStats {
+  return {
+    instances: first.instances + second.instances,
+    batches: first.batches + second.batches,
+    loadedModels: first.loadedModels + second.loadedModels,
+    failedModels: first.failedModels + second.failedModels,
+    triangles: first.triangles + second.triangles,
+  };
+}
+
+function combineHybridCityRenderLayer(
+  nonResidentialLayer: SyntheticCityBuildingRenderLayer,
+  texturedStats: SyntheticBuildingRenderStats,
+): SyntheticCityBuildingRenderLayer {
+  return {
+    stats: combineBuildingRenderStats(nonResidentialLayer.stats, texturedStats),
+    beginFrame: nonResidentialLayer.beginFrame,
+    updateVisibility: nonResidentialLayer.updateVisibility,
+    getFrameStats: () => {
+      const frame = nonResidentialLayer.getFrameStats();
+      return {
+        ...frame,
+        renderedBatches: frame.renderedBatches + texturedStats.batches,
+        totalBatches: frame.totalBatches + texturedStats.batches,
+        renderedInstances: frame.renderedInstances + texturedStats.instances,
+        totalInstances: frame.totalInstances + texturedStats.instances,
+      };
+    },
+  };
+}
+
 function createStatisticsPanel(
   viewData: SyntheticViewData,
   rendering: SyntheticBuildingRenderStats,
   seed: number,
   environmentPresetId: SyntheticEnvironmentPresetId,
+  buildingAppearance: SyntheticBuildingAppearance,
   streetLampCount: number,
   signAnchorCount: number,
 ): HTMLElement {
@@ -820,6 +952,13 @@ function createStatisticsPanel(
     viewData.mode,
     seed,
     environmentPresetId,
+    buildingAppearance,
+  );
+  const appearanceNavigation = createAppearanceNavigation(
+    viewData.mode,
+    seed,
+    environmentPresetId,
+    buildingAppearance,
   );
   const metrics = document.createElement('dl');
   metrics.className = 'synthetic-statistics__metrics';
@@ -855,7 +994,9 @@ function createStatisticsPanel(
   const legend = document.createElement('p');
   legend.className = 'synthetic-statistics__legend';
   legend.textContent =
-    'Buildings: green low-rise · blue mid-rise · amber high-rise · rose skyscraper';
+    buildingAppearance === 'textured'
+      ? 'Buildings: source diffuse · roughness · emissive · normal maps where supplied'
+      : 'Buildings: green low-rise · blue mid-rise · amber high-rise · rose skyscraper';
   const assetLink = document.createElement('a');
   assetLink.className = 'synthetic-statistics__link';
   assetLink.href = '?view=assets';
@@ -864,6 +1005,7 @@ function createStatisticsPanel(
     eyebrow,
     title,
     modeNavigation,
+    appearanceNavigation,
     metrics,
     legend,
     assetLink,
@@ -972,6 +1114,7 @@ function createModeNavigation(
   currentMode: SyntheticViewMode,
   seed: number,
   environmentPresetId: SyntheticEnvironmentPresetId,
+  buildingAppearance: SyntheticBuildingAppearance,
 ): HTMLElement {
   const navigation = document.createElement('nav');
   navigation.className = 'synthetic-statistics__modes';
@@ -982,7 +1125,7 @@ function createModeNavigation(
     ['proof', 'Proof district'],
   ] as const) {
     const link = document.createElement('a');
-    link.href = `?view=synthetic&mode=${mode}&seed=${seed}&time=${environmentPresetId}`;
+    link.href = `?view=synthetic&mode=${mode}&seed=${seed}&time=${environmentPresetId}&appearance=${buildingAppearance}`;
     link.dataset.syntheticMode = mode;
     link.textContent = label;
 
@@ -990,6 +1133,34 @@ function createModeNavigation(
       link.setAttribute('aria-current', 'page');
     }
 
+    navigation.append(link);
+  }
+
+  return navigation;
+}
+
+function createAppearanceNavigation(
+  mode: SyntheticViewMode,
+  seed: number,
+  environmentPresetId: SyntheticEnvironmentPresetId,
+  currentAppearance: SyntheticBuildingAppearance,
+): HTMLElement {
+  const navigation = document.createElement('nav');
+  navigation.className = 'synthetic-statistics__modes';
+  navigation.setAttribute('aria-label', 'Building appearance');
+
+  for (const [appearance, label] of [
+    ['catalogue', 'Massing'],
+    ['textured', 'Textures'],
+  ] as const) {
+    const link = document.createElement('a');
+    link.href = `?view=synthetic&mode=${mode}&seed=${seed}&time=${environmentPresetId}&appearance=${appearance}`;
+    link.dataset.syntheticMode = appearance;
+    link.textContent = label;
+
+    if (appearance === currentAppearance) {
+      link.setAttribute('aria-current', 'page');
+    }
     navigation.append(link);
   }
 

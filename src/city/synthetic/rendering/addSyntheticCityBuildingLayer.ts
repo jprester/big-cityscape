@@ -40,6 +40,12 @@ export type SyntheticCityBuildingRenderLayer = Readonly<{
   getFrameStats: () => CityMassingFrameStats;
 }>;
 
+export type SyntheticCityBuildingLayerOptions = Readonly<{
+  placements?: readonly SyntheticBuildingPlacement[];
+  layerId?: string;
+  label?: string;
+}>;
+
 type DistrictBatch = Readonly<{
   district: SyntheticProofDistrict;
   mesh: THREE.BatchedMesh;
@@ -51,18 +57,21 @@ export async function addSyntheticCityBuildingLayer(
   layers: DebugLayerManager,
   city: SyntheticCity,
   population: SyntheticCityPopulation,
+  options: SyntheticCityBuildingLayerOptions = {},
 ): Promise<SyntheticCityBuildingRenderLayer> {
+  const placements = options.placements ?? population.placements;
   const assetsById = new Map(
     BUILDING_ASSET_CATALOG.map((asset) => [asset.id, asset]),
   );
-  const requestedAssets = population.assetUsage.map((usage) =>
-    requireCatalogAsset(assetsById, usage.assetId),
-  );
+  const requestedAssets = [...new Set(placements.map((placement) => placement.assetId))]
+    .sort()
+    .map((assetId) => requireCatalogAsset(assetsById, assetId));
   const library = await loadBuildingModels(
     requestedAssets.map(toModelCatalogEntry),
+    { includeCategoryFallbacks: options.placements === undefined },
   );
   const modelsById = new Map(library.models.map((model) => [model.id, model]));
-  const placementsByDistrict = groupPlacementsByDistrict(population.placements);
+  const placementsByDistrict = groupPlacementsByDistrict(placements);
   const fallbackGeometry = new THREE.BoxGeometry(1, 1, 1);
   fallbackGeometry.translate(0, 0.5, 0);
   const material = new THREE.MeshLambertMaterial({
@@ -80,6 +89,9 @@ export async function addSyntheticCityBuildingLayer(
     first.id.localeCompare(second.id),
   )) {
     const placements = placementsByDistrict.get(district.id) ?? [];
+    if (placements.length === 0) {
+      continue;
+    }
     const batch = createDistrictBatch(
       district,
       placements,
@@ -114,8 +126,10 @@ export async function addSyntheticCityBuildingLayer(
   }
 
   layers.add({
-    id: 'selected-building-models',
-    label: `${population.metadata.placedCount} selected GLBs · ${population.metadata.distinctAssetCount} variants · ${batches.length} district batches`,
+    id: options.layerId ?? 'selected-building-models',
+    label:
+      options.label ??
+      `${placements.length} selected GLBs · ${requestedAssets.length} variants · ${batches.length} district batches`,
     object: group,
     dispose: () => {
       batches.forEach((batch) => batch.mesh.dispose());
@@ -126,7 +140,7 @@ export async function addSyntheticCityBuildingLayer(
   });
 
   const stats: SyntheticCityBuildingRenderStats = {
-    instances: population.metadata.placedCount,
+    instances: placements.length,
     batches: batches.length,
     loadedModels: requestedAssets.filter((asset) => modelsById.has(asset.id))
       .length,
@@ -156,7 +170,7 @@ export async function addSyntheticCityBuildingLayer(
       renderedBatches,
       totalBatches: batches.length,
       renderedInstances,
-      totalInstances: population.metadata.placedCount,
+      totalInstances: placements.length,
     }),
   };
 }
