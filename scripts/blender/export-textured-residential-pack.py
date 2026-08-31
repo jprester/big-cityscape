@@ -37,7 +37,7 @@ EXISTING_ASSET_IDS = {
 NEW_ASSET_IDS = {
     "BUILDING_standardSurface1_0": "residential-pilot-asian-a",
     "BUILDING_standardSurface1_0.001": "residential-pilot-asian-b",
-    "BUILDING_standardSurface1_0.003": "residential-pilot-asian-c",
+    "BUILDING_standardSurface1_0.002": "residential-pilot-asian-c",
     "RES_04.001": "residential-pilot-04",
     "RES_05.001": "residential-pilot-05",
     "RES_06.001": "residential-pilot-06",
@@ -61,12 +61,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", required=True)
     parser.add_argument("--manifest", required=True)
     parser.add_argument("--texture-search-root", action="append", default=[])
+    parser.add_argument("--high-rise-emissive", required=True)
     return parser.parse_args(arguments_after_separator())
 
 
-def source_sha256() -> str:
+def sha256_file(file_path: Path) -> str:
     digest = hashlib.sha256()
-    with Path(bpy.data.filepath).open("rb") as source:
+    with file_path.open("rb") as source:
         for block in iter(lambda: source.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
@@ -103,6 +104,51 @@ def relink_external_images(search_roots: list[Path]) -> list[dict[str, str]]:
             "Could not resolve external Blender images:\n" + "\n".join(unresolved)
         )
     return resolved
+
+
+def override_high_rise_emissive(image_path: Path) -> list[dict[str, str]]:
+    if not image_path.is_file():
+        raise RuntimeError(f"High-rise emissive override does not exist: {image_path}")
+
+    override_image = bpy.data.images.load(str(image_path), check_existing=False)
+    override_image.name = "runtime-high-rise-emissive"
+    override_image.colorspace_settings.name = "sRGB"
+    applied: list[dict[str, str]] = []
+
+    for material in bpy.data.materials:
+        if not material.name.startswith("MAT_High-rise1_Atlas"):
+            continue
+        if material.node_tree is None:
+            raise RuntimeError(f"High-rise material has no node tree: {material.name}")
+
+        material_applied = False
+        for node in material.node_tree.nodes:
+            if not isinstance(node, bpy.types.ShaderNodeBsdfPrincipled):
+                continue
+            emission_input = node.inputs.get("Emission Color")
+            if emission_input is None or not emission_input.is_linked:
+                continue
+            for link in emission_input.links:
+                if not isinstance(link.from_node, bpy.types.ShaderNodeTexImage):
+                    continue
+                link.from_node.image = override_image
+                applied.append(
+                    {
+                        "material": material.name,
+                        "node": link.from_node.name,
+                        "image": image_path.name,
+                    }
+                )
+                material_applied = True
+
+        if not material_applied:
+            raise RuntimeError(
+                f"Could not find a directly linked emissive image in {material.name}"
+            )
+
+    if not applied:
+        raise RuntimeError("No MAT_High-rise1_Atlas materials accepted the emissive override")
+    return applied
 
 
 def normalise_duplicate(source: bpy.types.Object, asset_id: str) -> bpy.types.Object:
@@ -175,6 +221,8 @@ manifest_path.parent.mkdir(parents=True, exist_ok=True)
 resolved_images = relink_external_images(
     [Path(root).expanduser().resolve() for root in args.texture_search_root]
 )
+high_rise_emissive_path = Path(args.high_rise_emissive).expanduser().resolve()
+texture_overrides = override_high_rise_emissive(high_rise_emissive_path)
 
 missing_objects = sorted(set(ASSET_IDS) - set(bpy.data.objects.keys()))
 if missing_objects:
@@ -214,12 +262,20 @@ bpy.ops.export_scene.gltf(
 manifest = {
     "schemaVersion": 1,
     "sourceBlend": Path(bpy.data.filepath).name,
-    "sourceSha256": source_sha256(),
+    "sourceSha256": sha256_file(Path(bpy.data.filepath)),
+    "packSha256": sha256_file(output_path),
     "packFile": output_path.name,
     "modelCount": len(models),
     "existingModelCount": len(EXISTING_ASSET_IDS),
     "pilotModelCount": len(NEW_ASSET_IDS),
     "resolvedExternalImageCount": len(resolved_images),
+    "textureOverrides": {
+        "highRiseEmissive": {
+            "file": high_rise_emissive_path.name,
+            "sha256": sha256_file(high_rise_emissive_path),
+            "appliedTo": texture_overrides,
+        }
+    },
     "models": sorted(models, key=lambda model: model["id"]),
 }
 manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")

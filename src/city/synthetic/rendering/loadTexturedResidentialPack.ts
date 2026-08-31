@@ -12,6 +12,7 @@ type PackManifestModel = Readonly<{
 type PackManifest = Readonly<{
   schemaVersion: number;
   sourceSha256: string;
+  packSha256: string;
   packFile: string;
   models: readonly PackManifestModel[];
 }>;
@@ -39,7 +40,7 @@ export type TexturedResidentialModelLibrary = Readonly<{
 
 export async function loadTexturedResidentialPack(): Promise<TexturedResidentialModelLibrary> {
   const manifestUrl = publicAssetUrl(`${PACK_DIRECTORY}/manifest.json`);
-  const response = await fetch(manifestUrl);
+  const response = await fetch(manifestUrl, { cache: 'no-store' });
 
   if (!response.ok) {
     throw new Error(`Could not load textured residential manifest (${response.status}).`);
@@ -49,7 +50,7 @@ export async function loadTexturedResidentialPack(): Promise<TexturedResidential
   const loader = new GLTFLoader();
   const gltf = await loader.loadAsync(
     publicAssetUrl(
-      `${PACK_DIRECTORY}/${manifest.packFile}?revision=${manifest.sourceSha256.slice(0, 12)}`,
+      `${PACK_DIRECTORY}/${manifest.packFile}?revision=${manifest.packSha256.slice(0, 12)}`,
     ),
   );
   gltf.scene.updateMatrixWorld(true);
@@ -139,6 +140,8 @@ function validateManifest(value: unknown): PackManifest {
     value.schemaVersion !== 1 ||
     !('sourceSha256' in value) ||
     typeof value.sourceSha256 !== 'string' ||
+    !('packSha256' in value) ||
+    typeof value.packSha256 !== 'string' ||
     !('packFile' in value) ||
     typeof value.packFile !== 'string' ||
     !('models' in value) ||

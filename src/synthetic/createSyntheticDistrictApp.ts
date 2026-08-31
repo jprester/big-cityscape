@@ -204,7 +204,6 @@ export async function createSyntheticDistrictApp(
           {
             placements: placementGroups.residential,
             layerId: 'selected-residential-building-models',
-            label: `${placementGroups.residential.length} textured residential instances`,
           },
         ),
       ]);
@@ -231,7 +230,6 @@ export async function createSyntheticDistrictApp(
       addTexturedResidentialBuildingLayer(debugLayers, viewData.population, {
         placements: placementGroups.residential,
         layerId: 'selected-residential-building-models',
-        label: `${placementGroups.residential.length} textured residential instances`,
       }),
     ]);
     buildingRenderStats = combineBuildingRenderStats(

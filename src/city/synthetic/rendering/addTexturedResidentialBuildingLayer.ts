@@ -16,6 +16,11 @@ type Assignment = Readonly<{
   rotateQuarterTurn: boolean;
 }>;
 
+const MINIMUM_MODEL_INSTANCES: Readonly<Record<string, number>> = {
+  'residential-pilot-asian-a': 8,
+  'residential-pilot-asian-b': 8,
+};
+
 export type TexturedResidentialBuildingLayerOptions = Readonly<{
   placements?: readonly SyntheticBuildingPlacement[];
   layerId?: string;
@@ -61,7 +66,7 @@ export async function addTexturedResidentialBuildingLayer(
     id: options.layerId ?? 'selected-building-models',
     label:
       options.label ??
-      `${placements.length} textured residential instances · ${assignments.size} variants`,
+      `${placements.length} textured residential instances · ${assignments.size} variants · podium A/B ${assignments.get('residential-pilot-asian-a')?.length ?? 0}×/${assignments.get('residential-pilot-asian-b')?.length ?? 0}×`,
     object: group,
     dispose: () => {
       meshes.forEach((mesh) => mesh.dispose());
@@ -88,7 +93,7 @@ function assignPlacements(
     modelId: string;
     rotateQuarterTurn: boolean;
   }>>();
-  const usedModelIds = new Set<string>();
+  const modelUseCounts = new Map<string, number>();
 
   for (const placement of placements) {
     const exactModel = modelsById.get(placement.assetId);
@@ -99,33 +104,37 @@ function assignPlacements(
       modelId: exactModel.id,
       rotateQuarterTurn: placement.rotateAssetQuarterTurn,
     });
-    usedModelIds.add(exactModel.id);
+    modelUseCounts.set(exactModel.id, (modelUseCounts.get(exactModel.id) ?? 0) + 1);
   }
 
   const availablePlacements = placements.filter(
     (placement) => !selectedByPlacementId.has(placement.id),
   );
-  for (const model of models.filter((candidate) => !usedModelIds.has(candidate.id))) {
-    const best = availablePlacements
-      .filter((placement) => !selectedByPlacementId.has(placement.id))
-      .map((placement) => ({
-        placement,
-        selection: selectTexturedResidentialModel(
-          placement.id,
-          placement.dimensionsMetres,
-          [model],
-        ),
-      }))
-      .sort(
-        (first, second) =>
-          first.selection.compatibilityScore -
-            second.selection.compatibilityScore ||
-          first.placement.id.localeCompare(second.placement.id),
-      )[0];
-    if (best === undefined) {
-      break;
+  for (const model of models) {
+    const minimumInstances = MINIMUM_MODEL_INSTANCES[model.id] ?? 1;
+    while ((modelUseCounts.get(model.id) ?? 0) < minimumInstances) {
+      const best = availablePlacements
+        .filter((placement) => !selectedByPlacementId.has(placement.id))
+        .map((placement) => ({
+          placement,
+          selection: selectTexturedResidentialModel(
+            placement.id,
+            placement.dimensionsMetres,
+            [model],
+          ),
+        }))
+        .sort(
+          (first, second) =>
+            first.selection.compatibilityScore -
+              second.selection.compatibilityScore ||
+            first.placement.id.localeCompare(second.placement.id),
+        )[0];
+      if (best === undefined) {
+        break;
+      }
+      selectedByPlacementId.set(best.placement.id, best.selection);
+      modelUseCounts.set(model.id, (modelUseCounts.get(model.id) ?? 0) + 1);
     }
-    selectedByPlacementId.set(best.placement.id, best.selection);
   }
 
   for (const placement of placements) {

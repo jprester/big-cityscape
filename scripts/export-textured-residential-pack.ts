@@ -29,6 +29,10 @@ const textureSearchRoot = path.resolve(
 );
 const outputFile = path.join(outputDirectory, 'textured-residential-pack.glb');
 const manifestFile = path.join(outputDirectory, 'manifest.json');
+const highRiseEmissive = path.join(
+  repositoryRoot,
+  'references/textures/high-rise-atlas1/high-rise-texture-atlas1-emissive.png',
+);
 const exporter = path.join(
   repositoryRoot,
   'scripts/blender/export-textured-residential-pack.py',
@@ -38,6 +42,7 @@ for (const [label, filePath] of [
   ['Blender executable', blenderExecutable],
   ['source blend', blendFile],
   ['texture search root', textureSearchRoot],
+  ['high-rise emissive override', highRiseEmissive],
   ['export script', exporter],
 ] as const) {
   if (!existsSync(filePath)) {
@@ -59,6 +64,8 @@ const result = spawnSync(
     manifestFile,
     '--texture-search-root',
     textureSearchRoot,
+    '--high-rise-emissive',
+    highRiseEmissive,
   ],
   { cwd: repositoryRoot, encoding: 'utf8', stdio: 'inherit' },
 );

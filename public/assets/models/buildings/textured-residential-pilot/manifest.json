@@ -1,12 +1,26 @@
 {
   "schemaVersion": 1,
   "sourceBlend": "2026-export-low-poly-textured-buildings.blend",
-  "sourceSha256": "1b7cd59b2d4c6713e81132fbabdea399e4b8d163b78c5bf5231985e662a03378",
+  "sourceSha256": "4dded3a2a944682bcf0e877587a43a1cb97c2cb5e486f3e02f290e6467eca442",
+  "packSha256": "c21b313cbe1b807e17e2b89d765d91909d79181e7f0d3e76067c584efb4b2b7f",
   "packFile": "textured-residential-pack.glb",
   "modelCount": 25,
   "existingModelCount": 15,
   "pilotModelCount": 10,
-  "resolvedExternalImageCount": 20,
+  "resolvedExternalImageCount": 16,
+  "textureOverrides": {
+    "highRiseEmissive": {
+      "file": "high-rise-texture-atlas1-emissive.png",
+      "sha256": "747763029b67a7b58d248114435e9e3837ca91464c52f55be0e834fa37e848a2",
+      "appliedTo": [
+        {
+          "material": "MAT_High-rise1_Atlas",
+          "node": "Image Texture.001",
+          "image": "high-rise-texture-atlas1-emissive.png"
+        }
+      ]
+    }
+  },
   "models": [
     {
       "id": "residential-10",
@@ -33,9 +47,9 @@
       "catalogueStatus": "existing",
       "knownCatalogAssetId": "residential-18",
       "dimensionsMetres": {
-        "width": 28.1321,
-        "height": 52.067,
-        "depth": 15.62
+        "width": 29.6806,
+        "height": 54.933,
+        "depth": 16.4799
       },
       "vertices": 154,
       "triangles": 288,
@@ -421,9 +435,9 @@
       "catalogueStatus": "pilot-new",
       "knownCatalogAssetId": null,
       "dimensionsMetres": {
-        "width": 23.3169,
-        "height": 44.1103,
-        "depth": 24.3483
+        "width": 26.4419,
+        "height": 50.0221,
+        "depth": 27.6115
       },
       "vertices": 228,
       "triangles": 412,
@@ -474,16 +488,16 @@
     },
     {
       "id": "residential-pilot-asian-c",
-      "sourceObject": "BUILDING_standardSurface1_0.003",
+      "sourceObject": "BUILDING_standardSurface1_0.002",
       "catalogueStatus": "pilot-new",
       "knownCatalogAssetId": null,
       "dimensionsMetres": {
-        "width": 13.0806,
-        "height": 45.8122,
-        "depth": 14.093
+        "width": 14.0058,
+        "height": 53.4593,
+        "depth": 14.0931
       },
-      "vertices": 2786,
-      "triangles": 1744,
+      "vertices": 2728,
+      "triangles": 1708,
       "uvLayers": [
         "UVMap"
       ],

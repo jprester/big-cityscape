@@ -32,7 +32,10 @@ The city statistics panel also has **Massing** and **Textures** switches.
   materials, emissive maps, roughness maps, and normal maps are preserved.
 - The `.blend` file is opened read-only by background Blender and is never saved.
 - The generated manifest records source names, dimensions, materials, mesh
-  counts, and the source file hash.
+  counts, the source file hash, and the exported pack hash used for cache
+  invalidation.
+- `MAT_High-rise1_Atlas*` materials explicitly use the project-owned emissive
+  override at `references/textures/high-rise-atlas1/`.
 
 The exporter searches the sibling `Projects/3d-modeling/blender` tree for the
 external image paths referenced by the current source file. On another machine,
@@ -52,6 +55,10 @@ renderer. Existing matching residential IDs keep their original placements.
 Other residential placements receive a deterministic, proportionally similar
 pilot model; every exported model is guaranteed at least one placement so it
 can be reviewed.
+
+The two Asian podium variants (`residential-pilot-asian-a` and
+`residential-pilot-asian-b`) receive eight best-fit placements each. A single
+instance was too difficult to find during ordinary city inspection.
 
 Textured models use a single uniform scale derived from the available footprint.
 Their original width, depth, and height proportions are therefore preserved.
