@@ -49,7 +49,7 @@ import { addSyntheticCityDebugLayer } from '../city/synthetic/rendering/addSynth
 import { addSyntheticRoadMarkingLayer } from '../city/synthetic/rendering/addSyntheticRoadMarkingLayer';
 import { addSyntheticStreetLampLayer } from '../city/synthetic/rendering/addSyntheticStreetLampLayer';
 import { addSyntheticSignageDebugLayer } from '../city/synthetic/rendering/addSyntheticSignageDebugLayer';
-import { addTexturedResidentialBuildingLayer } from '../city/synthetic/rendering/addTexturedResidentialBuildingLayer';
+import { addTexturedBuildingLayer } from '../city/synthetic/rendering/addTexturedResidentialBuildingLayer';
 import {
   addSyntheticDistrictDebugLayers,
 } from '../city/synthetic/rendering/addSyntheticDistrictDebugLayers';
@@ -187,18 +187,18 @@ export async function createSyntheticDistrictApp(
       viewData.spatial.roadMarkings,
     );
     if (buildingAppearance === 'textured') {
-      const [nonResidentialLayer, texturedStats] = await Promise.all([
+      const [catalogueLayer, texturedResidentialStats, texturedCommercialStats] = await Promise.all([
         addSyntheticCityBuildingLayer(
           debugLayers,
           viewData.spatial,
           viewData.population,
           {
-            placements: placementGroups.nonResidential,
-            layerId: 'selected-non-residential-building-models',
-            label: `${placementGroups.nonResidential.length} original high-rise, skyscraper, and other instances`,
+            placements: placementGroups.catalogue,
+            layerId: 'selected-catalogue-building-models',
+            label: `${placementGroups.catalogue.length} original skyscraper instances`,
           },
         ),
-        addTexturedResidentialBuildingLayer(
+        addTexturedBuildingLayer(
           debugLayers,
           viewData.population,
           {
@@ -206,10 +206,18 @@ export async function createSyntheticDistrictApp(
             layerId: 'selected-residential-building-models',
           },
         ),
+        addTexturedBuildingLayer(debugLayers, viewData.population, {
+          packId: 'commercial',
+          placements: placementGroups.commercial,
+          layerId: 'selected-commercial-building-models',
+        }),
       ]);
       cityRenderLayer = combineHybridCityRenderLayer(
-        nonResidentialLayer,
-        texturedStats,
+        catalogueLayer,
+        combineBuildingRenderStats(
+          texturedResidentialStats,
+          texturedCommercialStats,
+        ),
       );
       buildingRenderStats = cityRenderLayer.stats;
     } else {
@@ -221,20 +229,28 @@ export async function createSyntheticDistrictApp(
       buildingRenderStats = cityRenderLayer.stats;
     }
   } else if (buildingAppearance === 'textured') {
-    const [nonResidentialStats, texturedStats] = await Promise.all([
+    const [catalogueStats, texturedResidentialStats, texturedCommercialStats] = await Promise.all([
       addSyntheticBuildingLayer(debugLayers, viewData.population, {
-        placements: placementGroups.nonResidential,
-        layerId: 'selected-non-residential-building-models',
-        label: `${placementGroups.nonResidential.length} original non-residential instances`,
+        placements: placementGroups.catalogue,
+        layerId: 'selected-catalogue-building-models',
+        label: `${placementGroups.catalogue.length} original skyscraper instances`,
       }),
-      addTexturedResidentialBuildingLayer(debugLayers, viewData.population, {
+      addTexturedBuildingLayer(debugLayers, viewData.population, {
         placements: placementGroups.residential,
         layerId: 'selected-residential-building-models',
       }),
+      addTexturedBuildingLayer(debugLayers, viewData.population, {
+        packId: 'commercial',
+        placements: placementGroups.commercial,
+        layerId: 'selected-commercial-building-models',
+      }),
     ]);
     buildingRenderStats = combineBuildingRenderStats(
-      nonResidentialStats,
-      texturedStats,
+      catalogueStats,
+      combineBuildingRenderStats(
+        texturedResidentialStats,
+        texturedCommercialStats,
+      ),
     );
   } else {
     buildingRenderStats = await addSyntheticBuildingLayer(
@@ -872,25 +888,31 @@ function partitionPlacementsBySourceCategory(
   placements: readonly SyntheticBuildingPlacement[],
 ): Readonly<{
   residential: readonly SyntheticBuildingPlacement[];
-  nonResidential: readonly SyntheticBuildingPlacement[];
+  commercial: readonly SyntheticBuildingPlacement[];
+  catalogue: readonly SyntheticBuildingPlacement[];
 }> {
   const sourceCategoryByAssetId = new Map(
     BUILDING_ASSET_CATALOG.map((asset) => [asset.id, asset.sourceCategory]),
   );
   const residential: SyntheticBuildingPlacement[] = [];
-  const nonResidential: SyntheticBuildingPlacement[] = [];
+  const commercial: SyntheticBuildingPlacement[] = [];
+  const catalogue: SyntheticBuildingPlacement[] = [];
 
   for (const placement of placements) {
     const sourceCategory = sourceCategoryByAssetId.get(placement.assetId);
     if (sourceCategory === undefined) {
       throw new Error(`Unknown building asset ${placement.assetId}.`);
     }
-    (sourceCategory === 'residential' ? residential : nonResidential).push(
-      placement,
-    );
+    if (sourceCategory === 'residential') {
+      residential.push(placement);
+    } else if (sourceCategory === 'high-rise') {
+      commercial.push(placement);
+    } else {
+      catalogue.push(placement);
+    }
   }
 
-  return { residential, nonResidential };
+  return { residential, commercial, catalogue };
 }
 
 function combineBuildingRenderStats(

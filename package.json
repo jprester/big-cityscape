@@ -13,7 +13,9 @@
     "catalog:build": "tsx scripts/catalog-building-assets.ts",
     "catalog:watch": "tsx scripts/catalog-building-assets.ts --watch",
     "textures:audit": "tsx scripts/audit-building-textures.ts",
-    "textures:export-residential-pack": "tsx scripts/export-textured-residential-pack.ts",
+    "textures:export-building-packs": "npm run textures:export-residential-pack && npm run textures:export-commercial-pack",
+    "textures:export-residential-pack": "tsx scripts/export-textured-residential-pack.ts --asset-group residential",
+    "textures:export-commercial-pack": "tsx scripts/export-textured-residential-pack.ts --asset-group commercial",
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview"

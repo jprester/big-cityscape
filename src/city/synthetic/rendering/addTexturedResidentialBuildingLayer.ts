@@ -5,10 +5,11 @@ import type { SyntheticCityPopulation } from '../model/cityPopulation';
 import type { SyntheticDistrictPopulation } from '../model/districtPopulation';
 import type { SyntheticBuildingRenderStats } from './addSyntheticBuildingLayer';
 import {
-  loadTexturedResidentialPack,
-  type LoadedTexturedResidentialModel,
+  loadTexturedBuildingPack,
+  type LoadedTexturedBuildingModel,
+  type TexturedBuildingPackId,
 } from './loadTexturedResidentialPack';
-import { selectTexturedResidentialModel } from './texturedResidentialModelSelection';
+import { selectTexturedBuildingModel } from './texturedResidentialModelSelection';
 
 type Assignment = Readonly<{
   placement: SyntheticBuildingPlacement;
@@ -21,30 +22,37 @@ const MINIMUM_MODEL_INSTANCES: Readonly<Record<string, number>> = {
   'residential-pilot-asian-b': 8,
 };
 
-export type TexturedResidentialBuildingLayerOptions = Readonly<{
+export type TexturedBuildingLayerOptions = Readonly<{
+  packId?: TexturedBuildingPackId;
   placements?: readonly SyntheticBuildingPlacement[];
   layerId?: string;
   label?: string;
 }>;
 
-export async function addTexturedResidentialBuildingLayer(
+export async function addTexturedBuildingLayer(
   layers: DebugLayerManager,
   population: SyntheticCityPopulation | SyntheticDistrictPopulation,
-  options: TexturedResidentialBuildingLayerOptions = {},
+  options: TexturedBuildingLayerOptions = {},
 ): Promise<SyntheticBuildingRenderStats> {
   const placements = options.placements ?? population.placements;
-  const library = await loadTexturedResidentialPack();
+  const packId = options.packId ?? 'residential';
+  const selectionNamespace = `textured-${packId}-pilot`;
+  const library = await loadTexturedBuildingPack(packId);
   const modelsById = new Map(library.models.map((model) => [model.id, model]));
-  const assignments = assignPlacements(placements, library.models);
+  const assignments = assignPlacements(
+    placements,
+    library.models,
+    selectionNamespace,
+  );
   const group = new THREE.Group();
-  group.name = 'synthetic:textured-residential-pilot';
+  group.name = `synthetic:${selectionNamespace}`;
   const meshes: THREE.InstancedMesh[] = [];
   let triangles = 0;
 
   for (const [modelId, modelAssignments] of assignments) {
     const model = modelsById.get(modelId);
     if (model === undefined) {
-      throw new Error(`Textured residential assignment lost model ${modelId}.`);
+      throw new Error(`Textured ${packId} assignment lost model ${modelId}.`);
     }
     for (const [partIndex, part] of model.parts.entries()) {
       const mesh = new THREE.InstancedMesh(
@@ -66,7 +74,7 @@ export async function addTexturedResidentialBuildingLayer(
     id: options.layerId ?? 'selected-building-models',
     label:
       options.label ??
-      `${placements.length} textured residential instances · ${assignments.size} variants · podium A/B ${assignments.get('residential-pilot-asian-a')?.length ?? 0}×/${assignments.get('residential-pilot-asian-b')?.length ?? 0}×`,
+      defaultLayerLabel(packId, placements.length, assignments),
     object: group,
     dispose: () => {
       meshes.forEach((mesh) => mesh.dispose());
@@ -85,7 +93,8 @@ export async function addTexturedResidentialBuildingLayer(
 
 function assignPlacements(
   placements: readonly SyntheticBuildingPlacement[],
-  models: readonly LoadedTexturedResidentialModel[],
+  models: readonly LoadedTexturedBuildingModel[],
+  selectionNamespace: string,
 ): ReadonlyMap<string, readonly Assignment[]> {
   const modelsById = new Map(models.map((model) => [model.id, model]));
   const assignments = new Map<string, Assignment[]>();
@@ -117,10 +126,11 @@ function assignPlacements(
         .filter((placement) => !selectedByPlacementId.has(placement.id))
         .map((placement) => ({
           placement,
-          selection: selectTexturedResidentialModel(
+          selection: selectTexturedBuildingModel(
             placement.id,
             placement.dimensionsMetres,
             [model],
+            selectionNamespace,
           ),
         }))
         .sort(
@@ -140,10 +150,11 @@ function assignPlacements(
   for (const placement of placements) {
     const selection =
       selectedByPlacementId.get(placement.id) ??
-      selectTexturedResidentialModel(
+      selectTexturedBuildingModel(
         placement.id,
         placement.dimensionsMetres,
         models,
+        selectionNamespace,
       );
     const existing = assignments.get(selection.modelId) ?? [];
     const slotRotationRadians =
@@ -167,7 +178,7 @@ function assignPlacements(
 
 function populateInstanceTransforms(
   mesh: THREE.InstancedMesh,
-  model: LoadedTexturedResidentialModel,
+  model: LoadedTexturedBuildingModel,
   assignments: readonly Assignment[],
 ): void {
   const transform = new THREE.Matrix4();
@@ -192,4 +203,18 @@ function populateInstanceTransforms(
   mesh.instanceMatrix.needsUpdate = true;
   mesh.computeBoundingBox();
   mesh.computeBoundingSphere();
+}
+
+function defaultLayerLabel(
+  packId: TexturedBuildingPackId,
+  placementCount: number,
+  assignments: ReadonlyMap<string, readonly Assignment[]>,
+): string {
+  const base = `${placementCount} textured ${packId} instances · ${assignments.size} variants`;
+
+  if (packId !== 'residential') {
+    return base;
+  }
+
+  return `${base} · podium A/B ${assignments.get('residential-pilot-asian-a')?.length ?? 0}×/${assignments.get('residential-pilot-asian-b')?.length ?? 0}×`;
 }

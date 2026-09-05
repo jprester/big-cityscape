@@ -1,28 +1,29 @@
 import { deriveSeed } from '../../../core/random';
 
-export type TexturedResidentialModelDescriptor = Readonly<{
+export type TexturedBuildingModelDescriptor = Readonly<{
   id: string;
   widthMetres: number;
   heightMetres: number;
   depthMetres: number;
 }>;
 
-export type TexturedResidentialModelSelection = Readonly<{
+export type TexturedBuildingModelSelection = Readonly<{
   modelId: string;
   rotateQuarterTurn: boolean;
   compatibilityScore: number;
 }>;
 
-type Candidate = TexturedResidentialModelSelection;
+type Candidate = TexturedBuildingModelSelection;
 
 const COMPATIBLE_VARIANT_COUNT = 4;
 
 /** Selects a repeatable, proportionally similar model for a city placement. */
-export function selectTexturedResidentialModel(
+export function selectTexturedBuildingModel(
   placementId: string,
   target: Readonly<{ width: number; height: number; depth: number }>,
-  models: readonly TexturedResidentialModelDescriptor[],
-): TexturedResidentialModelSelection {
+  models: readonly TexturedBuildingModelDescriptor[],
+  selectionNamespace = 'textured-residential-pilot',
+): TexturedBuildingModelSelection {
   if (models.length === 0) {
     throw new Error('Textured residential selection requires at least one model.');
   }
@@ -40,7 +41,7 @@ export function selectTexturedResidentialModel(
     );
   const bestByModel = uniqueModels(candidates).slice(0, COMPATIBLE_VARIANT_COUNT);
   const selectedIndex =
-    deriveSeed(0, 'textured-residential-pilot', placementId) % bestByModel.length;
+    deriveSeed(0, selectionNamespace, placementId) % bestByModel.length;
   const selected = bestByModel[selectedIndex];
 
   if (selected === undefined) {
@@ -51,7 +52,7 @@ export function selectTexturedResidentialModel(
 }
 
 function scoreCandidate(
-  model: TexturedResidentialModelDescriptor,
+  model: TexturedBuildingModelDescriptor,
   target: Readonly<{ width: number; height: number; depth: number }>,
   rotateQuarterTurn: boolean,
 ): Candidate {

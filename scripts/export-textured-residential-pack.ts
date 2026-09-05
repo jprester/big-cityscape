@@ -9,6 +9,11 @@ const repositoryRoot = path.resolve(
   '..',
 );
 const argumentsByName = readNamedArguments(process.argv.slice(2));
+const assetGroup = argumentsByName.get('asset-group') ?? 'residential';
+
+if (assetGroup !== 'residential' && assetGroup !== 'commercial') {
+  throw new Error('The asset group must be "residential" or "commercial".');
+}
 const blenderExecutable =
   process.env.BLENDER_EXECUTABLE ??
   '/Applications/Blender.app/Contents/MacOS/Blender';
@@ -20,14 +25,14 @@ const blendFile = path.resolve(
 const outputDirectory = path.resolve(
   repositoryRoot,
   argumentsByName.get('output-directory') ??
-    'public/assets/models/buildings/textured-residential-pilot',
+    `public/assets/models/buildings/textured-${assetGroup}-pilot`,
 );
 const textureSearchRoot = path.resolve(
   repositoryRoot,
   argumentsByName.get('texture-search-root') ??
     '../../../../../3d-modeling/blender',
 );
-const outputFile = path.join(outputDirectory, 'textured-residential-pack.glb');
+const outputFile = path.join(outputDirectory, `textured-${assetGroup}-pack.glb`);
 const manifestFile = path.join(outputDirectory, 'manifest.json');
 const highRiseEmissive = path.join(
   repositoryRoot,
@@ -62,6 +67,8 @@ const result = spawnSync(
     outputFile,
     '--manifest',
     manifestFile,
+    '--asset-group',
+    assetGroup,
     '--texture-search-root',
     textureSearchRoot,
     '--high-rise-emissive',
@@ -86,7 +93,7 @@ function readNamedArguments(argumentsList: readonly string[]): Map<string, strin
     const value = argumentsList[index + 1];
     if (name === undefined || !name.startsWith('--') || value === undefined) {
       throw new Error(
-        'Arguments must be --name value pairs: --blend, --output-directory, or --texture-search-root.',
+        'Arguments must be --name value pairs: --asset-group, --blend, --output-directory, or --texture-search-root.',
       );
     }
     values.set(name.slice(2), value);

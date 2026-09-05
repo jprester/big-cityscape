@@ -1,8 +1,12 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-const PACK_DIRECTORY =
-  'assets/models/buildings/textured-residential-pilot';
+export type TexturedBuildingPackId = 'residential' | 'commercial';
+
+const PACK_DIRECTORIES: Readonly<Record<TexturedBuildingPackId, string>> = {
+  residential: 'assets/models/buildings/textured-residential-pilot',
+  commercial: 'assets/models/buildings/textured-commercial-pilot',
+};
 
 type PackManifestModel = Readonly<{
   id: string;
@@ -17,40 +21,43 @@ type PackManifest = Readonly<{
   models: readonly PackManifestModel[];
 }>;
 
-export type TexturedResidentialModelPart = Readonly<{
+export type TexturedBuildingModelPart = Readonly<{
   geometry: THREE.BufferGeometry;
   material: THREE.Material | readonly THREE.Material[];
   triangles: number;
 }>;
 
-export type LoadedTexturedResidentialModel = Readonly<{
+export type LoadedTexturedBuildingModel = Readonly<{
   id: string;
   knownCatalogAssetId: string | null;
-  parts: readonly TexturedResidentialModelPart[];
+  parts: readonly TexturedBuildingModelPart[];
   widthMetres: number;
   heightMetres: number;
   depthMetres: number;
   triangles: number;
 }>;
 
-export type TexturedResidentialModelLibrary = Readonly<{
-  models: readonly LoadedTexturedResidentialModel[];
+export type TexturedBuildingModelLibrary = Readonly<{
+  models: readonly LoadedTexturedBuildingModel[];
   dispose: () => void;
 }>;
 
-export async function loadTexturedResidentialPack(): Promise<TexturedResidentialModelLibrary> {
-  const manifestUrl = publicAssetUrl(`${PACK_DIRECTORY}/manifest.json`);
+export async function loadTexturedBuildingPack(
+  packId: TexturedBuildingPackId,
+): Promise<TexturedBuildingModelLibrary> {
+  const packDirectory = PACK_DIRECTORIES[packId];
+  const manifestUrl = publicAssetUrl(`${packDirectory}/manifest.json`);
   const response = await fetch(manifestUrl, { cache: 'no-store' });
 
   if (!response.ok) {
-    throw new Error(`Could not load textured residential manifest (${response.status}).`);
+    throw new Error(`Could not load textured ${packId} manifest (${response.status}).`);
   }
 
   const manifest = validateManifest(await response.json());
   const loader = new GLTFLoader();
   const gltf = await loader.loadAsync(
     publicAssetUrl(
-      `${PACK_DIRECTORY}/${manifest.packFile}?revision=${manifest.packSha256.slice(0, 12)}`,
+      `${packDirectory}/${manifest.packFile}?revision=${manifest.packSha256.slice(0, 12)}`,
     ),
   );
   gltf.scene.updateMatrixWorld(true);
@@ -94,13 +101,13 @@ export async function loadTexturedResidentialPack(): Promise<TexturedResidential
 function extractModel(
   scene: THREE.Group,
   definition: PackManifestModel,
-): LoadedTexturedResidentialModel {
+): LoadedTexturedBuildingModel {
   const root = scene.getObjectByName(definition.id);
   if (root === undefined) {
     throw new Error(`Textured pack is missing model node ${definition.id}.`);
   }
 
-  const parts: TexturedResidentialModelPart[] = [];
+  const parts: TexturedBuildingModelPart[] = [];
   const bounds = new THREE.Box3();
   root.traverse((object) => {
     if (!(object instanceof THREE.Mesh)) {
@@ -147,7 +154,7 @@ function validateManifest(value: unknown): PackManifest {
     !('models' in value) ||
     !Array.isArray(value.models)
   ) {
-    throw new Error('Textured residential manifest has an unsupported shape.');
+    throw new Error('Textured building manifest has an unsupported shape.');
   }
   return value as PackManifest;
 }

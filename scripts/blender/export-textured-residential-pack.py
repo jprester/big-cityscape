@@ -1,4 +1,4 @@
-"""Export the textured residential Blender collection as one runtime GLB pack.
+"""Export a textured building collection as one runtime GLB pack.
 
 The source file intentionally remains untouched. Each mesh is duplicated,
 normalised around the origin, and exported while retaining UVs and materials.
@@ -16,7 +16,7 @@ import bpy
 from mathutils import Matrix, Vector
 
 
-EXISTING_ASSET_IDS = {
+RESIDENTIAL_EXISTING_ASSET_IDS = {
     "residential-lp-3.002": "residential-3",
     "residential-lp-5.002": "residential-5",
     "residential-lp-6.002": "residential-6",
@@ -34,7 +34,7 @@ EXISTING_ASSET_IDS = {
     "residential-lp-30.002": "residential-30",
 }
 
-NEW_ASSET_IDS = {
+RESIDENTIAL_NEW_ASSET_IDS = {
     "BUILDING_standardSurface1_0": "residential-pilot-asian-a",
     "BUILDING_standardSurface1_0.001": "residential-pilot-asian-b",
     "BUILDING_standardSurface1_0.002": "residential-pilot-asian-c",
@@ -47,7 +47,38 @@ NEW_ASSET_IDS = {
     "RES_10": "residential-pilot-10",
 }
 
-ASSET_IDS = {**EXISTING_ASSET_IDS, **NEW_ASSET_IDS}
+COMMERCIAL_EXISTING_ASSET_IDS = {
+    "high-rise-lp-2.002": "high-rise-2",
+    "high-rise-lp-14.002": "high-rise-14",
+    "high-rise-lp-21.002": "high-rise-21",
+    "high-rise-lp-23.002": "high-rise-23",
+    "high-rise-lp-24.002": "high-rise-24",
+    "high-rise-lp-25.002": "high-rise-25",
+    "high-rise-lp-28.002": "high-rise-28",
+    "high-rise-lp-30.002": "high-rise-30",
+    "high-rise-lp-31.002": "high-rise-31",
+    "high-rise-lp-32.002": "high-rise-32",
+    "high-rise-lp-33.002": "high-rise-33",
+    "high-rise-lp-34.002": "high-rise-34",
+    "high-rise-lp-35.002": "high-rise-35",
+}
+
+COMMERCIAL_NEW_ASSET_IDS = {
+    **{f"COM_{index:02d}.001": f"commercial-pilot-{index:02d}" for index in range(1, 12)},
+    "BACKGROUND_BUILDING_2.003_BACKGROUND_BUILDING_2_0.003": "commercial-pilot-background-a",
+    "BACKGROUND_BUILDING_2.004_BACKGROUND_BUILDING_2_0.003": "commercial-pilot-background-b",
+    "BACKGROUND_BUILDING_2_BACKGROUND_BUILDING_2_0.001": "commercial-pilot-background-c",
+    "BACKGROUND_BUILDINGS_1.001_BACKGROUND_BUILDINGS_1_0.003": "commercial-pilot-background-d",
+    "BACKGROUND_BUILDINGS_1.004_BACKGROUND_BUILDINGS_1_0.003": "commercial-pilot-background-e",
+    "Cube.001_Background_Night_Buildings_0.025": "commercial-pilot-background-f",
+    "立方体.003": "commercial-pilot-compact-a",
+    "立方体.005": "commercial-pilot-compact-b",
+}
+
+ASSET_GROUPS = {
+    "residential": (RESIDENTIAL_EXISTING_ASSET_IDS, RESIDENTIAL_NEW_ASSET_IDS),
+    "commercial": (COMMERCIAL_EXISTING_ASSET_IDS, COMMERCIAL_NEW_ASSET_IDS),
+}
 
 
 def arguments_after_separator() -> list[str]:
@@ -60,6 +91,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", required=True)
     parser.add_argument("--manifest", required=True)
+    parser.add_argument("--asset-group", choices=sorted(ASSET_GROUPS), required=True)
     parser.add_argument("--texture-search-root", action="append", default=[])
     parser.add_argument("--high-rise-emissive", required=True)
     return parser.parse_args(arguments_after_separator())
@@ -181,7 +213,12 @@ def normalise_duplicate(source: bpy.types.Object, asset_id: str) -> bpy.types.Ob
     return duplicate
 
 
-def object_manifest(source: bpy.types.Object, duplicate: bpy.types.Object, asset_id: str) -> dict:
+def object_manifest(
+    source: bpy.types.Object,
+    duplicate: bpy.types.Object,
+    asset_id: str,
+    existing_asset_ids: dict[str, str],
+) -> dict:
     coordinates = [vertex.co for vertex in duplicate.data.vertices]
     minimum = Vector((
         min(point.x for point in coordinates),
@@ -198,8 +235,8 @@ def object_manifest(source: bpy.types.Object, duplicate: bpy.types.Object, asset
     return {
         "id": asset_id,
         "sourceObject": source.name,
-        "catalogueStatus": "existing" if source.name in EXISTING_ASSET_IDS else "pilot-new",
-        "knownCatalogAssetId": EXISTING_ASSET_IDS.get(source.name),
+        "catalogueStatus": "existing" if source.name in existing_asset_ids else "pilot-new",
+        "knownCatalogAssetId": existing_asset_ids.get(source.name),
         "dimensionsMetres": {
             "width": round(float(dimensions.x), 4),
             "height": round(float(dimensions.z), 4),
@@ -213,6 +250,8 @@ def object_manifest(source: bpy.types.Object, duplicate: bpy.types.Object, asset
 
 
 args = parse_args()
+existing_asset_ids, new_asset_ids = ASSET_GROUPS[args.asset_group]
+asset_ids = {**existing_asset_ids, **new_asset_ids}
 output_path = Path(args.output).resolve()
 manifest_path = Path(args.manifest).resolve()
 output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -224,22 +263,22 @@ resolved_images = relink_external_images(
 high_rise_emissive_path = Path(args.high_rise_emissive).expanduser().resolve()
 texture_overrides = override_high_rise_emissive(high_rise_emissive_path)
 
-missing_objects = sorted(set(ASSET_IDS) - set(bpy.data.objects.keys()))
+missing_objects = sorted(set(asset_ids) - set(bpy.data.objects.keys()))
 if missing_objects:
     raise RuntimeError("Missing expected source objects: " + ", ".join(missing_objects))
 
-export_collection = bpy.data.collections.new("runtime-textured-residential-pack")
+export_collection = bpy.data.collections.new(f"runtime-textured-{args.asset_group}-pack")
 bpy.context.scene.collection.children.link(export_collection)
 
 exported_objects: list[bpy.types.Object] = []
 models: list[dict] = []
-for source_name, asset_id in sorted(ASSET_IDS.items(), key=lambda item: item[1]):
+for source_name, asset_id in sorted(asset_ids.items(), key=lambda item: item[1]):
     source = bpy.data.objects[source_name]
     if source.type != "MESH":
         raise RuntimeError(f"Expected {source_name} to be a mesh, got {source.type}")
     duplicate = normalise_duplicate(source, asset_id)
     exported_objects.append(duplicate)
-    models.append(object_manifest(source, duplicate, asset_id))
+    models.append(object_manifest(source, duplicate, asset_id, existing_asset_ids))
 
 bpy.ops.object.select_all(action="DESELECT")
 for exported_object in exported_objects:
@@ -263,11 +302,12 @@ manifest = {
     "schemaVersion": 1,
     "sourceBlend": Path(bpy.data.filepath).name,
     "sourceSha256": sha256_file(Path(bpy.data.filepath)),
+    "assetGroup": args.asset_group,
     "packSha256": sha256_file(output_path),
     "packFile": output_path.name,
     "modelCount": len(models),
-    "existingModelCount": len(EXISTING_ASSET_IDS),
-    "pilotModelCount": len(NEW_ASSET_IDS),
+    "existingModelCount": len(existing_asset_ids),
+    "pilotModelCount": len(new_asset_ids),
     "resolvedExternalImageCount": len(resolved_images),
     "textureOverrides": {
         "highRiseEmissive": {
@@ -281,7 +321,7 @@ manifest = {
 manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
 print(
-    f"Exported {len(models)} textured residential models to {output_path} "
+    f"Exported {len(models)} textured {args.asset_group} models to {output_path} "
     f"({output_path.stat().st_size / 1024 / 1024:.1f} MiB)."
 )
 print(f"Wrote {manifest_path}.")

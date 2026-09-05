@@ -10,8 +10,14 @@ coverage/
 # Raw and generated geographic data remain local unless deliberately reviewed.
 references/raw/*.geojson
 references/raw/*.blend
+references/raw/*.blend[0-9]*
 references/processed/*
 references/visual/*
 !references/processed/.gitkeep
 !references/processed/city-structure.json
 !references/processed/city-blocks.json
+
+# Textured runtime packs are reproducible Blender exports and embed source
+# atlases at full resolution. Generate them locally with
+# `npm run textures:export-building-packs` instead of committing the binaries.
+public/assets/models/buildings/textured-*-pilot/
