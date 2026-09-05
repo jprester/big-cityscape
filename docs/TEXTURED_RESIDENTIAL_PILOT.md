@@ -17,14 +17,15 @@ BUILDING_TEXTURE_ROOT=/absolute/path/to/blender
 `.env.local` is intentionally ignored by Git, so each workstation can use its
 own paths without copying the Blender source into `references/raw/`.
 
-Regenerate both runtime packs after editing the Blender source:
+Regenerate all three runtime packs after editing the Blender source:
 
 ```bash
 npm run textures:export-building-packs
 ```
 
-The residential and commercial packs can also be regenerated independently
-with `textures:export-residential-pack` and `textures:export-commercial-pack`.
+The residential, commercial, and skyscraper packs can also be regenerated
+independently with `textures:export-residential-pack`,
+`textures:export-commercial-pack`, and `textures:export-skyscraper-pack`.
 The generated pack directories are intentionally ignored by Git because the
 GLBs embed the full-resolution source atlases. A fresh checkout therefore needs
 this export step before using `appearance=textured`.
@@ -42,9 +43,13 @@ The city statistics panel also has **Massing** and **Textures** switches.
 
 - The 25 residential source objects are exported into one GLB. Fifteen retain
   existing catalogue IDs and ten use stable `residential-pilot-*` IDs.
-- The 32 commercial source objects are exported into a second GLB. Thirteen
-  retain existing `high-rise-*` catalogue IDs and nineteen use stable
+- The 31 commercial source objects are exported into a second GLB. Fifteen
+  retain existing `high-rise-*` catalogue IDs and sixteen use stable
   `commercial-pilot-*` IDs pending final classification.
+- Ten skyscraper source objects are exported into a third GLB using stable
+  `skyscraper-pilot-*` IDs. The default city's six skyscraper slots choose a
+  compatible authored-size subset, including the smaller-footprint alternatives
+  where the primary `SKY_01`–`SKY_06` set cannot fit.
 - Shared texture atlases are embedded only once within each pack.
 - Geometry is centred and grounded during export. UVs, material slots, source
   materials, emissive maps, roughness maps, and normal maps are preserved.
@@ -70,18 +75,22 @@ npm run textures:export-commercial-pack -- \
 
 The pilot uses one `InstancedMesh` per model/material part. Placements whose
 catalogue source category is `residential` use the residential pack; `high-rise`
-placements use the commercial pack; skyscrapers continue through the original
-geometry renderer. Existing matching catalogue IDs keep their original
-placements. Other placements receive a deterministic, proportionally similar
-model from the appropriate pack. Every exported model is guaranteed at least
-one placement so it can be reviewed.
+placements use the commercial pack; skyscraper placements use the skyscraper
+pack. Existing matching catalogue IDs keep their original placements. Other
+placements receive a deterministic, proportionally similar model from the
+appropriate pack. Every exported model is guaranteed at least one placement
+when the pack has enough compatible placements.
 
 The two Asian podium variants (`residential-pilot-asian-a` and
 `residential-pilot-asian-b`) receive eight best-fit placements each. A single
 instance was too difficult to find during ordinary city inspection.
 
-Textured models use a single uniform scale derived from the available footprint.
-Their original width, depth, and height proportions are therefore preserved.
+Textured models render at authored Blender scale (`1.0`) with only an optional
+90-degree rotation. Selection considers only models whose authored footprint
+fits inside the full building slot, then prefers compatible height and footprint
+utilisation. The selected model's real dimensions also drive collision bounds
+and procedural signage placement. A slot remains empty and is reported in the
+debug layer when no authored-size model fits.
 
 This is intentionally separate from the production loader, which strips UVs
 and materials to support low-material-count city batching.

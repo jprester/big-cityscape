@@ -16,9 +16,12 @@ if (existsSync(localEnvironmentFile)) {
 
 const argumentsByName = readNamedArguments(process.argv.slice(2));
 const assetGroup = argumentsByName.get('asset-group') ?? 'residential';
+const supportedAssetGroups = ['residential', 'commercial', 'skyscraper'];
 
-if (assetGroup !== 'residential' && assetGroup !== 'commercial') {
-  throw new Error('The asset group must be "residential" or "commercial".');
+if (!supportedAssetGroups.includes(assetGroup)) {
+  throw new Error(
+    `The asset group must be one of: ${supportedAssetGroups.join(', ')}.`,
+  );
 }
 const blenderExecutable =
   process.env.BLENDER_EXECUTABLE ??

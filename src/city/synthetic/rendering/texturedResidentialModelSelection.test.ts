@@ -25,4 +25,27 @@ describe('selectTexturedBuildingModel', () => {
       ),
     ).toThrow(/at least one model/);
   });
+
+  it('returns no model when every authored footprint is too large', () => {
+    expect(
+      selectTexturedBuildingModel(
+        'building-42',
+        { width: 12, height: 50, depth: 12 },
+        MODELS,
+      ),
+    ).toBeUndefined();
+  });
+
+  it('uses a quarter turn when that is the only authored-scale fit', () => {
+    expect(
+      selectTexturedBuildingModel(
+        'building-42',
+        { width: 15, height: 35, depth: 48 },
+        [MODELS[1]],
+      ),
+    ).toMatchObject({
+      modelId: 'slab',
+      rotateQuarterTurn: true,
+    });
+  });
 });

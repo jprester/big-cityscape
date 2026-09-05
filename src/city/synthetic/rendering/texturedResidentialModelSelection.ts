@@ -16,60 +16,83 @@ export type TexturedBuildingModelSelection = Readonly<{
 type Candidate = TexturedBuildingModelSelection;
 
 const COMPATIBLE_VARIANT_COUNT = 4;
+const FIT_EPSILON_METRES = 1e-6;
 
-/** Selects a repeatable, proportionally similar model for a city placement. */
+/** Selects a repeatable authored-scale model that fits inside a city slot. */
 export function selectTexturedBuildingModel(
   placementId: string,
   target: Readonly<{ width: number; height: number; depth: number }>,
   models: readonly TexturedBuildingModelDescriptor[],
   selectionNamespace = 'textured-residential-pilot',
-): TexturedBuildingModelSelection {
+): TexturedBuildingModelSelection | undefined {
   if (models.length === 0) {
     throw new Error('Textured residential selection requires at least one model.');
   }
 
+  const bestByModel = rankTexturedBuildingModelCandidates(target, models).slice(
+    0,
+    COMPATIBLE_VARIANT_COUNT,
+  );
+
+  if (bestByModel.length === 0) {
+    return undefined;
+  }
+
+  const selectedIndex =
+    deriveSeed(0, selectionNamespace, placementId) % bestByModel.length;
+  return bestByModel[selectedIndex];
+}
+
+export function rankTexturedBuildingModelCandidates(
+  target: Readonly<{ width: number; height: number; depth: number }>,
+  models: readonly TexturedBuildingModelDescriptor[],
+): readonly TexturedBuildingModelSelection[] {
   const candidates = models
-    .flatMap((model) => [
-      scoreCandidate(model, target, false),
-      scoreCandidate(model, target, true),
-    ])
+    .flatMap((model) =>
+      [
+        scoreCandidate(model, target, false),
+        scoreCandidate(model, target, true),
+      ].filter((candidate): candidate is Candidate => candidate !== undefined),
+    )
     .sort(
       (first, second) =>
         first.compatibilityScore - second.compatibilityScore ||
         first.modelId.localeCompare(second.modelId) ||
         Number(first.rotateQuarterTurn) - Number(second.rotateQuarterTurn),
     );
-  const bestByModel = uniqueModels(candidates).slice(0, COMPATIBLE_VARIANT_COUNT);
-  const selectedIndex =
-    deriveSeed(0, selectionNamespace, placementId) % bestByModel.length;
-  const selected = bestByModel[selectedIndex];
 
-  if (selected === undefined) {
-    throw new Error('Textured residential selection lost its candidates.');
-  }
-
-  return selected;
+  return uniqueModels(candidates);
 }
 
 function scoreCandidate(
   model: TexturedBuildingModelDescriptor,
   target: Readonly<{ width: number; height: number; depth: number }>,
   rotateQuarterTurn: boolean,
-): Candidate {
+): Candidate | undefined {
   const width = rotateQuarterTurn ? model.depthMetres : model.widthMetres;
   const depth = rotateQuarterTurn ? model.widthMetres : model.depthMetres;
+  if (
+    width > target.width + FIT_EPSILON_METRES ||
+    depth > target.depth + FIT_EPSILON_METRES
+  ) {
+    return undefined;
+  }
+
   const targetAspect = target.width / target.depth;
   const modelAspect = width / depth;
-  const targetSlenderness = target.height / Math.sqrt(target.width * target.depth);
-  const modelSlenderness =
-    model.heightMetres / Math.sqrt(model.widthMetres * model.depthMetres);
+  const footprintUtilization =
+    (width / target.width) * (depth / target.depth);
+  const heightPenalty = Math.abs(Math.log(model.heightMetres / target.height));
+  const footprintPenalty = -Math.log(footprintUtilization);
+  const aspectPenalty = Math.abs(Math.log(modelAspect / targetAspect));
 
   return {
     modelId: model.id,
     rotateQuarterTurn,
     compatibilityScore:
-      Math.abs(Math.log(targetAspect / modelAspect)) +
-      Math.abs(Math.log(targetSlenderness / modelSlenderness)) * 0.65,
+      heightPenalty * 0.65 +
+      footprintPenalty * 0.25 +
+      aspectPenalty * 0.1,
   };
 }
 

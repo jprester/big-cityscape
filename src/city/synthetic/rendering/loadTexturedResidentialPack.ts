@@ -1,11 +1,15 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-export type TexturedBuildingPackId = 'residential' | 'commercial';
+export type TexturedBuildingPackId =
+  | 'residential'
+  | 'commercial'
+  | 'skyscraper';
 
 const PACK_DIRECTORIES: Readonly<Record<TexturedBuildingPackId, string>> = {
   residential: 'assets/models/buildings/textured-residential-pilot',
   commercial: 'assets/models/buildings/textured-commercial-pilot',
+  skyscraper: 'assets/models/buildings/textured-skyscraper-pilot',
 };
 
 type PackManifestModel = Readonly<{

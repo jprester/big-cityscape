@@ -61,6 +61,8 @@ COMMERCIAL_EXISTING_ASSET_IDS = {
     "high-rise-lp-33.002": "high-rise-33",
     "high-rise-lp-34.002": "high-rise-34",
     "high-rise-lp-35.002": "high-rise-35",
+    "high-rise-lp-36": "high-rise-36",
+    "high-rise-lp-37": "high-rise-37",
 }
 
 COMMERCIAL_NEW_ASSET_IDS = {
@@ -69,15 +71,21 @@ COMMERCIAL_NEW_ASSET_IDS = {
     "BACKGROUND_BUILDING_2.004_BACKGROUND_BUILDING_2_0.003": "commercial-pilot-background-b",
     "BACKGROUND_BUILDING_2_BACKGROUND_BUILDING_2_0.001": "commercial-pilot-background-c",
     "BACKGROUND_BUILDINGS_1.001_BACKGROUND_BUILDINGS_1_0.003": "commercial-pilot-background-d",
-    "BACKGROUND_BUILDINGS_1.004_BACKGROUND_BUILDINGS_1_0.003": "commercial-pilot-background-e",
     "Cube.001_Background_Night_Buildings_0.025": "commercial-pilot-background-f",
-    "立方体.003": "commercial-pilot-compact-a",
-    "立方体.005": "commercial-pilot-compact-b",
+}
+
+SKYSCRAPER_NEW_ASSET_IDS = {
+    **{f"SKY_{index:02d}": f"skyscraper-pilot-{index:02d}" for index in range(1, 7)},
+    "curved-skyscraper.001": "skyscraper-pilot-curved",
+    "立方体.002": "skyscraper-pilot-slab-a",
+    "立方体.006": "skyscraper-pilot-slab-b",
+    "立方体.007": "skyscraper-pilot-compact",
 }
 
 ASSET_GROUPS = {
     "residential": (RESIDENTIAL_EXISTING_ASSET_IDS, RESIDENTIAL_NEW_ASSET_IDS),
     "commercial": (COMMERCIAL_EXISTING_ASSET_IDS, COMMERCIAL_NEW_ASSET_IDS),
+    "skyscraper": ({}, SKYSCRAPER_NEW_ASSET_IDS),
 }
 
 
