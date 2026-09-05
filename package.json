@@ -17,6 +17,8 @@
     "textures:export-residential-pack": "tsx scripts/export-textured-residential-pack.ts --asset-group residential",
     "textures:export-commercial-pack": "tsx scripts/export-textured-residential-pack.ts --asset-group commercial",
     "textures:export-skyscraper-pack": "tsx scripts/export-textured-residential-pack.ts --asset-group skyscraper",
+    "lookdev:export-layout": "tsx scripts/export-synthetic-city-lookdev.ts",
+    "lookdev:update": "npm run lookdev:export-layout && tsx scripts/update-city-lookdev.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview"
