@@ -1,10 +1,21 @@
 # Textured building pilot
 
 This pilot tests the manually textured residential and commercial models from
-`references/raw/2026-export-low-poly-textured-buildings.blend` without changing
-the production massing renderer or its geometry-only building catalogue.
+an authoritative Blender project outside this repository, without changing the
+production massing renderer or its geometry-only building catalogue.
 
 ## Run it
+
+Create `.env.local` from `.env.example` and point it to the authoritative
+Blender source and its texture directory:
+
+```dotenv
+BUILDING_BLEND_FILE=/absolute/path/to/2026-export-low-poly-textured-buildings.blend
+BUILDING_TEXTURE_ROOT=/absolute/path/to/blender
+```
+
+`.env.local` is intentionally ignored by Git, so each workstation can use its
+own paths without copying the Blender source into `references/raw/`.
 
 Regenerate both runtime packs after editing the Blender source:
 
@@ -44,14 +55,14 @@ The city statistics panel also has **Massing** and **Textures** switches.
 - `MAT_High-rise1_Atlas*` materials explicitly use the project-owned emissive
   override at `references/textures/high-rise-atlas1/`.
 
-The exporter searches the sibling `Projects/3d-modeling/blender` tree for the
-external image paths referenced by the current source file. On another machine,
-pass a replacement root:
+Command-line arguments override `.env.local` for one-off exports:
 
 ```bash
 npm run textures:export-residential-pack -- \
+  --blend /absolute/path/to/buildings.blend \
   --texture-search-root /absolute/path/to/blender/assets
 npm run textures:export-commercial-pack -- \
+  --blend /absolute/path/to/buildings.blend \
   --texture-search-root /absolute/path/to/blender/assets
 ```
 

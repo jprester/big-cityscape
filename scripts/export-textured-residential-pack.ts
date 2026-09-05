@@ -8,6 +8,12 @@ const repositoryRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   '..',
 );
+const localEnvironmentFile = path.join(repositoryRoot, '.env.local');
+
+if (existsSync(localEnvironmentFile)) {
+  process.loadEnvFile(localEnvironmentFile);
+}
+
 const argumentsByName = readNamedArguments(process.argv.slice(2));
 const assetGroup = argumentsByName.get('asset-group') ?? 'residential';
 
@@ -20,6 +26,7 @@ const blenderExecutable =
 const blendFile = path.resolve(
   repositoryRoot,
   argumentsByName.get('blend') ??
+    process.env.BUILDING_BLEND_FILE ??
     'references/raw/2026-export-low-poly-textured-buildings.blend',
 );
 const outputDirectory = path.resolve(
@@ -30,6 +37,7 @@ const outputDirectory = path.resolve(
 const textureSearchRoot = path.resolve(
   repositoryRoot,
   argumentsByName.get('texture-search-root') ??
+    process.env.BUILDING_TEXTURE_ROOT ??
     '../../../../../3d-modeling/blender',
 );
 const outputFile = path.join(outputDirectory, `textured-${assetGroup}-pack.glb`);
@@ -51,7 +59,13 @@ for (const [label, filePath] of [
   ['export script', exporter],
 ] as const) {
   if (!existsSync(filePath)) {
-    throw new Error(`${label} does not exist: ${filePath}`);
+    const configurationHint =
+      label === 'source blend'
+        ? ' Set BUILDING_BLEND_FILE in .env.local or pass --blend.'
+        : label === 'texture search root'
+          ? ' Set BUILDING_TEXTURE_ROOT in .env.local or pass --texture-search-root.'
+          : '';
+    throw new Error(`${label} does not exist: ${filePath}.${configurationHint}`);
   }
 }
 
