@@ -49,12 +49,33 @@ export type TexturedBuildingModelLibrary = Readonly<{
 export async function loadTexturedBuildingPack(
   packId: TexturedBuildingPackId,
 ): Promise<TexturedBuildingModelLibrary> {
-  const packDirectory = PACK_DIRECTORIES[packId];
+  const base = await loadPackDirectory(PACK_DIRECTORIES[packId]);
+  if (packId !== 'commercial') return base;
+  try {
+    const approved = await loadPackDirectory(
+      'assets/models/buildings/textured-approved-pilot',
+    );
+    return {
+      models: [...base.models, ...approved.models],
+      dispose: () => {
+        base.dispose();
+        approved.dispose();
+      },
+    };
+  } catch (error) {
+    base.dispose();
+    throw error;
+  }
+}
+
+async function loadPackDirectory(
+  packDirectory: string,
+): Promise<TexturedBuildingModelLibrary> {
   const manifestUrl = publicAssetUrl(`${packDirectory}/manifest.json`);
   const response = await fetch(manifestUrl, { cache: 'no-store' });
 
   if (!response.ok) {
-    throw new Error(`Could not load textured ${packId} manifest (${response.status}).`);
+    throw new Error(`Could not load ${packDirectory} manifest (${response.status}).`);
   }
 
   const manifest = validateManifest(await response.json());

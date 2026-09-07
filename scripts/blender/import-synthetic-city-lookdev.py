@@ -131,7 +131,21 @@ def normalise_source_mesh(
 ) -> bpy.types.Mesh:
     if source.type != "MESH":
         raise RuntimeError(f"Expected {source.name} to be a mesh, got {source.type}")
-    mesh = source.data.copy()
+    if model_id.startswith("approved-"):
+        previous_scene = bpy.context.window.scene
+        try:
+            bpy.context.window.scene = bpy.data.scenes["EXPORT / Approved buildings"]
+            bpy.context.view_layer.update()
+            depsgraph = bpy.context.evaluated_depsgraph_get()
+            mesh = bpy.data.meshes.new_from_object(
+                source.evaluated_get(depsgraph),
+                preserve_all_data_layers=True,
+                depsgraph=depsgraph,
+            )
+        finally:
+            bpy.context.window.scene = previous_scene
+    else:
+        mesh = source.data.copy()
     mesh.name = f"{GENERATED_PREFIX}model::{model_id}"
     # Disabled source collections report identity matrix_world and matrix_local
     # values after a saved lookdev file is reopened. matrix_basis retains the
@@ -370,6 +384,15 @@ def main() -> None:
     if layout.get("schemaVersion") != 1:
         raise RuntimeError("Unsupported City Field look-development layout schema")
     source_objects = linked_source_objects(asset_library_path)
+    approved = bpy.data.collections.get("EXPORT_APPROVED_BUILDINGS")
+    if approved is not None:
+        source_objects.update({obj.name: obj for obj in approved.objects})
+    missing = sorted({
+        building["sourceObject"] for building in layout["buildings"]
+        if building["sourceObject"] not in source_objects
+    })
+    if missing:
+        raise RuntimeError(f"Missing building sources before city rebuild: {missing}")
 
     existing = bpy.data.collections.get(GENERATED_COLLECTION_NAME)
     if existing is not None:
