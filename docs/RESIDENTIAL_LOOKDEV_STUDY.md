@@ -1,3 +1,6 @@
+> Current Blender authoring workflow: [BLENDER_AUTHORING.md](BLENDER_AUTHORING.md).
+> Earlier export-scene instructions below are historical.
+
 # Residential lookdev studies
 
 ## Additional examples: EXP04 and EXP05

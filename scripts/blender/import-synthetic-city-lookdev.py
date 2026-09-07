@@ -375,6 +375,8 @@ def hide_source_asset_collections() -> None:
 
 
 def main() -> None:
+    if any(scene.get("authoring_layout_master") for scene in bpy.data.scenes):
+        raise RuntimeError("This file contains the reviewed City master. Legacy regeneration is disabled; use city:export-reviewed.")
     args = parse_args()
     layout_path = Path(args.layout).expanduser().resolve()
     save_path = Path(args.save).expanduser().resolve()

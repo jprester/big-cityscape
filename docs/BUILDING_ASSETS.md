@@ -1,3 +1,6 @@
+> Current Blender authoring workflow: [BLENDER_AUTHORING.md](BLENDER_AUTHORING.md).
+> Earlier export-scene instructions below are historical.
+
 # Building asset catalogue
 
 ## Purpose

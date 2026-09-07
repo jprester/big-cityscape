@@ -21,3 +21,6 @@ references/visual/*
 # atlases at full resolution. Generate them locally with
 # `npm run textures:export-building-packs` instead of committing the binaries.
 public/assets/models/buildings/textured-*-pilot/
+
+# Reviewed Blender scene snapshots (generated locally).
+public/assets/city-reviewed/

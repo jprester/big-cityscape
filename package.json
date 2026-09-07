@@ -22,7 +22,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "preview": "vite preview",
-    "textures:export-approved-pack": "tsx scripts/export-textured-residential-pack.ts --asset-group approved"
+    "textures:export-approved-pack": "tsx scripts/export-textured-residential-pack.ts --asset-group approved",
+    "city:export-reviewed": "tsx scripts/export-reviewed-city.ts"
   },
   "dependencies": {
     "three": "^0.185.1"

@@ -10,6 +10,7 @@ describe('resolveAppView', () => {
   it('preserves explicit inspection routes', () => {
     expect(resolveAppView('?view=assets')).toBe('assets');
     expect(resolveAppView('?view=legacy')).toBe('legacy');
+    expect(resolveAppView('?view=reviewed')).toBe('reviewed');
   });
 
   it('falls back to the product view for obsolete or unknown view values', () => {

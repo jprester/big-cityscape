@@ -17,7 +17,10 @@ let app: AppLifecycle | undefined;
 try {
   const view = resolveAppView(window.location.search);
 
-  if (view === 'assets') {
+  if (view === 'reviewed') {
+    const { createReviewedCityApp } = await import('./reviewed/createReviewedCityApp');
+    app = await createReviewedCityApp(host);
+  } else if (view === 'assets') {
     const { createBuildingAssetCatalogApp } = await import(
       './catalog/createBuildingAssetCatalogApp'
     );

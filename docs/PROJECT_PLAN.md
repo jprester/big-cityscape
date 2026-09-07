@@ -659,3 +659,13 @@ Retain appropriate attribution in project documentation and any public build:
 > Map data © OpenStreetMap contributors
 
 Review OpenStreetMap/ODbL obligations before distributing derived datasets.
+
+### Reviewed Blender authoring workflow (2026-09-07)
+
+The user has promoted Blender to the source of truth for the reviewed city map,
+block geometry, building variants, and exact placement transforms. Procedural
+layout generation remains a separate starting-point/alternative workflow and must
+not overwrite the authored master. Three.js remains responsible for rendering,
+lighting, effects, road presentation and streetlights. See `BLENDER_AUTHORING.md`.
+The Blender master exports a faithful reviewed snapshot, consumed by the
+`?view=reviewed` browser route. The procedural view remains separately available.
