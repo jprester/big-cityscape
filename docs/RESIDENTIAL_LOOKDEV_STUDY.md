@@ -369,3 +369,9 @@ legacy high-rise source emitted an exporter sampler warning, so its material
 appearance deserves continued visual review. Base residential/commercial packs
 were regenerated from the configured source library because they were missing
 locally. Use `appearance=textured`, not the obsolete `appearance=studio` URL.
+
+## Consolidation follow-up
+
+The two-file source arrangement above has been superseded. All 76 textured-pack
+models are now local to `2026-city-lookdev.blend`; see the consolidated-master
+section of `docs/BUILDING_ASSETS.md` for current scene roles and export commands.

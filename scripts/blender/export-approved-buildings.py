@@ -1,9 +1,12 @@
 """Export evaluated, grounded copies from EXPORT_APPROVED_BUILDINGS; never save source."""
-import bpy,json,hashlib,bmesh
+import bpy,json,hashlib,bmesh,argparse,sys
 from pathlib import Path
 from mathutils import Matrix,Vector
 ROOT=Path(__file__).resolve().parents[2]
-OUT=ROOT/'public/assets/models/buildings/textured-approved-pilot';OUT.mkdir(parents=True,exist_ok=True)
+parser=argparse.ArgumentParser();parser.add_argument('--output');parser.add_argument('--manifest')
+args,_=parser.parse_known_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
+file=Path(args.output) if args.output else ROOT/'public/assets/models/buildings/textured-approved-pilot/textured-approved-pack.glb'
+OUT=file.parent;OUT.mkdir(parents=True,exist_ok=True)
 IDS={'Cube.001':'approved-white-residence','Cube.002':'approved-brick-tower','EXP03 / Chamfered shoulder tower':'approved-chamfered-tower','EXP03 / Reference / 116 triangles':'approved-slab','EXP03 / Reference / 264 triangles':'approved-braced-tower','EXP04 / Offset glass slabs':'approved-offset-slabs','EXP05 / Terraced dark office':'approved-terraced-glass','EXP06 / Glass podium tower':'approved-glass-podium','EXP07 / Dark shoulder tower':'approved-dark-shoulder','high-rise-lp-38':'approved-high-rise-38'}
 bpy.context.window.scene=bpy.data.scenes['EXPORT / Approved buildings'];bpy.context.view_layer.update()
 sources=list(bpy.data.collections['EXPORT_APPROVED_BUILDINGS'].objects)
@@ -26,9 +29,8 @@ export_scene=bpy.data.scenes.new('TEMP_APPROVED_EXPORT');export_scene.collection
 bpy.ops.object.select_all(action='DESELECT')
 for obj in exported:obj.select_set(True)
 bpy.context.view_layer.objects.active=exported[0]
-file=OUT/'textured-approved-pack.glb'
 bpy.ops.export_scene.gltf(filepath=str(file),export_format='GLB',use_selection=True,use_active_scene=True,export_yup=True,export_texcoords=True,export_normals=True,export_tangents=True,export_materials='EXPORT',export_cameras=False,export_lights=False)
 sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
 manifest={'schemaVersion':1,'sourceBlend':Path(bpy.data.filepath).name,'sourceSha256':sha(bpy.data.filepath),'packSha256':sha(file),'packFile':file.name,'assetGroup':'commercial','modelCount':len(models),'models':sorted(models,key=lambda m:m['id'])}
-(OUT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+(Path(args.manifest) if args.manifest else OUT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 print('APPROVED_EXPORT',len(models),file.stat().st_size,flush=True)

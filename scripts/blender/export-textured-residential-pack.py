@@ -191,6 +191,13 @@ def override_high_rise_emissive(image_path: Path) -> list[dict[str, str]]:
     return applied
 
 
+def persistent_object_matrix(source):
+    matrix = source.matrix_basis.copy()
+    if source.parent is not None:
+        matrix = persistent_object_matrix(source.parent) @ source.matrix_parent_inverse @ matrix
+    return matrix
+
+
 def normalise_duplicate(source: bpy.types.Object, asset_id: str) -> bpy.types.Object:
     duplicate = source.copy()
     duplicate.data = source.data.copy()
@@ -198,11 +205,11 @@ def normalise_duplicate(source: bpy.types.Object, asset_id: str) -> bpy.types.Ob
     duplicate.data.name = f"{asset_id}-geometry"
     export_collection.objects.link(duplicate)
 
-    world_matrix = source.matrix_world.copy()
+    world_matrix = Matrix.Scale(source.get("runtime_export_scale", 1.0), 4) @ persistent_object_matrix(source)
     for vertex in duplicate.data.vertices:
         vertex.co = world_matrix @ vertex.co
 
-    corners = [world_matrix @ Vector(corner) for corner in source.bound_box]
+    corners = [vertex.co for vertex in duplicate.data.vertices]
     minimum = Vector((
         min(point.x for point in corners),
         min(point.y for point in corners),
@@ -271,22 +278,35 @@ resolved_images = relink_external_images(
 high_rise_emissive_path = Path(args.high_rise_emissive).expanduser().resolve()
 texture_overrides = override_high_rise_emissive(high_rise_emissive_path)
 
-missing_objects = sorted(set(asset_ids) - set(bpy.data.objects.keys()))
-if missing_objects:
-    raise RuntimeError("Missing expected source objects: " + ", ".join(missing_objects))
-
+library = bpy.data.collections.get("ASSET_LIBRARY")
+if library is None:
+    raise RuntimeError("Export requires the consolidated ASSET_LIBRARY in city-lookdev")
+sources_by_id = {}
+for source in library.all_objects:
+    asset_id = source.get("runtime_asset_id")
+    if asset_id in sources_by_id:
+        raise RuntimeError(f"Duplicate runtime asset ID: {asset_id}")
+    sources_by_id[asset_id] = source
+missing = sorted(set(asset_ids.values()) - sources_by_id.keys())
+if missing:
+    raise RuntimeError(f"Missing approved runtime assets: {missing}")
+export_scene = bpy.data.scenes.new("TEMP_RUNTIME_EXPORT")
+bpy.context.window.scene = export_scene
 export_collection = bpy.data.collections.new(f"runtime-textured-{args.asset_group}-pack")
-bpy.context.scene.collection.children.link(export_collection)
+export_scene.collection.children.link(export_collection)
 
 exported_objects: list[bpy.types.Object] = []
 models: list[dict] = []
 for source_name, asset_id in sorted(asset_ids.items(), key=lambda item: item[1]):
-    source = bpy.data.objects[source_name]
+    source = sources_by_id[asset_id]
     if source.type != "MESH":
         raise RuntimeError(f"Expected {source_name} to be a mesh, got {source.type}")
     duplicate = normalise_duplicate(source, asset_id)
     exported_objects.append(duplicate)
-    models.append(object_manifest(source, duplicate, asset_id, existing_asset_ids))
+    model = object_manifest(source, duplicate, asset_id, existing_asset_ids)
+    model["knownCatalogAssetId"] = existing_asset_ids.get(source_name)
+    model["catalogueStatus"] = "existing" if source_name in existing_asset_ids else "pilot-new"
+    models.append(model)
 
 bpy.ops.object.select_all(action="DESELECT")
 for exported_object in exported_objects:
@@ -297,6 +317,7 @@ bpy.ops.export_scene.gltf(
     filepath=str(output_path),
     export_format="GLB",
     use_selection=True,
+    use_active_scene=True,
     export_yup=True,
     export_texcoords=True,
     export_normals=True,

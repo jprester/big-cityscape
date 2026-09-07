@@ -149,3 +149,59 @@ Semantic use is necessarily interpretive because the Blender collection names
 are broad and the low-poly geometry does not encode occupancy. The reviewed
 overrides are intended as practical procedural-generation roles, not claims
 about the original artist's intended function.
+
+## Consolidated Blender master (2026-09-07)
+
+`2026-city-lookdev.blend` is now the authoritative source for all four textured
+runtime packs (76 models: 25 residential, 31 commercial, 10 skyscrapers, 10 approved).
+Set `CITY_LOOKDEV_BLEND_FILE` in `.env.local`; `BUILDING_BLEND_FILE` is a legacy
+fallback and should point at the same master. `textures:audit` also uses the master.
+The old `2026-export-low-poly-textured-buildings.blend` is preserved as an archive;
+the master has zero linked Blender libraries. Existing packed images remain packed,
+and external texture folders remain dependencies.
+
+Scenes:
+
+- `Asset Library`: the 76 canonical objects grouped under `ASSET_LIBRARY`.
+- `EXPORT / Approved buildings`: the same 76 objects, ready for pack export.
+- `Workshop`: existing `LOOKDEV_EXPERIMENTS` objects.
+- `Scene`: preserved city preview, including manual review placements.
+- Existing `EXP…` scenes: preserved day/night lighting comparisons.
+
+Edit canonical library objects to change future exports. Other old local copies
+are preserved for comparison and are not canonical export sources. Objects carry
+`runtime_asset_id`, `runtime_asset_group`, and `original_export_source` properties;
+Blender name suffixes are not runtime identity. The old and newly approved
+high-rise-38 runtime assets remain distinct. Two skyscrapers retain their prior
+runtime metre scale using `runtime_export_scale` metadata, without changing the
+editable source geometry. The city importer applies the exported dimensions.
+
+Rebuild all packs:
+
+```sh
+npm run textures:export-building-packs
+```
+
+This includes `textures:export-approved-pack`. Exports use isolated temporary
+scenes and never save the master. `lookdev:export-layout` plans from these packs;
+`lookdev:update` reads sources from the local `ASSET_LIBRARY`. The earlier caveat
+about manual `CITY_REVIEW_ADDITIONS` and replaced objects still applies before
+regenerating the Blender city: those manual review placements were preserved,
+not rebuilt during consolidation. Three.js remains authoritative for generated
+city layout; Blender edits to city placements are not synchronized back.
+
+Migration script: `scripts/blender/consolidate-city-library.py`. A full safety
+copy exists beside the master as `2026-city-lookdev.blend.pre-consolidation.bak`.
+The old source library was not changed. The in-file `START HERE / City workflow`
+text also describes the scene roles. If Blender was open during consolidation,
+reopen the saved master to load the new data before continuing edits.
+
+Validation: all four pack exports succeeded; all 76 stable IDs, catalogue IDs,
+and triangle counts match the previous manifests, and dimensions differ by less
+than 1 mm. A read-only reopen verified no external Blender libraries, no missing
+unpacked textures, all 76 city-import meshes and grounding, and preservation of
+all 1,343 original city-scene objects. Seed 20260805 still produces 1,169 buildings
+and 19 unfilled slots. Build and 179 tests passed; existing large JS chunk and
+legacy Blender tangent/sampler warnings remain. This is source organization,
+not a claimed rendering-performance improvement. Texture compression remains
+separate work.

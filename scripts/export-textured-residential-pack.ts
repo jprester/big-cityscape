@@ -16,7 +16,7 @@ if (existsSync(localEnvironmentFile)) {
 
 const argumentsByName = readNamedArguments(process.argv.slice(2));
 const assetGroup = argumentsByName.get('asset-group') ?? 'residential';
-const supportedAssetGroups = ['residential', 'commercial', 'skyscraper'];
+const supportedAssetGroups = ['residential', 'commercial', 'skyscraper', 'approved'];
 
 if (!supportedAssetGroups.includes(assetGroup)) {
   throw new Error(
@@ -29,8 +29,9 @@ const blenderExecutable =
 const blendFile = path.resolve(
   repositoryRoot,
   argumentsByName.get('blend') ??
+    process.env.CITY_LOOKDEV_BLEND_FILE ??
     process.env.BUILDING_BLEND_FILE ??
-    'references/raw/2026-export-low-poly-textured-buildings.blend',
+    'references/raw/2026-city-lookdev.blend',
 );
 const outputDirectory = path.resolve(
   repositoryRoot,
@@ -51,7 +52,9 @@ const highRiseEmissive = path.join(
 );
 const exporter = path.join(
   repositoryRoot,
-  'scripts/blender/export-textured-residential-pack.py',
+  assetGroup === 'approved'
+    ? 'scripts/blender/export-approved-buildings.py'
+    : 'scripts/blender/export-textured-residential-pack.py',
 );
 
 for (const [label, filePath] of [

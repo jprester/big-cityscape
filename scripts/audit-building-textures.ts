@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { execFile } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import os from 'node:os';
@@ -6,7 +7,8 @@ import { promisify } from 'node:util';
 import { auditGlbFile, type GlbTextureAudit } from './lib/audit-glb-textures';
 
 const execFileAsync = promisify(execFile);
-const BLEND_PATH = path.resolve('references/raw/2026-low-poly-building-kit.blend');
+if (existsSync('.env.local')) process.loadEnvFile('.env.local');
+const BLEND_PATH = path.resolve(process.env.CITY_LOOKDEV_BLEND_FILE ?? 'references/raw/2026-city-lookdev.blend');
 const GLB_ROOT = path.resolve('public/assets/models/buildings/lowpoly-buildings-pack');
 const CATALOG_PATH = path.resolve('src/city/assets/buildingAssetCatalog.generated.json');
 const BLENDER_SCRIPT_PATH = path.resolve('scripts/blender/audit-building-textures.py');

@@ -23,11 +23,7 @@ const lookdevFile = path.resolve(
     process.env.CITY_LOOKDEV_BLEND_FILE ??
     'references/raw/2026-city-lookdev.blend',
 );
-const assetLibraryFile = path.resolve(
-  repositoryRoot,
-  process.env.BUILDING_BLEND_FILE ??
-    'references/raw/2026-export-low-poly-textured-buildings.blend',
-);
+const assetLibraryFile = lookdevFile;
 const layoutFile = path.resolve(
   repositoryRoot,
   argumentsByName.get('layout') ??

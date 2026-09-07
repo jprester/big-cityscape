@@ -262,6 +262,9 @@ def add_buildings(
 
 
 def linked_source_objects(asset_library_path: Path) -> dict[str, bpy.types.Object]:
+    master = bpy.data.collections.get("ASSET_LIBRARY")
+    if master is not None:
+        return {obj.name: obj for obj in master.all_objects}
     root = bpy.data.collections.get(SOURCE_LIBRARY_COLLECTION_NAME)
     if root is None:
         with bpy.data.libraries.load(str(asset_library_path), link=True) as (
