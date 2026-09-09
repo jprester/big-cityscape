@@ -99,9 +99,8 @@ Twelve outside-block placements remain visible at their authored coordinates.
 Day/dusk/night atmosphere, inspection lighting and nearby real streetlights reuse
 the existing components. Asphalt fills the gaps between authored blocks;
 sidewalks and lamp positions follow their edges. This first reviewed mode uses
-basic road presentation; procedural signage, road markings, parks and walk-mode
-collision/navigation are not yet transferred. Orbit, rooftop and street camera
-presets are available. Lighting is not expected to match Blender pixel-for-pixel.
+basic road presentation; procedural signage, road markings and parks are not
+yet transferred. Orbit, rooftop, street and first-person Walk controls are available. Lighting is not expected to match Blender pixel-for-pixel.
 
 Validation: all 1,180 exported GLB + JSON world bounds checked against Blender,
 maximum discrepancy below 0.000001 m. Browser loaded without warnings/errors;
@@ -111,3 +110,29 @@ an FPS improvement claim. Rendering sleeps when idle. Build and 183 tests pass,
 including affine transforms, mirrored/sheared fallback, block coordinates and
 invalid snapshot references. The existing Vite large shared-chunk warning remains.
 Texture compression and batch-count tuning are future performance work.
+
+
+## First-person walking (2026-09-08)
+
+Click **Walk** in the reviewed city. WASD or arrow keys move, Shift increases
+speed, mouse movement looks around, and Esc exits. Camera presets also exit
+walking mode. The existing pointer-lock controller and walking HUD are reused.
+
+The spawn is chosen deterministically near the map centre with clearance from
+buildings and lamp poles. Collision bounds use the actual exported building
+transforms and a spatial index, including rotated/scaled placements. These are
+conservative axis-aligned bounds: they may block empty space around angled or
+irregular buildings. Walking stays at a fixed 1.8 m eye height; stairs, interiors
+and terrain following are not implemented. Walking actively renders frames;
+orbit inspection returns to on-demand rendering when idle. No FPS gain is claimed.
+
+Implementation: `src/reviewed/createReviewedCityApp.ts`,
+`addReviewedBuildings.ts`, `reviewedWalkSpawn.ts` and its focused tests.
+Browser activation and HUD display were verified. Build and all 185 tests pass,
+including clear-spawn selection and reporting a completely obstructed map.
+
+### Reviewed city reflections
+
+The reviewed renderer adds a shared, static studio reflection environment to the exported PBR materials. Use **Glass reflections · studio environment** to compare it on and off. Strength follows Day/Dusk/Night; the visible sky remains independent. No Blender material changes or re-export are needed.
+
+The PMREM texture is generated once and disposed with the app. This adds environment sampling to material shading without extra city draw calls or geometry. It approximates studio illumination; it does not reflect neighboring buildings or exactly reproduce Blender’s preview HDRI.

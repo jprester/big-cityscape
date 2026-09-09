@@ -1,3 +1,4 @@
+import { addReflectionEnvironment } from './addReflectionEnvironment';
 import { createFirstPersonController, type FirstPersonController } from '../app/createFirstPersonController';
 import { createFirstPersonCollisionIndex } from '../app/firstPersonCollision';
 import { createFirstPersonHud } from '../app/createFirstPersonHud';
@@ -39,6 +40,7 @@ export async function createReviewedCityApp(host:HTMLElement) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio,1.5));
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;
   renderer.domElement.className='city-canvas';renderer.domElement.setAttribute('aria-label','Reviewed Blender city viewport');
+  const reflections=addReflectionEnvironment(renderer,scene,layers,presetId);
   const centre=map.bounds.getCenter(new THREE.Vector3());
   const inspection=createInspectionCamera(renderer.domElement,extent*1.4,{xMetres:centre.x,zMetres:centre.z,heightMetres:buildings.bounds.max.y});
   let frame=0,running=false,previous=performance.now();
@@ -56,6 +58,7 @@ export async function createReviewedCityApp(host:HTMLElement) {
   }
   function environment(id:SyntheticEnvironmentPresetId) {
     presetId=id;preset=createSyntheticEnvironmentPreset(id,extent);
+    reflections.setPreset(id);
     light.setConfig(preset.lighting);atmosphere.setConfig(preset.atmosphere);lamps.setConfig(preset.streetLamps);
     const url=new URL(window.location.href);url.searchParams.set('time',id);history.replaceState(null,'',url);invalidate();
   }
