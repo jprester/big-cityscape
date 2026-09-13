@@ -34,7 +34,12 @@ def fingerprint(mesh):
     return hashlib.sha256(json.dumps(data,separators=(',',':')).encode()).hexdigest()
 
 blocks = []
-for obj in sorted(bpy.data.collections['CITY_BLOCKS'].objects,key=lambda o:o.name):
+block_objects = sorted(bpy.data.collections['CITY_BLOCKS'].objects,key=lambda o:o.name)
+# CITY_BLOCKS must hold only the 8-vertex block boxes tagged by organize-authoring-workflow.py.
+invalid = [o.name for o in block_objects if o.type != 'MESH' or len(o.data.vertices) != 8 or not o.get('authoring_block_id')]
+if invalid:
+    sys.exit('CITY_BLOCKS contains objects that are not tagged block footprints (move them to CITY_BUILDINGS or delete them): ' + ', '.join(repr(n) for n in invalid))
+for obj in block_objects:
     points = [conversion @ (obj.matrix_world @ v.co) for v in obj.data.vertices[:4]]
     blocks.append({'id':obj['authoring_block_id'],'footprintXZ':[[p.x,p.z] for p in points]})
 def contains(point, polygon):
